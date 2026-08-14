@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-26MXN99LBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-26MXN99LBQ');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova demo — invoice.exceptions: the morning run · Mouline</title>
+<meta name="description" content="Watch Nova clear an AP inbox across the real systems: Gmail, NetSuite, the contract store and Slack — one exception caught $2,400 over contract, approved by a person.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f6f2e9'/%3E%3Ccircle cx='20' cy='20' r='15.5' fill='none' stroke='%231c1a16' stroke-width='2'/%3E%3Cpath d='M8.4 9.6 Q24 16 31.2 31.4' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 16.8 Q19 22 28.4 34' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3Cpath d='M8.4 30.4 Q24 24 31.2 8.6' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 23.2 Q19 18 28.4 6' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f2e9; --paper-2:#efe9da; --card:#fffdf7;
+  --ink:#1c1a16; --ink-soft:#534e44; --ink-faint:#8d877a;
+  --rule:#ddd5c2; --rule-strong:#cfc6af;
+  --red:#bb3a2b; --red-bg:#f6e3df;
+  --amber:#9a6e15; --green:#3c7a45; --green-bg:#e2eee0;
+  --blue:#2f6f9e;
+  --serif:'Fraunces','Iowan Old Style',Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --maxw:1300px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-0.012em;margin:0}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14.5px;font-weight:500;background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:9px 17px;border-radius:2px;text-decoration:none;cursor:pointer;transition:transform .12s ease,background .15s}
+.btn:hover{background:#000;transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule-strong)}
+.btn.ghost:hover{background:var(--paper-2);border-color:var(--ink);transform:none}
+.btn.big{padding:13px 24px;font-size:16px}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+
+/* ---------- Top bar ---------- */
+header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.88);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand .mark{width:23px;height:23px;flex:none}
+.brand small{font-family:var(--sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+.demo-tag{font-family:var(--mono);font-size:11px;color:var(--ink-faint);display:flex;align-items:center;gap:8px}
+.demo-tag .dt-file{color:var(--red)}
+@media(max-width:700px){.demo-tag{display:none}}
+
+/* ---------- Intro ---------- */
+.intro{padding:54px 0 30px}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:11px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--red)}
+.intro h1{font-size:clamp(30px,4.6vw,48px);line-height:1.06;letter-spacing:-0.024em;font-weight:600;max-width:22ch}
+.intro h1 em{font-style:italic;font-weight:400;color:var(--red)}
+.intro .dek{font-size:18px;line-height:1.55;color:var(--ink-soft);margin:20px 0 0;max-width:62ch}
+.intro .dek b{color:var(--ink);font-weight:600}
+.intro-meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+.intro-meta b{color:var(--ink-soft);font-weight:500}
+
+/* ---------- Stage ---------- */
+.stage-zone{padding:6px 0 60px}
+.stage-scroll{overflow-x:auto;padding-bottom:8px}
+.stage{display:grid;grid-template-columns:248px minmax(0,1fr);gap:18px;min-width:1020px}
+
+/* recipe rail */
+.rail{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 0 10px;align-self:start;position:sticky;top:76px}
+.rail-head{padding:0 16px 10px;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.rail-head .rh-file{font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:500}
+.rail-head .rh-ver{font-family:var(--mono);font-size:9.5px;color:var(--green);white-space:nowrap}
+.rstep{display:flex;gap:10px;padding:10px 16px;border-top:1px solid transparent;opacity:.48;transition:opacity .3s}
+.rstep:first-of-type{border-top:none}
+.rstep .rs-dot{width:16px;height:16px;border-radius:50%;border:2px solid #cfcdcd;flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;margin-top:2px;transition:background .3s,border-color .3s}
+.rstep.active{opacity:1}
+.rstep.active .rs-dot{border-color:var(--red);border-top-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rstep.done{opacity:1}
+.rstep.done .rs-dot{background:var(--green);border-color:var(--green)}
+.rstep.done .rs-dot::after{content:"✓"}
+.rstep .rs-lbl{font-size:13.5px;line-height:1.35;color:var(--ink);font-weight:500}
+.rstep .rs-note{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-top:2px}
+.rstep .rs-tag{display:block;font-family:var(--mono);font-size:9px;margin-top:3px;color:var(--ink-faint)}
+.rstep .rs-tag.model{color:var(--amber)}
+.rstep .rs-tag.fixed{color:var(--green)}
+.rstep .rs-tag.gate{color:var(--red);font-weight:700}
+.rstep.gatestep{background:#fbf7ee;border-left:3px solid var(--amber);padding-left:13px;margin-top:4px;opacity:.7}
+.rstep.gatestep.active,.rstep.gatestep.done{opacity:1}
+
+/* browser window */
+.winwrap{min-width:0}
+.win{background:#fff;border:1px solid var(--rule-strong);border-radius:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.02),0 30px 60px -30px rgba(40,30,10,.35)}
+.chrome{display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;background:#2b2b2e;color:#e8e6e3;position:relative}
+.lights{display:flex;gap:7px;flex:none}
+.lights i{width:11px;height:11px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#ff5f57}.lights i:nth-child(2){background:#febc2e}.lights i:nth-child(3){background:#28c840}
+.url{flex:1;display:flex;justify-content:center;min-width:0}
+.url .pill{display:inline-flex;align-items:center;gap:7px;max-width:100%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 14px;font-family:var(--mono);font-size:11px;color:#cfccc7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.url .pill svg{width:10px;height:10px;flex:none;opacity:.7}
+.nova-pill{flex:none;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:#ffb3a8;background:rgba(187,58,43,.18);border:1px solid rgba(187,58,43,.45);border-radius:20px;padding:4px 11px;transition:all .4s}
+.nova-pill .np-dot{width:6px;height:6px;border-radius:50%;background:#e86a5b;box-shadow:0 0 0 0 rgba(232,106,91,.7);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,106,91,.55)}70%{box-shadow:0 0 0 7px rgba(232,106,91,0)}100%{box-shadow:0 0 0 0 rgba(232,106,91,0)}}
+.nova-pill.idle{color:#a5a19a;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.nova-pill.idle .np-dot{background:#a5a19a;animation:none;box-shadow:none}
+.viewport{position:relative;height:600px;background:#fff;overflow:hidden}
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.scene.on{opacity:1;pointer-events:auto}
+
+/* Nova cursor */
+#cursor{position:absolute;left:0;top:0;z-index:40;pointer-events:none;opacity:0;transition:opacity .3s}
+#cursor.show{opacity:1}
+#cursor .cur-dot{width:15px;height:15px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(187,58,43,.22),0 2px 6px rgba(0,0,0,.3);transform:translate(-50%,-50%);transition:transform .6s cubic-bezier(.4,.1,.2,1)}
+#cursor .cur-tag{position:absolute;left:10px;top:8px;font-family:var(--mono);font-size:9.5px;font-weight:500;color:#fff;background:var(--red);border-radius:4px;padding:2px 6px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .6s cubic-bezier(.4,.1,.2,1)}
+#cursor.dana .cur-dot{background:var(--blue);box-shadow:0 0 0 4px rgba(47,111,158,.22),0 2px 6px rgba(0,0,0,.3)}
+#cursor.dana .cur-tag{background:var(--blue)}
+
+/* callout chips pinned by Nova */
+.callout{position:absolute;z-index:30;font-family:var(--mono);font-size:10.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--rule-strong);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:8px 11px;box-shadow:0 10px 24px -12px rgba(40,30,10,.4);max-width:300px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.callout.in{opacity:1;transform:none}
+.callout b{color:var(--red);font-weight:700}
+
+/* caption + controls */
+.scene-cap{display:flex;justify-content:space-between;gap:18px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-soft);min-height:24px}
+.scene-cap .cap-r{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);white-space:nowrap}
+.controls{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.dot-btn{appearance:none;border:1px solid var(--rule-strong);background:var(--card);border-radius:20px;padding:6px 13px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .2s;position:relative;overflow:hidden}
+.dot-btn:hover{border-color:var(--ink);color:var(--ink-soft)}
+.dot-btn .d-n{color:var(--ink-faint)}
+.dot-btn.on{border-color:var(--ink);color:var(--ink);background:var(--paper)}
+.dot-btn.on .d-n{color:var(--red)}
+.dot-btn.done{color:var(--ink-soft);border-color:var(--rule-strong)}
+.dot-btn.done .d-n{color:var(--green)}
+.ctl-btn{appearance:none;border:1px solid var(--rule-strong);background:transparent;border-radius:20px;padding:7px 15px;font-family:var(--sans);font-size:12.5px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.ctl-btn:hover{border-color:var(--ink);background:var(--card)}
+
+/* closing overlay */
+.closing{position:absolute;inset:0;z-index:35;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:30px;opacity:0;pointer-events:none;transition:opacity .6s ease}
+.closing.on{opacity:1;pointer-events:auto}
+.closing-in{max-width:640px;text-align:center}
+.closing h2{font-size:clamp(26px,3.2vw,38px);line-height:1.1;font-weight:600;letter-spacing:-0.02em}
+.closing h2 em{font-style:italic;color:var(--red);font-weight:400}
+.close-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 26px;margin:22px 0 8px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.close-stats b{color:var(--red);font-weight:700}
+.closing p{color:var(--ink-soft);font-size:15.5px;margin:14px 0 26px}
+.closing .cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+
+/* fine print + footer */
+.fine-zone{padding:0 0 56px}
+.fine{font-size:13px;color:var(--ink-faint);max-width:72ch;line-height:1.6}
+.fine b{color:var(--ink-soft)}
+footer{padding:34px 0;background:var(--paper-2);border-top:1px solid var(--rule)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer .brand{font-size:18px}
+footer .meta{font-size:12.5px;color:var(--ink-faint)}
+footer .meta a{color:var(--ink-soft)}
+
+/* ================= GMAIL ================= */
+.gmail{--gm-blue:#1a73e8;position:absolute;inset:0;background:#fff;font-family:Roboto,Arial,sans-serif;color:#202124;display:flex;flex-direction:column}
+.gm-top{display:flex;align-items:center;gap:14px;height:50px;padding:0 16px;border-bottom:1px solid #e0e0e0;flex:none}
+.gm-burger{width:18px;height:12px;flex:none;background:linear-gradient(#5f6368,#5f6368) 0 0/18px 2px,linear-gradient(#5f6368,#5f6368) 0 5px/18px 2px,linear-gradient(#5f6368,#5f6368) 0 10px/18px 2px;background-repeat:no-repeat}
+.gm-logo{display:flex;align-items:center;gap:6px;font-size:17px;color:#5f6368;flex:none}
+.gm-logo svg{width:22px;height:22px}
+.gm-search{flex:1;max-width:520px;display:flex;align-items:center;gap:10px;background:#f1f3f4;border-radius:8px;padding:8px 14px;font-size:13px;color:#5f6368}
+.gm-search svg{width:15px;height:15px;flex:none}
+.gm-top-right{margin-left:auto;display:flex;align-items:center;gap:12px;color:#5f6368}
+.gm-ava{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--sans)}
+.gm-main{flex:1;display:grid;grid-template-columns:190px 288px 1fr;min-height:0}
+.gm-nav{padding:12px 10px;border-right:1px solid #e0e0e0;font-size:12.5px;color:#202124}
+.gm-compose{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e0e0e0;box-shadow:0 1px 3px rgba(60,64,67,.25);border-radius:16px;padding:8px 14px 8px 10px;font-size:12.5px;font-weight:500;color:#3c4043;margin:0 4px 14px;width:max-content}
+.gm-ni{display:flex;align-items:center;gap:12px;padding:5px 12px 5px 16px;border-radius:0 16px 16px 0;color:#3c4043}
+.gm-ni.on{background:#fce8e6;color:#d93025;font-weight:700}
+.gm-ni .ct{margin-left:auto;font-size:11px;font-weight:700}
+.gm-ni svg{width:15px;height:15px;flex:none;opacity:.85}
+.gm-lab{margin-top:14px;padding:8px 16px 4px;font-size:10.5px;color:#5f6368;letter-spacing:.04em}
+.gm-tagrow{display:flex;align-items:center;gap:12px;padding:4px 12px 4px 16px;color:#3c4043}
+.gm-tagrow i{width:10px;height:10px;border-radius:2px;background:#d93025;flex:none}
+.gm-list{border-right:1px solid #e0e0e0;overflow:hidden;background:#fff}
+.gm-row{padding:9px 12px;border-bottom:1px solid #f0f0f0;cursor:pointer;position:relative;opacity:0;transform:translateY(-6px);transition:opacity .5s,transform .5s,background .2s}
+.gm-row.in{opacity:1;transform:none}
+.gm-row.unread{background:#f6f9ff}
+.gm-row.sel{background:#feeceb}
+.gm-row .r1{display:flex;align-items:baseline;gap:6px}
+.gm-row .snd{font-size:12.5px;font-weight:700;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-row .tm{margin-left:auto;font-size:10px;color:#d93025;font-weight:700;flex:none}
+.gm-row .sbj{font-size:12px;color:#202124;font-weight:700;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-row .snp{font-size:11.5px;color:#5f6368;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-row .atts{display:flex;gap:5px;margin-top:5px;align-items:center}
+.gm-atchip{display:inline-flex;align-items:center;gap:4px;border:1px solid #e0e0e0;border-radius:4px;padding:2px 6px;font-size:9.5px;color:#3c4043;background:#fff}
+.gm-atchip i{width:8px;height:10px;background:#d93025;border-radius:1px;flex:none}
+.gm-lblchip{display:inline-block;font-size:9px;color:#d93025;border:1px solid #f3c2bd;background:#fce8e6;border-radius:3px;padding:0 5px}
+.gm-read{position:relative;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.gm-mail{padding:16px 20px;overflow:hidden}
+.gm-subj{font-size:16px;color:#202124;display:flex;align-items:center;gap:8px}
+.gm-from{display:flex;align-items:center;gap:10px;margin-top:12px}
+.gm-from .fa{width:32px;height:32px;border-radius:50%;background:#7b1fa2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.gm-from .fn{font-size:12.5px;color:#202124}
+.gm-from .fn b{font-weight:700}
+.gm-from .fn span{color:#5f6368}
+.gm-from .ft{margin-left:auto;font-size:11px;color:#5f6368}
+.gm-bodytxt{font-size:12.5px;color:#202124;line-height:1.55;margin-top:14px;white-space:pre-line}
+.gm-att{margin-top:14px;border:1px solid #e0e0e0;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;width:240px;cursor:pointer;transition:box-shadow .2s,border-color .2s}
+.gm-att:hover{box-shadow:0 2px 8px rgba(60,64,67,.2);border-color:#d2d2d2}
+.gm-att .pic{width:26px;height:32px;background:#d93025;border-radius:3px;color:#fff;font-size:7.5px;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;flex:none}
+.gm-att .anm{font-size:12px;color:#202124;font-weight:500}
+.gm-att .asz{font-size:10.5px;color:#5f6368}
+.gm-counter{position:absolute;left:14px;bottom:12px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--green);background:var(--green-bg);border:1px solid #a9d3bd;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
+.gm-counter.in{opacity:1}
+
+/* PDF preview overlay (Gmail attachment viewer) */
+.pdfview{position:absolute;inset:0;z-index:10;background:rgba(32,33,36,.55);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.pdfview.on{opacity:1;pointer-events:auto}
+.pdf-frame{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);width:430px;max-width:92%}
+.pdf-bar{display:flex;align-items:center;gap:10px;background:#323639;color:#e8e6e3;font-size:11.5px;padding:8px 14px;font-family:Roboto,Arial,sans-serif}
+.pdf-bar .x{margin-left:auto;color:#e8e6e3;font-size:14px}
+.pdf-page{background:#fff;padding:22px 26px 20px;font-family:Arial,Helvetica,sans-serif;color:#111;position:relative;height:470px;overflow:hidden;font-size:10.5px}
+.inv-h{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3c6e;padding-bottom:9px}
+.inv-vendor{font-size:13px;font-weight:700;color:#1a3c6e;letter-spacing:.02em}
+.inv-vendor small{display:block;font-size:8.5px;color:#666;font-weight:400;letter-spacing:0;margin-top:2px}
+.inv-no{font-size:15px;font-weight:700;color:#111;text-align:right}
+.inv-no small{display:block;font-size:8.5px;color:#666;font-weight:400}
+.inv-meta{display:flex;gap:26px;margin-top:9px;font-size:9.5px;color:#333}
+.inv-meta b{color:#000}
+.inv-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:9.5px}
+.inv-table th{background:#1a3c6e;color:#fff;text-align:left;padding:4px 7px;font-weight:700}
+.inv-table th:last-child,.inv-table td:last-child{text-align:right}
+.inv-table td{padding:5px 7px;border-bottom:1px solid #ddd}
+.inv-table tr.hl-row td{background:#fdf0cd}
+.inv-total{margin-top:9px;text-align:right;font-size:11px}
+.inv-total b{font-size:13px}
+.inv-terms{margin-top:12px;font-size:8.5px;color:#666;border-top:1px solid #ddd;padding-top:7px}
+.xchip{position:absolute;z-index:11;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;color:var(--ink);background:#fffdf7;border:1px solid var(--rule-strong);border-radius:5px;padding:3px 8px;box-shadow:0 4px 14px rgba(40,30,10,.28);opacity:0;transform:scale(.85);transition:opacity .35s,transform .35s;white-space:nowrap}
+.xchip.in{opacity:1;transform:none}
+.xchip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);flex:none}
+.xchip b{font-weight:700}
+
+/* ================= NETSUITE ================= */
+.ns{position:absolute;inset:0;background:#e8eaed;font-family:Arial,Helvetica,sans-serif;color:#000;display:flex;flex-direction:column}
+.ns-head{display:flex;align-items:center;gap:14px;height:42px;padding:0 14px;background:#3d4e63;flex:none}
+.ns-word{color:#fff;font-size:14.5px;letter-spacing:.01em}
+.ns-word b{font-weight:700;color:#e82127;margin-right:4px}
+.ns-word span{font-weight:400}
+.ns-search{margin-left:auto;display:flex;align-items:center;background:#fff;border-radius:3px;overflow:hidden;width:250px;height:24px}
+.ns-search input{border:none;outline:none;font-size:11px;padding:3px 8px;flex:1;font-family:Arial;color:#000}
+.ns-search .go{background:#f0f0f0;color:#333;font-size:10px;padding:0 9px;height:100%;display:flex;align-items:center;border-left:1px solid #ccc}
+.ns-user{color:#c8d0da;font-size:10.5px}
+.ns-tabs{display:flex;align-items:flex-end;gap:2px;padding:6px 12px 0;background:#596c84;flex:none}
+.ns-tab{font-size:11px;color:#e8edf3;padding:5px 13px 6px;border-radius:5px 5px 0 0}
+.ns-tab.on{background:#e8eaed;color:#000;font-weight:700}
+.ns-body{flex:1;padding:10px 14px;overflow:hidden;position:relative}
+.ns-portlets{display:grid;grid-template-columns:1fr 1fr;gap:10px;opacity:1;transition:opacity .3s}
+.ns-portlets.gone{opacity:0}
+.ns-portlet{background:#fff;border:1px solid #b8bcc2;border-radius:4px;height:180px;overflow:hidden}
+.ns-portlet .pl-h{background:#f0f1f3;border-bottom:1px solid #d5d8dc;font-size:11px;font-weight:700;color:#333;padding:6px 10px}
+.ns-portlet .pl-b{padding:12px;font-size:10.5px;color:#666}
+.ns-skel{height:9px;background:#e4e6e9;border-radius:2px;margin-bottom:8px}
+.ns-rec{position:absolute;inset:10px 14px;background:#fff;border:1px solid #b8bcc2;border-radius:4px;display:none;flex-direction:column;overflow:hidden}
+.ns-rec.on{display:flex}
+.ns-rec-h{display:flex;align-items:center;gap:12px;background:#f0f1f3;border-bottom:1px solid #d5d8dc;padding:7px 12px}
+.ns-rec-t{font-size:13px;color:#000}
+.ns-rec-t b{font-weight:700}
+.ns-status{font-size:9.5px;font-weight:700;color:#7a5800;background:#fde9b8;border:1px solid #e8c96a;border-radius:3px;padding:1px 7px}
+.ns-btnrow{margin-left:auto;display:flex;gap:6px}
+.ns-btn{font-size:10px;color:#333;background:linear-gradient(#fff,#e8e8e8);border:1px solid #b0b4ba;border-radius:3px;padding:3px 10px}
+.ns-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:7px 18px;padding:10px 12px;border-bottom:1px solid #e3e5e8}
+.ns-f .l{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.03em}
+.ns-f .v{font-size:11px;color:#000;border:1px solid #d5d8dc;background:#f8f9fa;border-radius:3px;padding:3px 7px;margin-top:2px;min-height:20px}
+.ns-f .v.link{color:#125aab;text-decoration:underline}
+.ns-subtabs{display:flex;gap:2px;padding:8px 12px 0;background:#f6f7f8;border-bottom:1px solid #d5d8dc}
+.ns-st{font-size:10.5px;color:#125aab;padding:4px 12px;border:1px solid transparent;border-bottom:none;border-radius:4px 4px 0 0}
+.ns-st.on{background:#fff;color:#000;font-weight:700;border-color:#d5d8dc}
+.ns-tabbody{flex:1;padding:10px 12px;overflow:hidden}
+.ns-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.ns-table th{background:#e8eaed;border:1px solid #cfd3d8;padding:4px 8px;text-align:left;font-size:9.5px;color:#333}
+.ns-table td{border:1px solid #e0e3e7;padding:5px 8px}
+.ns-table tr.hot td{background:#fdf0cd}
+.ns-rel{margin-top:10px;border:1px solid #d5d8dc;border-radius:4px}
+.ns-rel .rh{background:#f0f1f3;font-size:9.5px;font-weight:700;color:#333;padding:4px 10px;border-bottom:1px solid #d5d8dc}
+.ns-rel .rr{display:flex;gap:12px;align-items:center;padding:6px 10px;font-size:10.5px}
+.ns-rel .rr .grn{color:#125aab;text-decoration:underline;font-weight:700}
+.ns-ok{color:#2e7d32;font-weight:700}
+.ns-searching{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(232,234,237,.85);z-index:5;font-size:11px;color:#333;font-family:Arial}
+.ns-searching.on{display:flex}
+.ns-searching .spinbox{background:#fff;border:1px solid #b8bcc2;border-radius:4px;padding:12px 22px;display:flex;align-items:center;gap:10px}
+.ns-spinner{width:13px;height:13px;border:2px solid #3d4e63;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+
+/* ================= GOOGLE DRIVE ================= */
+.gd{position:absolute;inset:0;background:#fff;font-family:Roboto,Arial,sans-serif;color:#202124;display:flex;flex-direction:column}
+.gd-top{display:flex;align-items:center;gap:14px;height:50px;padding:0 16px;border-bottom:1px solid #e0e0e0;flex:none}
+.gd-logo{display:flex;align-items:center;gap:7px;font-size:17px;color:#5f6368;flex:none}
+.gd-logo svg{width:24px;height:24px}
+.gd-search{flex:1;max-width:480px;display:flex;align-items:center;gap:10px;background:#f1f3f4;border-radius:8px;padding:8px 14px;font-size:13px;color:#5f6368}
+.gd-search svg{width:15px;height:15px}
+.gd-main{flex:1;display:grid;grid-template-columns:200px 1fr;min-height:0}
+.gd-nav{padding:14px 10px;border-right:1px solid #e0e0e0;font-size:12.5px}
+.gd-new{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e0e0e0;box-shadow:0 1px 3px rgba(60,64,67,.25);border-radius:16px;padding:8px 16px 8px 10px;font-size:12.5px;font-weight:500;color:#3c4043;margin:0 4px 14px;width:max-content}
+.gd-ni{display:flex;align-items:center;gap:12px;padding:6px 12px 6px 16px;border-radius:0 16px 16px 0;color:#3c4043}
+.gd-ni.on{background:#e8f0fe;color:#1a73e8;font-weight:700}
+.gd-ni svg{width:15px;height:15px;flex:none}
+.gd-files{padding:6px 18px;overflow:hidden;position:relative}
+.gd-crumb{font-size:13px;color:#202124;padding:8px 4px;display:flex;gap:6px;align-items:center;border-bottom:1px solid #e0e0e0}
+.gd-crumb .sep{color:#5f6368}
+.gd-crumb b{font-weight:700}
+.gd-row{display:flex;align-items:center;gap:12px;padding:9px 8px;border-bottom:1px solid #f0f0f0;font-size:12.5px;cursor:pointer}
+.gd-row:hover{background:#f6f9ff}
+.gd-row .fic{width:20px;height:24px;background:#d93025;border-radius:2px;color:#fff;font-size:6.5px;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;flex:none}
+.gd-row .fn{color:#202124}
+.gd-row .fm{margin-left:auto;color:#5f6368;font-size:11px}
+.gd-row.old{opacity:.55}
+.gd-row .oldtag{font-size:9px;color:#5f6368;border:1px solid #dadce0;border-radius:3px;padding:0 5px;margin-left:8px}
+.gd-view{position:absolute;inset:0;z-index:10;background:rgba(32,33,36,.55);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.gd-view.on{opacity:1;pointer-events:auto}
+.gd-frame{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);width:460px;max-width:94%}
+.gd-doc{background:#fff;padding:26px 30px 20px;font-family:Arial,Georgia,serif;color:#111;position:relative;height:478px;overflow:hidden}
+.doc-h1{font-size:14px;font-weight:700;letter-spacing:.04em;text-align:center}
+.doc-h2{font-size:10px;color:#555;text-align:center;margin-top:3px}
+.doc-rule{height:1px;background:#999;margin:12px 0}
+.doc-sec{font-size:11px;font-weight:700;margin-top:12px}
+.doc-p{font-size:9.5px;line-height:1.55;color:#333;margin-top:6px}
+.doc-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:10px}
+.doc-table th{border:1px solid #999;background:#f0f0f0;padding:4px 8px;text-align:left}
+.doc-table td{border:1px solid #bbb;padding:5px 8px}
+.doc-table tr.ratehot td{background:#fff3c4;position:relative}
+.doc-sig{display:flex;justify-content:space-between;margin-top:16px;font-size:9px;color:#555}
+.doc-sig .sig{border-top:1px solid #999;padding-top:4px;width:38%}
+.mark-pin{position:absolute;right:22px;font-family:var(--mono);font-size:9px;color:#7a5800;background:#fde9b8;border:1px solid #e8c96a;border-radius:3px;padding:1px 6px;opacity:0;transition:opacity .4s}
+.mark-pin.in{opacity:1}
+
+/* ================= NOVA MATCH VIEW ================= */
+.nv{position:absolute;inset:0;background:var(--paper);font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column;padding:22px 30px}
+.nv-head{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--rule);padding-bottom:12px}
+.nv-head .t{font-family:var(--serif);font-size:20px;font-weight:600}
+.nv-head .m{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.nv-head .ours{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--ink-soft);border:1px solid var(--rule-strong);border-radius:12px;padding:3px 10px;background:var(--card)}
+.nv-grid{flex:1;display:flex;align-items:center;justify-content:center}
+.match-t{border-collapse:separate;border-spacing:0;width:100%;max-width:760px;background:var(--card);border:1px solid var(--rule-strong);border-radius:10px;overflow:hidden;font-size:13px}
+.match-t th{background:var(--paper-2);font-family:var(--mono);font-size:10px;font-weight:500;color:var(--ink-soft);padding:9px 14px;text-align:left;border-bottom:1px solid var(--rule)}
+.match-t th .sub{display:block;font-size:9px;color:var(--ink-faint);margin-top:1px}
+.match-t td{padding:11px 14px;border-bottom:1px solid var(--rule);color:var(--ink);opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s,background .4s}
+.match-t tr:last-child td{border-bottom:none}
+.match-t td.fill{opacity:1;transform:none}
+.match-t td.dimcell{color:var(--ink-faint)}
+.match-t .fld{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.match-t td.ok{background:var(--green-bg)}
+.match-t td.bad{background:var(--red-bg);color:var(--red);font-weight:700}
+.match-t tr:last-child td{transition-delay:0s}
+.nv-verdict{margin-top:16px;text-align:center;font-size:14px;color:var(--ink-soft);opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+.nv-verdict.in{opacity:1;transform:none}
+.nv-verdict .vchip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--red);background:var(--red-bg);border:1px solid #e6c4bd;border-radius:6px;padding:5px 12px;margin-left:8px}
+
+/* ================= SLACK ================= */
+.slack{--s-text:#1d1c1d;--s-2:#616061;--s-bd:rgba(29,28,29,.13);--s-hover:#f8f8f8;--s-green:#007a5a;position:absolute;inset:0;font-family:'Lato','Slack-Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#fff;color:var(--s-text);display:flex;flex-direction:column}
+.slack-top{display:flex;align-items:center;padding:7px 12px;background:#3f0e40;flex:none}
+.st-search{flex:1;display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.72);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:4px 10px;max-width:520px}
+.st-search svg{width:12px;height:12px;flex:none;opacity:.75}
+.slack-bar{display:flex;align-items:center;gap:8px;padding:9px 16px;background:#fff;border-bottom:1px solid var(--s-bd);flex:none}
+.slack-bar .star{color:var(--s-2);font-size:14px}
+.slack-bar .ch{font-weight:900;font-size:15px}
+.slack-bar .ch .hash{color:var(--s-2);font-weight:700}
+.slack-bar .runmeta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--s-2);background:var(--s-hover);border:1px solid var(--s-bd);padding:3px 9px;border-radius:20px;display:flex;align-items:center;gap:6px}
+.slack-bar .runmeta b{color:var(--s-text)}
+.thread{flex:1;padding:10px 0 14px;overflow-y:auto;scrollbar-width:thin;background:#fff}
+.msg{display:grid;grid-template-columns:34px 1fr;gap:9px;padding:5px 16px 6px;opacity:0;transform:translateY(8px);transition:opacity .42s ease,transform .42s ease}
+.msg.in{opacity:1;transform:none}
+.msg .av{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:800}
+.av.bot{background:#1d1d1f}
+.av.nova{background:var(--red)}
+.av.human{background:var(--blue)}
+.who{font-size:14px;line-height:1.4}
+.who .name{font-weight:900}
+.who .tag{font-size:9.5px;font-weight:700;text-transform:uppercase;background:#e8e8e8;color:var(--s-2);padding:1px 5px;border-radius:2px;margin-left:6px;vertical-align:1px}
+.who .ts{color:var(--s-2);font-size:11.5px;margin-left:7px;font-weight:400}
+.body-txt{font-size:13.5px;line-height:1.45;margin-top:1px}
+.body-txt code{font-family:var(--mono);font-size:11px;background:rgba(29,28,29,.04);border:1px solid var(--s-bd);padding:1px 4px;border-radius:3px;color:#e01e5a}
+.apcard{border:1px solid var(--s-bd);border-radius:8px;padding:11px 13px;margin-top:7px;background:#fff;max-width:560px}
+.apcard h4{font-size:13.5px;font-weight:900;margin:0 0 6px}
+.apcard .ln{font-size:12.5px;line-height:1.5;padding:2px 0}
+.apcard .ln .ic{display:inline-block;width:16px}
+.apcard .exc{margin-top:7px;border-top:1px solid var(--s-bd);padding-top:8px}
+.apcard .kv{display:flex;gap:8px;font-size:12px;padding:1.5px 0}
+.apcard .kv .k{font-family:var(--mono);font-size:10px;color:var(--s-2);width:104px;flex:none;padding-top:1px}
+.apcard .kv .v{flex:1}
+.apcard .kv .v b{font-weight:700}
+.apcard .kv .v .over{color:#e01e5a;font-weight:700}
+.apcard .verdictline{margin-top:7px;font-size:12px;background:#fbf7ee;border:1px solid #ecdcae;border-radius:6px;padding:6px 9px}
+.apcard .meta{font-family:var(--mono);font-size:10px;color:var(--s-2);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.gate{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:8px;padding:10px 12px;border:1px solid var(--s-bd);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;background:#fbf7ee;max-width:560px}
+.gate .lock{display:flex;align-items:center}
+.gate .gtxt{font-size:12.5px;flex:1;min-width:170px}
+.gate .gtxt b{font-weight:700}
+.scope-pill{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:4px;margin-left:6px;font-weight:500;white-space:nowrap}
+.scope-pill.r{background:#e8f3ec;color:var(--s-green);border:1px solid #a9d3bd}
+.scope-pill.w{background:#fbeedd;color:#8a5a13;border:1px solid #ecc98f}
+.approve{font-family:inherit;font-size:12.5px;font-weight:900;background:var(--s-green);color:#fff;border:none;padding:7px 14px;border-radius:4px;cursor:pointer;transition:background .2s,transform .1s}
+.approve:hover{background:#148567}
+.approve.press{transform:scale(.96)}
+.approve.done{background:#148567;cursor:default}
+.draftnote{margin-top:7px;border:1px solid var(--s-bd);border-radius:8px;background:#fafaf8;padding:9px 12px;max-width:560px}
+.draftnote .dn-h{font-family:var(--mono);font-size:9.5px;color:var(--s-2);letter-spacing:.04em;text-transform:uppercase;display:flex;justify-content:space-between}
+.draftnote .dn-b{font-size:12px;font-style:italic;color:#3a3a3a;line-height:1.5;margin-top:5px}
+.resolved{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s-green);font-weight:700;padding:4px 0}
+.resolved .badge{background:#e8f3ec;color:var(--s-green);font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #a9d3bd}
+.waity{position:absolute;right:16px;bottom:12px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--blue);background:#e9f0f6;border:1px solid #b9d0e2;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
+.waity.in{opacity:1}
+
+/* ---------- recipe-forming widget (moved from the landing §05) ---------- */
+.recipe-section{padding:8px 0 66px;border-top:1px solid var(--rule)}
+.recipe-section .rsec-head{max-width:76ch;margin-bottom:30px}
+.recipe-section .rsec-head h2{font-size:clamp(26px,3.4vw,38px);line-height:1.1;font-weight:600;letter-spacing:-0.02em;margin-bottom:12px}
+.recipe-section .rsec-head p{font-size:16.5px;color:var(--ink-soft);margin:0}
+.recipe-section .rsec-head p b{color:var(--ink)}
+.loop{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){.loop{grid-template-columns:repeat(4,1fr)}}
+.loop-step{position:relative;cursor:pointer;width:100%;margin:0;padding:22px 20px 24px;background:var(--card);border:1px solid var(--rule);border-radius:8px;font-family:var(--sans);text-align:left;transition:border-color .18s ease}
+.loop-step:hover{border-color:var(--rule-strong)}
+.loop-step.on{border-color:var(--acc,var(--red))}
+.loop-step.on .n{color:var(--acc,var(--red))}
+.loop-step .n{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+.loop-step .ls-h{display:block;font-family:var(--serif);font-weight:500;letter-spacing:-0.012em;font-size:21px;line-height:1.2;color:var(--ink);margin:10px 0 8px}
+.loop-step .ls-p{display:block;font-size:14.5px;line-height:1.6;color:var(--ink-soft)}
+.loop-step .ls-prog{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--acc,var(--red));opacity:.55}
+.loop-step.on .ls-prog.run{animation:fsprog 7s linear forwards}
+@keyframes fsprog{from{width:0}to{width:100%}}
+.recipe-view{margin-top:22px;background:var(--card);border:1px solid var(--rule-strong);border-radius:10px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 48px -28px rgba(40,30,10,.25)}
+.rv-bar{display:flex;align-items:flex-end;gap:8px;padding:8px 16px 0 10px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
+.rv-tabs{display:flex;align-items:flex-end;gap:4px;min-width:0}
+.rv-tab{appearance:none;-webkit-appearance:none;cursor:pointer;margin:0 0 -1px;padding:8px 13px 9px;background:transparent;border:1px solid transparent;border-radius:8px 8px 0 0;font-family:var(--mono);font-size:12px;line-height:1;color:var(--ink-faint);display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0;transition:color .18s ease}
+.rv-tab:hover{color:var(--ink-soft)}
+.rv-tab.on{background:var(--card);border-color:var(--rule-strong);border-bottom-color:var(--card);color:var(--ink)}
+.rv-dot{width:8px;height:8px;border-radius:50%;background:var(--rule-strong);flex:none;transition:background .3s}
+.rv-tab.on .rv-dot{background:var(--acc,var(--red))}
+.rv-kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--rule-strong);border-radius:10px;padding:1px 7px;flex:none;align-self:center;margin-bottom:6px}
+.rv-ver{margin-left:auto;align-self:center;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--acc,var(--red));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}
+.rv-body{padding:10px 0;min-height:238px}
+.rline{display:flex;align-items:baseline;gap:12px;padding:7px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.5;opacity:0;transform:translateY(6px);animation:rlin .38s ease forwards}
+@keyframes rlin{to{opacity:1;transform:none}}
+.rline .ln{color:var(--ink-faint);font-size:10.5px;flex:none;width:16px;text-align:right}
+.rline .op{flex:none;width:10px;color:var(--ink-faint)}
+.rline .lbl{color:var(--ink);flex:none;font-weight:500}
+.rline .note{color:var(--ink-faint);font-size:11.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rline .tag{flex:none;font-size:10px;letter-spacing:.02em;color:var(--ink-faint)}
+.rline .tag.model{color:var(--amber)}
+.rline .tag.fixed{color:var(--green)}
+.rline .tag.always{color:var(--red);font-weight:700}
+.rline.human{font-family:var(--sans);font-size:13.5px;background:#e9f0f6;border-left:3px solid var(--blue);padding-left:15px;margin:2px 0}
+.rline.human .who-h{font-weight:700;color:var(--blue);flex:none}
+.rline.human .say{color:var(--ink-soft);font-style:italic;flex:1;min-width:0}
+.rline.add{background:var(--green-bg)}
+.rline.add .op{color:var(--green);font-weight:700}
+.rline.gated{background:#fbf7ee;border-left:3px solid var(--amber);padding-left:15px;margin-top:2px}
+.rv-foot{padding:13px 18px 15px;border-top:1px solid var(--rule);font-size:13.5px;color:var(--ink-soft)}
+.rv-foot b{color:var(--ink)}
+@media(max-width:600px){.rline .note{display:none}.rv-body{min-height:0}.rv-kind{display:none}.rv-tab{padding:8px 9px 9px;font-size:11px;gap:6px}.rv-ver{font-size:10px;max-width:38%}}
+@media(prefers-reduced-motion:reduce){.rline{animation:none;opacity:1;transform:none}.loop-step.on .ls-prog.run{animation:none}}
+
+@media(prefers-reduced-motion:reduce){
+  .scene,.msg,.gm-row,.callout,.xchip,.match-t td,.nv-verdict{transition:none!important}
+  .nova-pill .np-dot,.rstep.active .rs-dot{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline <small>Nova</small></a>
+    <div class="demo-tag">live demo · <span class="dt-file">invoice.exceptions</span> · recipe v3</div>
+    <a class="btn ghost" href="./">← Back to site</a>
+  </div>
+</header>
+
+<main>
+<section class="intro">
+  <div class="wrap">
+    <div class="eyebrow">One run · four systems · one human decision</div>
+    <h1>Watch Nova clear the AP inbox — <em>inside your real tools.</em></h1>
+    <p class="dek">This is one real morning run of the pinned recipe <b>invoice.exceptions · v3</b>, replayed across the systems it actually touches: the shared Gmail inbox, NetSuite, the contract store, and the team's Slack channel. Nothing here is a mock-up of Nova — <b>the systems are the mock-up; the workflow is real.</b></p>
+    <div class="intro-meta">
+      <span>· <b>under a minute</b></span>
+      <span>· <b>4 systems</b></span>
+      <span>· <b>3 invoices</b></span>
+      <span>· <b>1 approval — the only human touch</b></span>
+    </div>
+    <div class="cta-row" style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap">
+      <button class="btn big" id="playBtn">▶ Play the morning run</button>
+      <a class="btn ghost big" href="#how">How the recipe formed ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="stage-zone">
+  <div class="wrap">
+    <div class="stage-scroll">
+      <div class="stage" id="stage">
+        <!-- recipe rail -->
+        <div class="rail" id="rail">
+          <div class="rail-head"><span class="rh-file">invoice.exceptions</span><span class="rh-ver">v3 · pinned</span></div>
+          <div class="rstep" data-step="0"><span class="rs-dot"></span><span><span class="rs-lbl">read the invoice</span><span class="rs-note">every vendor formats it differently</span><span class="rs-tag model">◆ judgment</span></span></div>
+          <div class="rstep" data-step="1"><span class="rs-dot"></span><span><span class="rs-lbl">pull the PO by its number</span><span class="rs-note">Dana's edit — no more guessing</span><span class="rs-tag fixed">fixed</span></span></div>
+          <div class="rstep" data-step="2"><span class="rs-dot"></span><span><span class="rs-lbl">rate from Appendix B</span><span class="rs-note">the signed contract, always</span><span class="rs-tag fixed">fixed</span></span></div>
+          <div class="rstep" data-step="3"><span class="rs-dot"></span><span><span class="rs-lbl">three-way match</span><span class="rs-note">invoice · PO · goods receipt</span><span class="rs-tag fixed">fixed</span></span></div>
+          <div class="rstep" data-step="4"><span class="rs-dot"></span><span><span class="rs-lbl">classify the mismatch</span><span class="rs-note">rate change, or billing error?</span><span class="rs-tag model">◆ judgment</span></span></div>
+          <div class="rstep gatestep" data-step="5"><span class="rs-dot"></span><span><span class="rs-lbl">a person approves</span><span class="rs-note">before anything is queued for payment</span><span class="rs-tag gate">human gate</span></span></div>
+        </div>
+
+        <!-- browser window -->
+        <div class="winwrap">
+          <div class="win">
+            <div class="chrome">
+              <div class="lights"><i></i><i></i><i></i></div>
+              <div class="url"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="urlText">mail.google.com/mail/u/0/#inbox</span></span></div>
+              <div class="nova-pill" id="novaPill"><span class="np-dot"></span><span id="novaPillTxt">Nova is working in this tab</span></div>
+            </div>
+            <div class="viewport" id="viewport">
+              <div class="scene" id="sc-gmail"></div>
+              <div class="scene" id="sc-netsuite"></div>
+              <div class="scene" id="sc-drive"></div>
+              <div class="scene" id="sc-match"></div>
+              <div class="scene" id="sc-slack"></div>
+
+              <div id="cursor"><div class="cur-dot" id="curDot"></div><div class="cur-tag" id="curTag">Nova</div></div>
+
+              <!-- closing overlay -->
+              <div class="closing" id="closing">
+                <div class="closing-in">
+                  <h2>The AP inbox, cleared <em>before coffee.</em></h2>
+                  <div class="close-stats">
+                    <span><b>3</b> invoices</span><span><b>4</b> systems</span><span><b>7</b> minutes</span><span><b>$2,400</b> caught</span><span><b>1</b> approval</span>
+                  </div>
+                  <p>Every clean invoice queued for payment. The one mismatch went to a person — with the exact line, the clause it breaks, and a drafted reply. This is one recipe; the same engine runs reconciliations, policy approvals, access reviews — and incident response.</p>
+                  <div class="cta-row">
+                    <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
+                    <button class="btn ghost big" id="replayBtn2">↺ Replay the run</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scene-cap"><span id="capText">7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.</span><span class="cap-r" id="capSys">Gmail · shared AP mailbox</span></div>
+          <div class="controls">
+            <div class="dots" id="dots"></div>
+            <button class="ctl-btn" id="pauseBtn">❚❚ Pause</button>
+            <button class="ctl-btn" id="replayBtn">↺ Replay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="recipe-section" id="how">
+  <div class="wrap">
+    <div class="rsec-head">
+      <div class="eyebrow">Same recipe · how it formed</div>
+      <h2>The pinned recipe wasn't born pinned.</h2>
+      <p>Every recipe passes through the same four stages — watch <span class="mono">invoice.exceptions</span> go from improvising to pinned, the exact evolution behind the morning run above. <b>Tab across to <span class="mono">ledger.reconcile</span> and the same engine does it at month-end close.</b></p>
+    </div>
+    <div id="hardenWrap">
+      <div class="loop" id="loopTabs" role="tablist" aria-label="How Nova hardens work into a recipe">
+        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">01</span><span class="ls-h">Does the work — day one</span><span class="ls-p">At delivery, Nova picks up real tasks across your systems and produces a finished result, not just a suggestion — visible in Slack, MS Teams, Jira, GitHub or GitLab.</span><span class="ls-prog"></span></button>
+        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">02</span><span class="ls-h">Reviewed before it ships</span><span class="ls-p">Early on, a person signs off her output before it reaches a customer or the ledger — like reviewing a new hire's work.</span><span class="ls-prog"></span></button>
+        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">03</span><span class="ls-h">Learns from corrections</span><span class="ls-p">Each edit or approval teaches Nova the proven path — a versioned recipe: fixed steps, scoped tools, human-approved gates.</span><span class="ls-prog"></span></button>
+        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">04</span><span class="ls-h">Hardens into routine</span><span class="ls-p">Cases she has handled many times run the same way every time — more predictable and more hands-off, freeing your people for the new and the ambiguous.</span><span class="ls-prog"></span></button>
+      </div>
+      <div class="recipe-view" id="recipePanel" role="tabpanel" aria-label="The recipe as it forms">
+        <div class="rv-bar">
+          <div class="rv-tabs" role="tablist" aria-label="Scenario">
+            <button class="rv-tab on" type="button" role="tab" aria-selected="true" aria-controls="recipePanel"><span class="rv-dot"></span>invoice.exceptions</button>
+            <button class="rv-tab" type="button" role="tab" aria-selected="false" aria-controls="recipePanel"><span class="rv-dot"></span>ledger.reconcile</button>
+          </div>
+          <span class="rv-kind">recipe</span>
+          <span class="rv-ver" id="rvVer">run 1 · improvising</span>
+        </div>
+        <div class="rv-body" id="rvBody"></div>
+        <div class="rv-foot" id="rvFoot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fine-zone">
+  <div class="wrap">
+    <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs; the companies and numbers are fictional, but the workflow — the systems touched, the order, the match, the gate — is the one our customers run. The recipe lines on the left are the actual pinned recipe: fixed steps where the route is known, judgment kept where it's needed, and a person on every write that leaves the building.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="./"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true" style="width:19px;height:19px"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline</a>
+    <div class="meta">Nova — an AI agent that does your team's repetitive work. · <a href="./">mouline.co.uk</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function track(n,p){ if(typeof gtag==='function') gtag('event',n,p||{}); }
+
+/* ---------- run control ---------- */
+/* Generation-based cancellation: newCtl() bumps ctl.gen, which invalidates every
+   pending wait() from the previous run — no stale scene can paint over a new one. */
+var ctl = { paused:false, gen:0 };
+function newCtl(){ ctl.paused = false; ctl.gen++; pauseBtn.textContent = '❚❚ Pause'; }
+function wait(ms){
+  var g = ctl.gen;
+  return new Promise(function(res){
+    var remaining = ms, last = Date.now();
+    (function check(){
+      if(ctl.gen !== g) return res(false);
+      var now = Date.now();
+      if(!ctl.paused) remaining -= (now - last);
+      last = now;
+      if(remaining <= 0) return res(true);
+      setTimeout(check, 50);
+    })();
+  });
+}
+function $(s,r){ return (r||document).querySelector(s); }
+function $all(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+
+/* ---------- DOM ---------- */
+var viewport = document.getElementById('viewport');
+var stageEl = document.getElementById('stage');
+var urlText = document.getElementById('urlText');
+var capText = document.getElementById('capText');
+var capSys = document.getElementById('capSys');
+var novaPill = document.getElementById('novaPill');
+var novaPillTxt = document.getElementById('novaPillTxt');
+var cursorEl = document.getElementById('cursor');
+var curDot = document.getElementById('curDot');
+var curTag = document.getElementById('curTag');
+var closing = document.getElementById('closing');
+var pauseBtn = document.getElementById('pauseBtn');
+var playBtn = document.getElementById('playBtn');
+var dotsWrap = document.getElementById('dots');
+
+/* ---------- cursor ---------- */
+var curX = 0, curY = 0;
+function cursorShow(who){ curTag.textContent = who; cursorEl.classList.toggle('dana', who==='Dana'); cursorEl.classList.add('show'); }
+function cursorHide(){ cursorEl.classList.remove('show'); }
+function cursorTo(el, inst){
+  var r = el.getBoundingClientRect(), v = viewport.getBoundingClientRect();
+  curX = r.left - v.left + r.width/2; curY = r.top - v.top + r.height/2;
+  curDot.style.transform = 'translate(' + curX + 'px,' + curY + 'px) translate(-50%,-50%)';
+  cursorEl.style.transform = 'translate(0,0)';
+  curTag.style.transform = 'translate(' + curX + 'px,' + curY + 'px)';
+  return inst ? true : wait(620);
+}
+
+/* ---------- rail + dots ---------- */
+var rsteps = $all('.rstep');
+function railSet(i, cls){ if(i<0) return; var el=rsteps[i]; if(!el) return; el.classList.remove('active'); el.classList.add(cls); }
+function railReset(){ rsteps.forEach(function(el){ el.classList.remove('active','done'); }); }
+var SCENE_META = [
+  { id:'gmail',    url:'mail.google.com/mail/u/0/#inbox',            cap:'7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.', sys:'Gmail · shared AP mailbox',      dot:'Gmail',     pill:'Nova is working in this tab', rail:0 },
+  { id:'netsuite', url:'3688214.app.netsuite.com/app center/…',      cap:'The PO, found by its number from the invoice header — the way Dana taught her.', sys:'NetSuite · purchase orders',   dot:'NetSuite',  pill:'Nova is working in this tab', rail:1 },
+  { id:'drive',    url:'drive.google.com/drive/folders/contracts',   cap:'The rate comes from the signed contract — Appendix B, always.', sys:'Google Drive · contract store',      dot:'Contract',  pill:'Nova is working in this tab', rail:2 },
+  { id:'match',    url:'nova.internal · run #1,842',                 cap:'The three-way match, in Nova’s own working view: quantities tie out — the rate doesn’t.', sys:'Nova · three-way match',  dot:'The match', pill:'Nova internal view',         rail:3 },
+  { id:'slack',    url:'app.slack.com/client/T…/C-accounts-payable', cap:'One message sums up the morning. The judgment call goes to Dana — with everything attached.', sys:'Slack · #accounts-payable', dot:'The gate', pill:'Nova is working in this tab', rail:4 }
+];
+var dots = [];
+SCENE_META.forEach(function(m,i){
+  var b = document.createElement('button');
+  b.className = 'dot-btn'; b.type='button';
+  b.innerHTML = '<span class="d-n">0'+(i+1)+'</span> '+m.dot;
+  b.addEventListener('click', function(){ track('demo_scene',{scene:m.id,via:'dot'}); startFrom(i); });
+  dotsWrap.appendChild(b); dots.push(b);
+});
+function dotsSet(i){ dots.forEach(function(d,j){ d.classList.toggle('on', j===i); if(j<i) d.classList.add('done'); }); }
+function dotsReset(){ dots.forEach(function(d){ d.classList.remove('on','done'); }); }
+
+/* ---------- scene switching ---------- */
+var sceneEls = {};
+SCENE_META.forEach(function(m){ sceneEls[m.id] = document.getElementById('sc-'+m.id); });
+var builders = {}, players = {};
+function showScene(i){
+  var m = SCENE_META[i];
+  SCENE_META.forEach(function(mm){ sceneEls[mm.id].classList.remove('on'); });
+  sceneEls[m.id].innerHTML = builders[m.id]();
+  sceneEls[m.id].classList.add('on');
+  urlText.textContent = m.url;
+  capText.textContent = m.cap;
+  capSys.textContent = m.sys;
+  novaPillTxt.textContent = m.pill;
+  novaPill.classList.remove('idle');
+  dotsSet(i);
+  cursorHide();
+}
+
+/* ================= SCENE BUILDERS ================= */
+
+/* ----- Gmail ----- */
+builders.gmail = function(){
+  return '' +
+  '<div class="gmail">' +
+    '<div class="gm-top">' +
+      '<span class="gm-burger"></span>' +
+      '<span class="gm-logo"><svg viewBox="0 0 24 24"><path fill="#4285f4" d="M22 5.9v12.1c0 1.2-1 2.1-2.1 2.1H4.1C2.9 20.1 2 19.2 2 18V5.9l10 7.1 10-7.1z" opacity=".0"/><path fill="#ea4335" d="M20.1 4H3.9C2.9 4 2 4.8 2 5.9v.4l10 6.9 10-6.9v-.4C22 4.8 21.1 4 20.1 4z"/><path fill="#4285f4" d="M22 5.9v12.1c0 1.1-.9 2-2 2h-2.5V9.3L22 5.9z"/><path fill="#34a853" d="M4 20c-1.1 0-2-.9-2-2V5.9l4.5 3.4V20H4z" opacity="0"/><path fill="#fbbc04" d="M6.5 9.3 2 5.9v12.1c0 1.1.9 2 2 2h2.5V9.3z"/><path fill="#34a853" d="M2 18c0 1.1.9 2 2 2h2.5v-4L2 13.2V18z" opacity="0"/><path fill="#4285f4" d="M22 18c0 1.1-.9 2-2 2h-2.5v-4L22 13.2V18z"/></svg>Gmail</span>' +
+      '<span class="gm-search"><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search mail</span>' +
+      '<span class="gm-top-right"><span style="font-size:15px">?</span><span style="font-size:15px">⚙</span><span class="gm-ava">D</span></span>' +
+    '</div>' +
+    '<div class="gm-main">' +
+      '<div class="gm-nav">' +
+        '<div class="gm-compose"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285f4" d="M12 5v14M5 12h14" stroke="#1a73e8" stroke-width="2.4" stroke-linecap="round"/></svg>Compose</div>' +
+        '<div class="gm-ni on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 7L4 6v12h16V6l-8 5z"/></svg>Inbox<span class="ct">3</span></div>' +
+        '<div class="gm-ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>Starred</div>' +
+        '<div class="gm-ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Sent</div>' +
+        '<div class="gm-ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Drafts</div>' +
+        '<div class="gm-lab">LABELS</div>' +
+        '<div class="gm-tagrow"><i></i>invoices</div>' +
+      '</div>' +
+      '<div class="gm-list">' +
+        '<div class="gm-row unread" id="gmR1"><div class="r1"><span class="snd">Northwind Traders</span><span class="tm">7:58 AM</span></div><div class="sbj">Invoice INV-10422 — PO-4471</div><div class="snp">Hello, please find attached invoice INV-10422 for…</div><div class="atts"><span class="gm-atchip"><i></i>INV-10422.pdf</span><span class="gm-lblchip">invoices</span></div></div>' +
+        '<div class="gm-row unread"><div class="r1"><span class="snd">Acme Office Supply</span><span class="tm">7:12 AM</span></div><div class="sbj">Invoice INV-8831</div><div class="snp">Your invoice for August supplies is attached…</div><div class="atts"><span class="gm-atchip"><i></i>INV-8831.pdf</span><span class="gm-lblchip">invoices</span></div></div>' +
+        '<div class="gm-row unread"><div class="r1"><span class="snd">Brightline Logistics</span><span class="tm">6:47 AM</span></div><div class="sbj">Invoice INV-5520 — NET-30</div><div class="snp">Invoice for July freight services attached…</div><div class="atts"><span class="gm-atchip"><i></i>INV-5520.pdf</span><span class="gm-lblchip">invoices</span></div></div>' +
+      '</div>' +
+      '<div class="gm-read">' +
+        '<div class="gm-mail">' +
+          '<div class="gm-subj">Invoice INV-10422 — PO-4471 <span class="gm-lblchip">invoices</span></div>' +
+          '<div class="gm-from"><span class="fa">N</span><span class="fn"><b>Northwind Traders</b> <span>&lt;billing@northwindtraders.example&gt;</span><br><span style="font-size:11px">to ap@yourcompany.example</span></span><span class="ft">7:58 AM (2 min ago)</span></div>' +
+          '<div class="gm-bodytxt">Hello,\nPlease find attached invoice INV-10422 covering PO-4471 (NX-5 filters, 800 units) plus freight.\nTerms NET-30.\nThanks,\nNorthwind billing</div>' +
+          '<div class="gm-att" id="gmAtt"><span class="pic">PDF</span><span><span class="anm">INV-10422.pdf</span><br><span class="asz">84 KB</span></span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pdfview" id="pdfView"><div class="pdf-frame">' +
+          '<div class="pdf-bar"><svg width="13" height="16" viewBox="0 0 24 24" fill="#e8e6e3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6" fill="#323639"/></svg>INV-10422.pdf<span class="x">✕</span></div>' +
+          '<div class="pdf-page" id="pdfPage">' +
+            '<div class="inv-h"><div class="inv-vendor">NORTHWIND TRADERS LTD<small>44 Millbrook Rd · billing@northwindtraders.example</small></div><div class="inv-no">INV-10422<small>Date: Aug 11</small></div></div>' +
+            '<div class="inv-meta"><span>Bill to: <b>Your Company Ltd</b></span><span>PO ref: <b id="poRef">PO-4471</b></span><span>Terms: <b>NET-30</b></span></div>' +
+            '<table class="inv-table"><tr><th>#</th><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>' +
+              '<tr><td>1</td><td>Freight &amp; handling</td><td>—</td><td>120.00</td><td>120.00</td></tr>' +
+              '<tr class="hl-row"><td>2</td><td>NX-5 industrial filters</td><td>800</td><td>21.00</td><td>16,800.00</td></tr></table>' +
+            '<div class="inv-total">Subtotal 16,920.00 · Tax 0.00<br><b>Total due: $16,920.00</b></div>' +
+            '<div class="inv-terms">Payment NET-30 to Northwind Traders Ltd. Quote PO number on remittance.</div>' +
+            '<span class="xchip" id="xc1" style="left:18px;top:64px">vendor · <b>Northwind Traders Ltd</b></span>' +
+            '<span class="xchip" id="xc2" style="right:16px;top:40px">invoice · <b>INV-10422</b></span>' +
+            '<span class="xchip" id="xc3" style="right:24px;top:118px">PO · <b>PO-4471</b> — from the header</span>' +
+            '<span class="xchip" id="xc4" style="left:150px;top:236px">line 2 · <b>800 × $21.00</b></span>' +
+            '<span class="xchip" id="xc5" style="right:24px;bottom:64px">total · <b>$16,920.00</b></span>' +
+          '</div>' +
+        '</div></div>' +
+      '<div class="gm-counter" id="gmCounter">3 / 3 invoices read ✓</div>' +
+    '</div>' +
+  '</div>';
+};
+
+/* ----- NetSuite ----- */
+builders.netsuite = function(){
+  return '' +
+  '<div class="ns">' +
+    '<div class="ns-head">' +
+      '<span class="ns-word"><b>Oracle</b><span>NetSuite</span></span>' +
+      '<span class="ns-search"><input id="nsSearch" readonly placeholder=""><span class="go">Go ▸</span></span>' +
+      '<span class="ns-user">Nova Integration ▾</span>' +
+    '</div>' +
+    '<div class="ns-tabs"><span class="ns-tab on">Home</span><span class="ns-tab">Reports</span><span class="ns-tab">Documents</span><span class="ns-tab">Transactions</span><span class="ns-tab">Lists</span><span class="ns-tab">Vendors</span><span class="ns-tab">Items</span><span class="ns-tab">Support</span></div>' +
+    '<div class="ns-body">' +
+      '<div class="ns-portlets" id="nsPortlets">' +
+        '<div class="ns-portlet"><div class="pl-h">Reminders</div><div class="pl-b"><div class="ns-skel" style="width:70%"></div><div class="ns-skel" style="width:55%"></div><div class="ns-skel" style="width:62%"></div><div class="ns-skel" style="width:40%"></div></div></div>' +
+        '<div class="ns-portlet"><div class="pl-h">Recent Records</div><div class="pl-b"><div class="ns-skel" style="width:60%"></div><div class="ns-skel" style="width:48%"></div><div class="ns-skel" style="width:66%"></div></div></div>' +
+      '</div>' +
+      '<div class="ns-searching" id="nsSearching"><div class="spinbox"><span class="ns-spinner"></span>Searching: <b>PO-4471</b>…</div></div>' +
+      '<div class="ns-rec" id="nsRec">' +
+        '<div class="ns-rec-h"><span class="ns-rec-t">Purchase Order <b id="nsPoNo">#4471</b></span><span class="ns-status">PENDING BILLING</span><span class="ns-btnrow"><span class="ns-btn">Edit</span><span class="ns-btn">Print</span><span class="ns-btn">Email</span><span class="ns-btn">Actions ▾</span></span></div>' +
+        '<div class="ns-fields">' +
+          '<div class="ns-f"><div class="l">Vendor</div><div class="v link">Northwind Traders Ltd</div></div>' +
+          '<div class="ns-f"><div class="l">Date</div><div class="v">Aug 4, 2026</div></div>' +
+          '<div class="ns-f"><div class="l">Terms</div><div class="v">NET-30</div></div>' +
+          '<div class="ns-f"><div class="l">PO Number</div><div class="v" id="nsPoField"><b>PO-4471</b></div></div>' +
+          '<div class="ns-f"><div class="l">Memo</div><div class="v">NX-5 restock — Q3</div></div>' +
+          '<div class="ns-f"><div class="l">Amount</div><div class="v"><b>14,520.00</b> — per contract</div></div>' +
+        '</div>' +
+        '<div class="ns-subtabs"><span class="ns-st on">Items</span><span class="ns-st">Shipping</span><span class="ns-st">Billing</span><span class="ns-st">Related Records</span></div>' +
+        '<div class="ns-tabbody">' +
+          '<table class="ns-table"><tr><th style="width:34px">Line</th><th>Item</th><th style="width:60px">Qty</th><th style="width:80px">Rate</th><th style="width:90px">Amount</th></tr>' +
+            '<tr><td>1</td><td>Freight &amp; handling</td><td>—</td><td>120.00</td><td>120.00</td></tr>' +
+            '<tr id="nsLine2"><td>2</td><td>NX-5 industrial filters</td><td>800</td><td>18.00</td><td>14,400.00</td></tr></table>' +
+          '<div class="ns-rel" id="nsRel"><div class="rh">RELATED RECORDS — RECEIPTS</div>' +
+            '<div class="rr"><span class="grn">Item Receipt #GRN-990</span><span>Qty received: <b>800 / 800</b></span><span class="ns-ok">✓ received in full</span><span style="margin-left:auto;color:#666">Aug 8 · signed J. Okoro</span></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="callout" id="nsCallout" style="left:34px;bottom:26px">PO number came from the <b>invoice header</b> — Dana’s lesson, now a fixed step.<br>No searching by vendor name. No guessing.</div>' +
+    '</div>' +
+  '</div>';
+};
+
+/* ----- Google Drive ----- */
+builders.drive = function(){
+  return '' +
+  '<div class="gd">' +
+    '<div class="gd-top">' +
+      '<span class="gd-logo"><svg viewBox="0 0 24 24"><path fill="#188038" d="M8.3 2h7.4L22 12.4l-3.2 5.6H11L8.3 2z" opacity="0"/><path fill="#188038" d="M15.7 2H8.3l6.9 12 3.6-6.2L15.7 2z"/><path fill="#1967d2" d="M8.3 2 1.4 14l3.6 6.2L12 8.2 8.3 2z"/><path fill="#f9ab00" d="M5 20.2h13.8l3.2-5.6H8.2L5 20.2z"/></svg>Drive</span>' +
+      '<span class="gd-search"><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search in Drive</span>' +
+      '<span style="margin-left:auto" class="gm-ava">D</span>' +
+    '</div>' +
+    '<div class="gd-main">' +
+      '<div class="gd-nav">' +
+        '<div class="gd-new"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#1a73e8" stroke-width="2.4" stroke-linecap="round"/></svg>New</div>' +
+        '<div class="gd-ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</div>' +
+        '<div class="gd-ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>My Drive</div>' +
+        '<div class="gd-ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Recent</div>' +
+      '</div>' +
+      '<div class="gd-files">' +
+        '<div class="gd-crumb">My Drive <span class="sep">›</span> Contracts <span class="sep">›</span> <b>Northwind Traders</b></div>' +
+        '<div class="gd-row" id="gdFile"><span class="fic">PDF</span><span class="fn">MSA — Northwind Traders (signed).pdf</span><span class="fm">Jan 2025 · 1.2 MB</span></div>' +
+        '<div class="gd-row old"><span class="fic" style="background:#9aa0a6">PDF</span><span class="fn">MSA — Northwind Traders v2 (superseded).pdf<span class="oldtag">superseded</span></span><span class="fm">Jun 2024 · 1.1 MB</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="gd-view" id="gdView"><div class="gd-frame">' +
+          '<div class="pdf-bar"><svg width="13" height="16" viewBox="0 0 24 24" fill="#e8e6e3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6" fill="#323639"/></svg>MSA — Northwind Traders (signed).pdf<span class="x">✕</span></div>' +
+          '<div class="gd-doc" id="gdDoc">' +
+            '<div class="doc-h1">MASTER SERVICES AGREEMENT</div>' +
+            '<div class="doc-h2">Northwind Traders Ltd × Your Company Ltd — executed Jan 14, 2025</div>' +
+            '<div class="doc-rule"></div>' +
+            '<div class="doc-sec">APPENDIX B — RATE CARD</div>' +
+            '<div class="doc-p">§4.1 Rates in this Appendix replace all prior schedules.<br><b>§4.2</b> The rates below are fixed through <b>December 31, 2026</b>; any change requires a signed amendment by both parties.</div>' +
+            '<table class="doc-table"><tr><th>Item</th><th>Rate</th><th>Notes</th></tr>' +
+              '<tr id="rateRow"><td>NX-5 industrial filters</td><td><b>$18.00 / unit</b></td><td>volume tier ≥ 500 units</td></tr>' +
+              '<tr><td>Freight &amp; handling</td><td>$120.00 / delivery</td><td>—</td></tr></table>' +
+            '<div class="doc-sig"><span class="sig">D. Whitmore — Northwind Traders Ltd</span><span class="sig">R. Aldis — Your Company Ltd</span></div>' +
+            '<span class="mark-pin" id="ratePin" style="top:236px">§4.2 — rate fixed through Dec 2026</span>' +
+          '</div>' +
+        '</div></div>' +
+    '<div class="callout" id="gdCallout" style="right:26px;bottom:24px">Rates live in the <b>signed contract</b> — Appendix B, always.<br>The superseded v2 stays ignored.</div>' +
+  '</div>';
+};
+
+/* ----- Nova match view ----- */
+builders.match = function(){
+  return '' +
+  '<div class="nv">' +
+    '<div class="nv-head"><span class="t">Three-way match</span><span class="m">invoice.exceptions · v3 · run #1,842</span><span class="ours">Nova’s working view — not a customer system</span></div>' +
+    '<div class="nv-grid"><div style="width:100%;max-width:780px">' +
+      '<table class="match-t" id="matchT">' +
+        '<tr><th style="width:120px"></th><th>Invoice<span class="sub">INV-10422 · Gmail PDF</span></th><th>Purchase order<span class="sub">PO-4471 · NetSuite</span></th><th>Goods receipt<span class="sub">GRN-990 · NetSuite</span></th><th>Contract<span class="sub">MSA · Appendix B §4.2</span></th></tr>' +
+        '<tr><td class="fld" style="opacity:1;transform:none">item</td><td data-c>NX-5 filters</td><td data-c>NX-5 filters</td><td data-c>NX-5 filters</td><td data-c>NX-5 filters</td></tr>' +
+        '<tr><td class="fld" style="opacity:1;transform:none">quantity</td><td data-c data-q>800</td><td data-c data-q>800</td><td data-c data-q>800 received</td><td data-c class="dimcell">—</td></tr>' +
+        '<tr><td class="fld" style="opacity:1;transform:none">unit rate</td><td data-c data-r="bad">$21.00</td><td data-c data-r>$18.00</td><td data-c class="dimcell">—</td><td data-c data-r>$18.00</td></tr>' +
+        '<tr><td class="fld" style="opacity:1;transform:none">line total</td><td data-c data-r="bad">$16,800.00</td><td data-c data-r>$14,400.00</td><td data-c class="dimcell">—</td><td data-c data-r>$14,400.00</td></tr>' +
+      '</table>' +
+      '<div class="nv-verdict" id="nvVerdict">Quantities tie out. The rate doesn’t.<span class="vchip">mismatch · $2,400.00 over contract</span></div>' +
+    '</div></div>' +
+  '</div>';
+};
+
+/* ----- Slack ----- */
+builders.slack = function(){
+  return '' +
+  '<div class="slack">' +
+    '<div class="slack-top"><span class="st-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search Mouline</span></div>' +
+    '<div class="slack-bar"><span class="star">☆</span><span class="ch"><span class="hash">#</span>accounts-payable</span><span class="runmeta"><span style="width:6px;height:6px;border-radius:50%;background:#2eb67d;display:inline-block"></span> morning run · <b>recipe v3</b></span></div>' +
+    '<div class="thread" id="slThread">' +
+      '<div class="msg" data-m="0"><div class="av nova">N</div><div>' +
+        '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:04 AM</span></div>' +
+        '<div class="body-txt">Morning. The AP inbox is cleared — <b>3 invoices</b> processed against POs, receipts and contracts.' +
+          '<div class="apcard"><h4>AP inbox cleared — 3 invoices</h4>' +
+            '<div class="ln"><span class="ic">✅</span><b>Acme Office Supply</b> · INV-8831 · $980.00 — matched PO-4388 + receipt</div>' +
+            '<div class="ln"><span class="ic">✅</span><b>Brightline Logistics</b> · INV-5520 · $6,120.00 — matched PO-4402 + receipt</div>' +
+            '<div class="ln" style="margin-top:5px"><span class="ic">⚠️</span><b>Northwind Traders</b> · INV-10422 · $16,920.00 — <b>1 exception</b></div>' +
+            '<div class="meta"><span>recipe: invoice.exceptions · v3</span><span>7 min</span><span>4 systems</span></div>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>' +
+      '<div class="msg" data-m="1"><div class="av nova">N</div><div>' +
+        '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:04 AM</span></div>' +
+        '<div class="body-txt">' +
+          '<div class="apcard"><h4>Exception — INV-10422 · Northwind Traders</h4>' +
+            '<div class="kv"><span class="k">line 2 billed</span><span class="v">800 × <b>$21.00</b> = $16,800.00</span></div>' +
+            '<div class="kv"><span class="k">contract rate</span><span class="v">800 × <b>$18.00</b> — MSA, Appendix B §4.2 (fixed through Dec 2026)</span></div>' +
+            '<div class="kv"><span class="k">difference</span><span class="v"><span class="over">$2,400.00 over contract</span></span></div>' +
+            '<div class="verdictline">No approved rate change on file → classified: <b>billing error</b>, not a new rate.</div>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>' +
+      '<div class="msg" data-m="2"><div class="av nova">N</div><div>' +
+        '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:05 AM</span></div>' +
+        '<div class="body-txt">Everything is staged. Nothing leaves until you approve.' +
+          '<div class="draftnote"><div class="dn-h"><span>draft — to billing@northwindtraders.example</span><span>clause quoted</span></div>' +
+            '<div class="dn-b">“Hello — invoice INV-10422 (PO-4471) line 2 bills NX-5 filters at $21.00/unit. Our signed agreement, Appendix B §4.2, fixes the rate at $18.00/unit — a difference of $2,400.00 on 800 units. Please reissue at the contracted rate or send the signed rate-change amendment. The bill is on hold in the meantime.”</div></div>' +
+          '<div class="gate" id="slGate">' +
+            '<span class="lock"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a6e15" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>' +
+            '<span class="gtxt"><b>2 clean bills → payment queue</b> · <b>exception note → vendor</b><br><span class="scope-pill w">write · queued send</span><span class="scope-pill r">netsuite · hold only</span></span>' +
+            '<button class="approve" id="slApprove">Approve all &amp; send</button>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>' +
+      '<div class="msg" data-m="3"><div class="av human">D</div><div>' +
+        '<div class="who"><span class="name">Dana (AP lead)</span><span class="ts">8:05 AM</span></div>' +
+        '<div class="body-txt">Approved — send it. Good catch on the rate. <span style="color:var(--s-green)">✓</span>' +
+          '<div class="resolved">Done <span class="badge">inbox zero</span><span class="badge">7 min</span><span class="badge">$2,400 held</span><span class="badge">recipe v3</span></div>' +
+        '</div>' +
+      '</div></div>' +
+    '</div>' +
+    '<div class="waity" id="slWait">waiting on Dana — the human gate</div>' +
+  '</div>';
+};
+
+/* ================= SCENE PLAYERS ================= */
+function showMsg(root, sel){ var el = $(sel, root); if(el){ el.classList.add('in'); var th = $('#slThread', root); if(th) th.scrollTo({top:th.scrollHeight, behavior:'smooth'}); } }
+
+players.gmail = async function(root){
+  if(reduced){
+    $all('.gm-row', root).forEach(function(r){ r.classList.add('in'); });
+    $('#gmR1', root).classList.add('sel');
+    $('#pdfView', root).classList.add('on');
+    $all('.xchip', root).forEach(function(c){ c.classList.add('in'); });
+    $('#gmCounter', root).classList.add('in');
+    return;
+  }
+  var rows = $all('.gm-row', root);
+  for(var i=0;i<rows.length;i++){ rows[i].classList.add('in'); if(!await wait(420)) return; }
+  if(!await wait(500)) return;
+  cursorShow('Nova');
+  if(!await cursorTo($('#gmR1', root))) return;
+  $('#gmR1', root).classList.add('sel');
+  if(!await wait(700)) return;
+  if(!await cursorTo($('#gmAtt', root))) return;
+  $('#pdfView', root).classList.add('on');
+  if(!await wait(900)) return;
+  cursorHide();
+  var chips = ['#xc1','#xc2','#xc3','#xc4','#xc5'];
+  for(var c=0;c<chips.length;c++){ $(chips[c], root).classList.add('in'); if(!await wait(750)) return; }
+  $('#gmCounter', root).classList.add('in');
+  if(!await wait(1600)) return;
+};
+
+players.netsuite = async function(root){
+  var input = $('#nsSearch', root);
+  if(reduced){
+    input.value = 'PO-4471';
+    $('#nsPortlets', root).classList.add('gone');
+    $('#nsRec', root).classList.add('on');
+    $('#nsLine2', root).classList.add('hot');
+    $('#nsCallout', root).classList.add('in');
+    return;
+  }
+  if(!await wait(500)) return;
+  cursorShow('Nova');
+  if(!await cursorTo($('.ns-search', root))) return;
+  var q = 'PO-4471';
+  for(var i=0;i<q.length;i++){ input.value = q.slice(0,i+1); if(!await wait(90)) return; }
+  if(!await wait(350)) return;
+  cursorHide();
+  $('#nsSearching', root).classList.add('on');
+  if(!await wait(950)) return;
+  $('#nsSearching', root).classList.remove('on');
+  $('#nsPortlets', root).classList.add('gone');
+  $('#nsRec', root).classList.add('on');
+  if(!await wait(700)) return;
+  cursorShow('Nova');
+  if(!await cursorTo($('#nsPoField', root))) return;
+  $('#nsCallout', root).classList.add('in');
+  if(!await wait(1400)) return;
+  if(!await cursorTo($('#nsLine2', root))) return;
+  $('#nsLine2', root).classList.add('hot');
+  if(!await wait(1100)) return;
+  if(!await cursorTo($('#nsRel .grn', root))) return;
+  if(!await wait(1300)) return;
+  cursorHide();
+};
+
+players.drive = async function(root){
+  if(reduced){
+    $('#gdView', root).classList.add('on');
+    $('#rateRow', root).classList.add('ratehot');
+    $('#ratePin', root).classList.add('in');
+    $('#gdCallout', root).classList.add('in');
+    return;
+  }
+  if(!await wait(600)) return;
+  cursorShow('Nova');
+  if(!await cursorTo($('#gdFile', root))) return;
+  $('#gdView', root).classList.add('on');
+  if(!await wait(1000)) return;
+  if(!await cursorTo($('#rateRow', root))) return;
+  $('#rateRow', root).classList.add('ratehot');
+  if(!await wait(900)) return;
+  $('#ratePin', root).classList.add('in');
+  cursorHide();
+  $('#gdCallout', root).classList.add('in');
+  if(!await wait(1800)) return;
+};
+
+players.match = async function(root){
+  var cells = $all('[data-c]', root);
+  if(reduced){
+    cells.forEach(function(c){ c.classList.add('fill'); });
+    $all('[data-q]', root).forEach(function(c){ c.classList.add('ok'); });
+    $all('[data-r]', root).forEach(function(c){ c.classList.add(c.getAttribute('data-r')==='bad' ? 'bad' : 'ok'); });
+    $('#nvVerdict', root).classList.add('in');
+    return;
+  }
+  /* fill column by column: invoice, PO, receipt, contract */
+  var cols = [ [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15] ];
+  for(var col=0; col<4; col++){
+    for(var k=0;k<cols[col].length;k++){ cells[cols[col][k]].classList.add('fill'); }
+    if(!await wait(650)) return;
+  }
+  if(!await wait(300)) return;
+  $all('[data-q]', root).forEach(function(c){ c.classList.add('ok'); });
+  if(!await wait(800)) return;
+  $all('[data-r]', root).forEach(function(c){ c.classList.add(c.getAttribute('data-r')==='bad' ? 'bad' : 'ok'); });
+  if(!await wait(700)) return;
+  $('#nvVerdict', root).classList.add('in');
+  if(!await wait(2100)) return;
+};
+
+players.slack = async function(root){
+  var msgs = ['[data-m="0"]','[data-m="1"]','[data-m="2"]','[data-m="3"]'];
+  if(reduced){
+    msgs.forEach(function(s){ showMsg(root, s); });
+    var btn = $('#slApprove', root); btn.classList.add('done'); btn.textContent = 'Approved by Dana · 8:05 AM ✓'; btn.disabled = true;
+    return;
+  }
+  if(!await wait(500)) return;
+  showMsg(root, msgs[0]);
+  if(!await wait(1900)) return;
+  showMsg(root, msgs[1]);
+  if(!await wait(2200)) return;
+  showMsg(root, msgs[2]);
+  var btn = $('#slApprove', root), userClicked = false;
+  btn.addEventListener('click', function(){ userClicked = true; track('demo_gate_click',{}); });
+  if(!await wait(2400)) return;
+  /* the handoff: Nova steps back, Dana decides */
+  novaPill.classList.add('idle');
+  novaPillTxt.textContent = 'Nova is waiting on the human gate';
+  $('#slWait', root).classList.add('in');
+  railSet(4, 'done'); railSet(5, 'active');
+  if(!await wait(1700)) return;
+  $('#slWait', root).classList.remove('in');
+  if(!userClicked){
+    cursorShow('Dana');
+    if(!await cursorTo(btn)) return;
+    btn.classList.add('press');
+    if(!await wait(260)) return;
+    btn.classList.remove('press');
+  }
+  btn.classList.add('done'); btn.textContent = 'Approved by Dana · 8:05 AM ✓'; btn.disabled = true;
+  cursorHide();
+  if(!await wait(700)) return;
+  showMsg(root, msgs[3]);
+  if(!await wait(2600)) return;
+};
+
+/* ================= orchestration ================= */
+async function startFrom(i){
+  newCtl();
+  var gen = ctl.gen;
+  closing.classList.remove('on');
+  /* when jumping mid-run, mark earlier scenes done */
+  railReset(); dotsReset();
+  for(var p=0;p<i;p++){ railSet(p,'done'); dots[p].classList.add('done'); }
+  if(i===0) track('demo_play',{from:0});
+  for(var s=i; s<SCENE_META.length; s++){
+    if(ctl.gen!==gen) return;
+    var m = SCENE_META[s];
+    showScene(s);
+    railSet(m.rail, 'active');
+    track('demo_scene',{scene:m.id});
+    await players[m.id](sceneEls[m.id]);
+    if(ctl.gen!==gen) return;
+    rsteps[m.rail].classList.remove('active'); rsteps[m.rail].classList.add('done');
+    if(m.id==='slack'){ rsteps[5].classList.remove('active'); rsteps[5].classList.add('done'); }
+    if(s < SCENE_META.length-1){ if(!await wait(700)) return; }
+  }
+  if(ctl.gen!==gen) return;
+  novaPill.classList.add('idle');
+  novaPillTxt.textContent = 'run complete';
+  dots.forEach(function(d){ d.classList.add('done'); });
+  closing.classList.add('on');
+  track('demo_complete',{});
+}
+
+function renderStatic(){
+  /* reduced motion: all scenes in final state, clickable via dots */
+  newCtl();
+  closing.classList.remove('on');
+  railReset(); dotsReset();
+  rsteps.forEach(function(r){ r.classList.add('done'); });
+  var i = 0;
+  function showFinal(j){
+    i = j;
+    SCENE_META.forEach(function(mm){ sceneEls[mm.id].classList.remove('on'); });
+    var m = SCENE_META[j];
+    sceneEls[m.id].innerHTML = builders[m.id]();
+    sceneEls[m.id].classList.add('on');
+    urlText.textContent = m.url; capText.textContent = m.cap; capSys.textContent = m.sys;
+    novaPillTxt.textContent = m.pill;
+    players[m.id](sceneEls[m.id]);
+    dots.forEach(function(d,k){ d.classList.toggle('on', k===j); d.classList.add('done'); });
+  }
+  dots.forEach(function(d){ d.replaceWith(d.cloneNode(true)); });
+  $all('.dot-btn').forEach(function(d,j){ d.addEventListener('click', function(){ showFinal(j); }); });
+  dots = $all('.dot-btn');
+  showFinal(0);
+  playBtn.textContent = '▶ Step through the run';
+  playBtn.addEventListener('click', function(){ showFinal(Math.min(i+1, SCENE_META.length-1)); document.getElementById('stage').scrollIntoView({behavior:'auto',block:'center'}); });
+  pauseBtn.style.display = 'none';
+  document.getElementById('replayBtn').addEventListener('click', function(){ showFinal(0); });
+  document.getElementById('replayBtn2').addEventListener('click', function(){ showFinal(0); });
+}
+
+/* ---------- controls ---------- */
+pauseBtn.addEventListener('click', function(){
+  ctl.paused = !ctl.paused;
+  pauseBtn.textContent = ctl.paused ? '▶ Resume' : '❚❚ Pause';
+});
+document.getElementById('replayBtn').addEventListener('click', function(){ startFrom(0); });
+document.getElementById('replayBtn2').addEventListener('click', function(){ startFrom(0); });
+playBtn.addEventListener('click', function(){
+  if(reduced) return; /* handled in renderStatic */
+  document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'center'});
+  startFrom(0);
+});
+
+/* ---------- boot ---------- */
+if(reduced){
+  renderStatic();
+} else {
+  /* pre-render the first scene in a static pre-state so the window isn't empty */
+  showScene(0);
+  $all('.gm-row', sceneEls.gmail).forEach(function(r){ r.classList.add('in'); });
+  $('#gmR1', sceneEls.gmail).classList.add('sel');
+
+  var played = false;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && !played){ played = true; io.disconnect(); startFrom(0); }
+    });
+  }, {threshold:.35});
+  io.observe(document.getElementById('stage'));
+}
+})();
+</script>
+
+<script>
+/* ---- recipe-forming widget (moved from the landing §05) ---- */
+(function(){
+  var wrap = document.getElementById('hardenWrap');
+  if(!wrap) return;
+  function l(n,lbl,note,tag,cls){
+    return '<div class="rline'+(cls?' '+cls:'')+'">'
+      + (cls==='add' ? '<span class="op">+</span>' : '<span class="ln">'+n+'</span>')
+      + '<span class="lbl">'+lbl+'</span><span class="note">'+note+'</span>'
+      + (tag ? '<span class="tag '+tag+'">'+(tag==='model'?'◆ judgment':tag==='fixed'?'fixed':'human gate')+'</span>' : '')
+      + '</div>';
+  }
+  function human(who,say){
+    return '<div class="rline human"><span class="who-h">'+who+'</span><span class="say">'+say+'</span></div>';
+  }
+  var STAGE_META = [
+    { ver:'run 1 · improvising', acc:'#9a6e15' },
+    { ver:'run 2 · being taught', acc:'#2f6f9e' },
+    { ver:'v1 · first recipe', acc:'#3c7a45' },
+    { ver:'v3 · pinned — runs the same every time', acc:'#1c1a16' }
+  ];
+  var SCENARIOS = [
+    { file:'invoice.exceptions', stages:[
+      { foot:'Day one, Nova does the whole job — but every step is her own choice. Slow, exploratory, and all of it visible in the AP channel.',
+        body: l('1','read the invoice','PDF from the AP inbox — every vendor formats it differently','model')
+            + l('2','hunt for the PO','searching NetSuite by vendor name — slow','model')
+            + l('3','find the contract','picked v2 — the outdated one','model')
+            + l('4','flag a mismatch','can’t say if it’s an error or a new rate','model')
+            + l('5','draft a hold note','held for review','model') },
+      { foot:'Early on, a person signs off everything. Each edit isn’t just a correction — <b>it’s a lesson with a name attached</b>.',
+        body: l('1','hunt for the PO','by vendor name again — 20 minutes','model')
+            + human('Dana (AP lead)','“Match on the PO number in the invoice header — and rates live in the signed contract, Appendix B.”')
+            + l('2','pull the PO by number','there it is','model')
+            + l('3','rate from Appendix B','$18/unit — the invoice says $21','model')
+            + l('4','draft exception note','held for Dana’s sign-off','model')
+            + human('Dana','approved · sent to the vendor with the clause quoted ✓') },
+      { foot:'The proven path compiles into a recipe: <b>fixed steps where the route is known</b>, judgment kept only where it’s genuinely needed.',
+        body: l('1','read the invoice','every vendor formats it differently','model','add')
+            + l('2','pull the PO by its number','Dana’s edit — no more guessing','fixed','add')
+            + l('3','rate from Appendix B','the signed contract, always','fixed','add')
+            + l('4','three-way match','invoice · PO · goods receipt','fixed','add')
+            + l('5','classify the mismatch','approved rate change, or billing error?','model','add') },
+      { foot:'<b>v3 clears the AP inbox every morning</b> — clean invoices queued, the one mismatch escalated with the exact line and the clause that disagrees. Last month: a line billed $2,400 over contract, caught.',
+        body: l('1','read the invoice','every vendor formats it differently','model')
+            + l('2','pull the PO by its number','Dana’s edit — no more guessing','fixed')
+            + l('3','rate from Appendix B','the signed contract, always','fixed')
+            + l('4','three-way match','invoice · PO · goods receipt','fixed')
+            + l('5','classify the mismatch','approved rate change, or billing error?','model')
+            + l('G','a person approves','before anything is queued for payment','always','gated') }
+    ]},
+    { file:'ledger.reconcile', stages:[
+      { foot:'Day one, Nova runs the whole close check — but improvises the method, and totals hide what transactions reveal.',
+        body: l('1','pull Stripe payouts','the month’s payments','model')
+            + l('2','pull the ledger','NetSuite, same period','model')
+            + l('3','match the totals','totals, not transactions — a gap hides','model')
+            + l('4','list what’s off','$4,112 unexplained','model')
+            + l('5','draft a summary','“something doesn’t tie out”','model') },
+      { foot:'Early on, a person signs off everything. Each edit isn’t just a correction — <b>it’s a lesson with a name attached</b>.',
+        body: l('1','match the totals','still $4,112 off','model')
+            + human('Maya (accountant)','“Match transaction-by-transaction — and pull the bank feed too, payouts straddle months.”')
+            + l('2','match one-by-one','three orphans found','model')
+            + l('3','check the bank feed','one payout lands next month','model')
+            + human('Maya','approved · two entries drafted, one explained ✓') },
+      { foot:'The proven path compiles into a recipe: <b>fixed steps where the route is known</b>, judgment kept only where it’s genuinely needed.',
+        body: l('1','pull all three sides','Stripe · ledger · bank feed','fixed','add')
+            + l('2','match one-by-one','every transaction, both directions','fixed','add')
+            + l('3','classify each orphan','refund never booked? straddling payout? FX rounding?','model','add')
+            + l('4','draft the journal entry','the fix, ready to post','fixed','add') },
+      { foot:'<b>The tie-out that ate a day of month-end takes an hour</b> — and only entries a person approves are posted.',
+        body: l('1','pull all three sides','Stripe · ledger · bank feed','fixed')
+            + l('2','match one-by-one','every transaction, both directions','fixed')
+            + l('3','classify each orphan','refund never booked? straddling payout? FX rounding?','model')
+            + l('4','draft the journal entry','the fix, ready to post','fixed')
+            + l('G','the accountant posts it','Nova never writes to the ledger','always','gated') }
+    ]}
+  ];
+  var tabs = Array.prototype.slice.call(wrap.querySelectorAll('#loopTabs .loop-step'));
+  var fileTabs = Array.prototype.slice.call(wrap.querySelectorAll('.rv-tab'));
+  var body = document.getElementById('rvBody');
+  var ver = document.getElementById('rvVer');
+  var foot = document.getElementById('rvFoot');
+  var scen = 0, idx = 0, auto = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches), visible = false, hover = false;
+  function render(si,i){
+    scen = si; idx = i;
+    var m = STAGE_META[i], s = SCENARIOS[si].stages[i];
+    wrap.style.setProperty('--acc', m.acc);
+    tabs.forEach(function(t,j){
+      t.classList.toggle('on', j===i);
+      t.setAttribute('aria-selected', j===i ? 'true' : 'false');
+      var p = t.querySelector('.ls-prog');
+      p.classList.remove('run');
+      if(j===i && auto){ void p.offsetWidth; p.classList.add('run'); }
+    });
+    fileTabs.forEach(function(t,j){
+      t.classList.toggle('on', j===si);
+      t.setAttribute('aria-selected', j===si ? 'true' : 'false');
+    });
+    ver.textContent = m.ver;
+    body.innerHTML = s.body;
+    Array.prototype.forEach.call(body.children, function(el,j){ el.style.animationDelay = (j*70)+'ms'; });
+    foot.innerHTML = s.foot;
+  }
+  tabs.forEach(function(t,i){ t.addEventListener('click', function(){ auto = false; render(scen, i); }); });
+  fileTabs.forEach(function(t,i){ t.addEventListener('click', function(){ auto = false; render(i, idx); }); });
+  wrap.addEventListener('mouseenter', function(){ hover = true; });
+  wrap.addEventListener('mouseleave', function(){ hover = false; });
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){ es.forEach(function(e){ visible = e.isIntersecting; }); },{threshold:.25}).observe(wrap);
+  } else { visible = true; }
+  setInterval(function(){
+    if(auto && visible && !hover){
+      var ni = idx + 1, ns = scen;
+      if(ni >= STAGE_META.length){ ni = 0; ns = (scen + 1) % SCENARIOS.length; }
+      render(ns, ni);
+    }
+  }, 7000);
+  render(0,0);
+})();
+</script>
+</body>
+</html>

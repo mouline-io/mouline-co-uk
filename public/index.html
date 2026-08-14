@@ -178,20 +178,17 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .thesis-body p:last-child{margin-bottom:0}
 .thesis-body p b{color:var(--ink)}
 
-/* loop / how it works */
-.loop{display:grid;gap:18px;grid-template-columns:1fr}
-@media(min-width:720px){.loop{grid-template-columns:repeat(4,1fr)}}
-.loop-step{position:relative;padding:22px 20px 24px;background:var(--card);border:1px solid var(--rule);border-radius:8px}
-.loop-step .n{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
-.loop-step h3{font-size:21px;margin:10px 0 8px}
-.loop-step p{font-size:14.5px;color:var(--ink-soft);margin:0}
-.loop-step .arrow{display:none}
-@media(min-width:720px){
-  .loop-step .arrow{display:block;position:absolute;left:100%;top:50%;margin-left:9px;transform:translate(-50%,-50%);z-index:2;color:var(--red);font-size:24px;line-height:1}
-  .loop-step:last-child .arrow{display:none}
-}
 .loop-foot{margin-top:30px;font-family:var(--serif);font-size:clamp(19px,2.6vw,25px);line-height:1.3;letter-spacing:-0.01em;text-align:center;color:var(--ink)}
 .loop-foot em{font-style:italic;color:var(--red)}
+
+/* demo CTA (section 04) */
+.rv-cta{display:flex;align-items:center;justify-content:space-between;gap:26px;margin-top:30px;background:var(--card);border:1px solid var(--rule-strong);border-left:3px solid var(--red);border-radius:0 10px 10px 0;padding:20px 24px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 20px 44px -30px rgba(40,30,10,.3)}
+.rv-cta-txt{font-size:15px;color:var(--ink-soft);max-width:58ch}
+.rv-cta-txt b{color:var(--ink)}
+.rv-cta-kick{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--red);text-transform:uppercase;font-weight:500;margin-bottom:6px}
+.btn.demo{background:transparent;color:var(--red);border-color:var(--red);flex:none}
+.btn.demo:hover{background:var(--red);color:var(--paper);transform:none}
+@media(max-width:760px){.rv-cta{flex-direction:column;align-items:flex-start;gap:16px}}
 
 /* use-case cards */
 .cases{display:grid;gap:16px;grid-template-columns:1fr}
@@ -206,7 +203,8 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .fdemo{display:grid;grid-template-columns:1fr;background:var(--card);border:1px solid var(--rule-strong);border-radius:12px;overflow:hidden;margin:0 0 44px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 48px -28px rgba(40,30,10,.3)}
 @media(min-width:920px){.fdemo{grid-template-columns:316px 1fr}}
 .fs-list{display:flex;flex-direction:column;border-bottom:1px solid var(--rule);background:var(--card)}
-@media(min-width:920px){.fs-list{border-bottom:none;border-right:1px solid var(--rule)}}
+@media(min-width:920px){.fs-list{border-bottom:none;border-right:1px solid var(--rule)}
+  .fs-row{flex:1 1 auto;align-items:center}}
 .fs-row{position:relative;display:flex;gap:13px;align-items:baseline;text-align:left;background:transparent;border:none;border-top:1px solid var(--rule);padding:15px 18px 16px;cursor:pointer;font-family:var(--sans)}
 .fs-row:first-child{border-top:none}
 .fs-num{font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex:none}
@@ -371,7 +369,7 @@ footer .meta a{color:var(--ink-soft)}
       <p class="dek"><b>Nova is an AI agent that does the work — not just advises on it.</b> It puts the most capable AI models to work inside the workflows your team already runs, does the job alongside your people under their review, and gets more capable and more predictable the more it does it.</p>
       <div class="cta-row">
         <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
-        <a class="btn ghost big" href="#next-steps">See a 5-min walkthrough ↓</a>
+        <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
       </div>
       <div class="ship-note">
         <b>Stood up in about a week.</b> Nova runs in a dedicated, fully isolated cloud environment — the infrastructure is ready in about a week, and Nova starts working the moment your first system is connected.
@@ -402,7 +400,7 @@ footer .meta a{color:var(--ink-soft)}
             <div class="av nova">N</div>
             <div>
               <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:02 AM</span></div>
-              <div class="body-txt">I've got this. Opening a dedicated thread and running the proven recipe. <code>recipe: pipeline.triage · v3</code></div>
+              <div class="body-txt">On it. Running the proven recipe. <code>recipe: pipeline.triage · v3</code></div>
             </div>
           </div>
 
@@ -411,7 +409,7 @@ footer .meta a{color:var(--ink-soft)}
             <div>
               <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:03 AM</span></div>
               <div class="body-txt">
-                The digging, done in minutes. Every step is visible here.
+                The digging, done in minutes. Every step visible:
                 <div class="steps" id="steps">
                   <div class="step" data-s="a"><span class="mark"></span><span class="lbl">Scope — which source &amp; pipeline stage</span><span class="kind model">◆ model</span></div>
                   <div class="step" data-s="b"><span class="mark"></span><span class="lbl">Read context — 4 systems, in parallel</span><span class="kind">fixed</span></div>
@@ -435,7 +433,7 @@ footer .meta a{color:var(--ink-soft)}
               <div class="body-txt">
                 <div class="rca">
                   <h4>Root cause — upstream contract change</h4>
-                  <p>A third-party provider quietly renamed the <code>revenue</code> field in yesterday's release. The mapping fell through and the downstream metric zeroed out. An edge case no runbook covered.</p>
+                  <p>A provider renamed the <code>revenue</code> field in yesterday's release. The mapping fell through and the metric zeroed out. No runbook covered it.</p>
                   <div class="meta"><span>confidence 0.91</span><span>upstream change · 09:01</span><span>12m elapsed</span></div>
                 </div>
               </div>
@@ -447,7 +445,7 @@ footer .meta a{color:var(--ink-soft)}
             <div>
               <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:15 AM</span></div>
               <div class="body-txt">
-                Proposed fix is ready as a <b>draft PR</b>. I won't merge — that's yours.
+                Fix ready as a <b>draft PR</b>. Merging is yours.
                 <div class="gate" id="gate">
                   <span class="lock"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a6e15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
                   <span class="gtxt"><b>github</b> · draft PR <code>#392</code> — restore revenue mapping. <span class="scope-pill w">write · draft only</span></span>
@@ -467,7 +465,7 @@ footer .meta a{color:var(--ink-soft)}
           </div>
         </div>
       </div>
-      <figcaption><span>Where we proved it first: a production incident, replayed step by step — the same loop runs on invoices, reconciliations and approvals.</span></figcaption>
+      <figcaption><span>A production incident, replayed step by step. The same loop runs on invoices, reconciliations and approvals.</span></figcaption>
       <div class="replay"><button id="replayBtn">↺ Replay the incident</button> <span id="replayState"></span></div>
     </figure>
   </div>
@@ -502,28 +500,10 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- WHERE THIS SHOWS UP -->
-<section id="cases">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-num">03</span><h2>One engine, many kinds of work</h2></div>
-    <p class="lede" style="margin-bottom:36px">It's one engine, pointed at different work. Nova hardens each kind the same way — <b>only the systems and the output change</b>.</p>
-    <div class="fdemo" id="fdemo">
-      <div class="fs-list" id="fsList" role="tablist" aria-label="Pick a kind of work"></div>
-      <div class="fd-main">
-        <h3 class="fd-title" id="fdTitle"></h3>
-        <div class="fd-stage" id="fdStage"></div>
-        <p class="fd-desc" id="fdDesc"></p>
-        <div class="fd-sys" id="fdSys"></div>
-      </div>
-    </div>
-    <p class="deploy-foot">Engineering is where the loop proves itself first. The same engine reaches into the revenue- and cost-driving departments where a small automated win is worth the most — finance and accounts payable, accounting, sales operations. <b>You don't build a new tool for each.</b></p>
-  </div>
-</section>
-
 <!-- WHERE WE PROVED IT FIRST -->
 <section id="proof">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">04</span><h2>Where we proved it first</h2></div>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Where we proved it first</h2></div>
     <p class="lede" style="margin-bottom:22px">Any company that sells software has a team responsible for keeping it working. When a data feed stops or an overnight job fails, someone has to drop everything and work out what broke, where, and why — usually a <b>senior engineer</b>: the most experienced, most expensive, and most stretched person on the team.</p>
     <p class="lede" style="margin-bottom:48px">We pointed Nova at exactly this at our first customer. It picks up the alert, runs the investigation across every system involved, finds the cause, and writes up the fix for a person to approve. <b>An hour of expert digging becomes minutes</b> — and the routine cases stop reaching a human at all.</p>
     <div class="metrics">
@@ -538,21 +518,33 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW IT WORKS -->
 <section id="how">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">05</span><h2>How it works</h2></div>
-    <div class="loop">
-      <div class="loop-step reveal"><div class="n">01</div><h3>Does the work — day one</h3><p>At delivery, Nova picks up real tasks across your systems and produces a finished result, not just a suggestion — visible in Slack, MS Teams, Jira, GitHub or GitLab.<span class="arrow">→</span></p></div>
-      <div class="loop-step reveal"><div class="n">02</div><h3>Reviewed before it ships</h3><p>Early on, a person signs off her output before it reaches a customer or the ledger — like reviewing a new hire's work.<span class="arrow">→</span></p></div>
-      <div class="loop-step reveal"><div class="n">03</div><h3>Learns from corrections</h3><p>Each edit or approval teaches Nova the proven path — a versioned recipe: fixed steps, scoped tools, human-approved gates.<span class="arrow">→</span></p></div>
-      <div class="loop-step reveal"><div class="n">04</div><h3>Hardens into routine</h3><p>Cases she has handled many times run the same way every time — more predictable and more hands-off, freeing your people for the new and the ambiguous.<span class="arrow">↺</span></p></div>
+    <div class="sec-head"><span class="sec-num">04</span><h2>How it works</h2></div>
+    <p class="lede" style="margin-bottom:36px">It's one engine, pointed at different work. Nova hardens each kind the same way — <b>only the systems and the output change</b>.</p>
+    <div class="fdemo" id="fdemo">
+      <div class="fs-list" id="fsList" role="tablist" aria-label="Pick a kind of work"></div>
+      <div class="fd-main">
+        <h3 class="fd-title" id="fdTitle"></h3>
+        <div class="fd-stage" id="fdStage"></div>
+        <p class="fd-desc" id="fdDesc"></p>
+        <div class="fd-sys" id="fdSys"></div>
+      </div>
     </div>
-    <p class="loop-foot reveal">You never pick what to automate — whatever your team does often enough is what Nova gets better at. The recipes it builds are <em>yours</em>, and they compound across your company.</p>
+    <p class="deploy-foot">Engineering proves the loop first. The same engine runs in finance, accounting and sales ops, where a small automated win is worth the most. <b>You don't build a new tool for each one.</b></p>
+    <div class="rv-cta reveal">
+      <div class="rv-cta-txt">
+        <span class="rv-cta-kick">Live demo · 1 minute</span>
+        <b>Watch one run, end to end.</b> A morning of <span class="mono">invoice.exceptions · v3</span> inside Gmail, NetSuite, the contract store and Slack.
+      </div>
+      <a class="btn demo" href="demo-invoice-exceptions.html">▶ Watch the morning run</a>
+    </div>
+    <p class="loop-foot reveal">You never pick what to automate. Whatever your team repeats often enough is what Nova hardens, and the recipes it builds are <em>yours</em>.</p>
   </div>
 </section>
 
 <!-- WHY WE BUILT IT THIS WAY -->
 <section id="why">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">06</span><h2>Why we built it this way</h2></div>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Why we built it this way</h2></div>
     <div class="thesis" style="margin-bottom:48px">
       <blockquote class="pullquote">Most AI agents sell <em>more autonomy</em>. Nova is the opposite bet: an Agent that does <em>less</em> on its own over time, because what it learns becomes a fixed, inspectable, rigid flow.</blockquote>
       <div class="thesis-body">
@@ -583,7 +575,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- ENTERPRISE-READY -->
 <section id="enterprise">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">07</span><h2>Your data, your models, your controls</h2></div>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Your data, your models, your controls</h2></div>
     <p class="lede" style="margin-bottom:36px">Nova is built for teams that can't be casual about data, access, or spend — in plain terms:</p>
     <div class="cases">
       <div class="case reveal"><div class="ck">Privacy</div><h3>Your data stays yours — and never trains anyone's model</h3><p>Nova runs in a dedicated, fully isolated environment. Your data is never pooled with other customers, never shared with the AI provider, and never used to train anyone's models.</p></div>
@@ -598,7 +590,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE DEPLOY -->
 <section id="deploy">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">08</span><h2>How we deploy</h2></div>
+    <div class="sec-head"><span class="sec-num">07</span><h2>How we deploy</h2></div>
     <p class="lede" style="margin-bottom:36px">Three steps — the infrastructure is ready in about a week, mostly on us.</p>
     <div class="deploy">
       <div class="dstep"><div class="dn">1</div><h3>Integrations</h3><p>You name the stack — your dev, ops, finance and data tools. We map it.</p></div>
@@ -630,7 +622,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE ENGAGE -->
 <section id="engage">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">09</span><h2>How we engage</h2></div>
+    <div class="sec-head"><span class="sec-num">08</span><h2>How we engage</h2></div>
     <p class="lede" style="margin-bottom:36px">We ship it, install it <b>with</b> your team, and keep it hardening. A hybrid model, built so you see value before you pay to keep it.</p>
     <div class="engage">
       <div class="plan reveal">
@@ -653,7 +645,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO THIS IS FOR -->
 <section id="who">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">10</span><h2>Who it's for</h2></div>
+    <div class="sec-head"><span class="sec-num">09</span><h2>Who it's for</h2></div>
     <div class="icp">
       <div class="icp-fit">
         <h3>Nova is for you if…</h3>
@@ -679,7 +671,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO BUILDS IT -->
 <section id="team">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">11</span><h2>Who builds it</h2></div>
+    <div class="sec-head"><span class="sec-num">10</span><h2>Who builds it</h2></div>
     <p class="team-note">We're the two founders — UK/Canada-based technical leaders with deep experience in AI, platform engineering, and SRE. We have designed and operated enterprise AI systems at <b>Deutsche Bank, Behavox, SAP, Mail.Ru, and Lightspeed</b> — production environments consuming billions of LLM tokens a month and orchestrating hundreds of independent agents across customer support, incident management, and the SDLC.</p>
     <div class="founders">
       <div class="founder">
@@ -723,7 +715,7 @@ footer .meta a{color:var(--ink-soft)}
     <p>Nova deploys in about a week. The first step is a short call to map your stack and confirm access. From there, the agent is working on real cases within days.</p>
     <div class="cta-row">
       <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
-      <a class="btn ghost big" href="#next-steps">See a 5-min walkthrough</a>
+      <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
     </div>
     <p class="fine">Built by engineers who've run hundreds of production agents. A person approves anything consequential.</p>
   </div>
@@ -852,10 +844,10 @@ footer .meta a{color:var(--ink-soft)}
     on(el, 'book_call_click', { location: bookLocations[i] || 'other' });
   });
 
-  // 4. Walkthrough CTA — "See a 5-min walkthrough" (document order: hero, closing)
-  var walkLocations = ['hero', 'closing'];
-  all('a[href="#next-steps"]').forEach(function(el, i){
-    on(el, 'walkthrough_click', { location: walkLocations[i] || 'other' });
+  // 4. Demo CTAs — every link to the live demo page, tagged by location (document order)
+  var demoLocations = ['hero', 'how', 'closing'];
+  all('a[href*="demo-invoice-exceptions"]').forEach(function(el, i){
+    on(el, 'demo_link_click', { location: demoLocations[i] || 'other' });
   });
 
   // 5. Founder LinkedIn links, tagged by person
@@ -863,6 +855,7 @@ footer .meta a{color:var(--ink-soft)}
     var person = /nikita/i.test(el.href) ? 'nikita' : (/artsiom/i.test(el.href) ? 'artsiom' : 'other');
     on(el, 'linkedin_click', { person: person });
   });
+
 })();
 </script>
 
@@ -874,7 +867,7 @@ footer .meta a{color:var(--ink-soft)}
   var FLOWS = [
     { name:'Invoice &amp; billing exceptions', hook:'accounts payable',
       title:'Watch it clear the <em>AP inbox</em>.',
-      desc:'A vendor invoice lands in the AP inbox. Nova pulls the matching purchase order and the agreed rate from the signed contract, runs the three-way match, and catches the duplicate invoice number or the line billed $2,400 over contract. Clean invoices queue for payment; the mismatch goes back to the AP clerk with the exact line and the contract clause that disagrees.',
+      desc:'An invoice arrives. Nova matches it to the PO, the goods receipt and the contract rate, queues the clean ones for payment, and sends the $2,400 overbill back with the clause that disagrees.',
       sys:'NetSuite / QuickBooks · the contract store · the AP inbox',
       accent:'#bb3a2b', shape:'invoice', stamp:'PAID',
       inLab:'INVOICES IN', outLab:'DONE', doc:'INVOICE', vals:['$980','$2,400','$6,120'],
@@ -882,7 +875,7 @@ footer .meta a{color:var(--ink-soft)}
       human:'reviews the exceptions' },
     { name:'Financial reconciliation', hook:'month-end close',
       title:'Watch it tie out the <em>close</em>.',
-      desc:'At close, the payments in Stripe don’t tie out to the general ledger. Nova pulls both sides, matches every transaction, and isolates the few that don’t reconcile — a refund never booked, a payout straddling two periods, an FX rounding gap — then drafts the journal entry that squares them for the accountant to post.',
+      desc:'At close, Stripe doesn’t tie out to the ledger. Nova matches every transaction, isolates the few that don’t reconcile, and drafts the journal entry that squares them for the accountant to post.',
       sys:'Stripe · NetSuite / Xero · the bank feed',
       accent:'#2f6f9e', shape:'split', stamp:'POSTED', streams:['STRIPE','LEDGER'],
       inLab:'TXNS IN', outLab:'RECONCILED', doc:'TXN', vals:['$1,250','$89','$4,010'],
@@ -890,7 +883,7 @@ footer .meta a{color:var(--ink-soft)}
       human:'approves the journal entry' },
     { name:'Policy approvals', hook:'expense &amp; access',
       title:'Watch it read the <em>policy</em> — line by line.',
-      desc:'Every claim in Concur is read line by line against your T&E policy: per-diem caps, a receipt required over $75, no alcohol on a client bill. Nova clears the compliant ones, bounces violations back to the submitter with the rule quoted, and escalates only the genuine judgment calls to the manager. The same pattern checks a Jira access request against the entitlement matrix.',
+      desc:'Every expense claim is read line by line against your T&E policy. Nova clears the compliant ones, bounces violations back with the rule quoted, and escalates only the genuine judgment calls.',
       sys:'Concur / Expensify · the policy doc · Okta · Jira',
       accent:'#9a6e15', shape:'receipt', stamp:'CLEARED', detour:'return',
       inLab:'CLAIMS IN', outLab:'CLEARED', doc:'CLAIM', vals:['$62','$318','$1,040'],
@@ -898,7 +891,7 @@ footer .meta a{color:var(--ink-soft)}
       human:'takes the judgment calls' },
     { name:'Compliance reviews', hook:'access certification',
       title:'Watch it certify <em>access</em> — on schedule.',
-      desc:'Each quarter Nova pulls the full access list from Okta, cross-checks it against the HRIS for leavers and role changes, flags every orphaned or over-privileged account, drafts the deprovisioning tickets in Jira, and assembles the evidence pack the SOC 2 auditor asks for — the same way, on schedule, every time.',
+      desc:'Each quarter Nova pulls the access list from Okta, checks it against the HRIS for leavers and role changes, drafts the deprovisioning tickets, and assembles the evidence pack the auditor asks for.',
       sys:'Okta · your HRIS (BambooHR / Workday) · Jira',
       accent:'#2e6e62', shape:'badge', stamp:'CERTIFIED', chip:'Q3',
       inLab:'ACCOUNTS IN', outLab:'CERTIFIED', doc:'ACCESS', vals:['j.smith','m.lopez','v.khan'],
@@ -906,7 +899,7 @@ footer .meta a{color:var(--ink-soft)}
       human:'signs the certification' },
     { name:'Incident response', hook:'live production', tag:'proven',
       title:'Watch it resolve an <em>incident</em>.',
-      desc:'A data-pipeline alert fires in Slack. Nova gathers the failing job’s logs, the Datadog metrics, and the last three deploys, pinpoints the config change that broke it, and writes up the root cause with a fix as a draft pull request for an engineer to review and merge. See the numbers below.',
+      desc:'A pipeline alert fires in Slack. Nova reads the logs, the metrics and the last three deploys, pinpoints the config change that broke it, and writes the fix as a draft PR for an engineer to merge.',
       sys:'Datadog · GitHub / GitLab · the log store · Slack',
       accent:'#6d2a5e', shape:'alert', stamp:'MERGED', pulse:true,
       inLab:'ALERTS IN', outLab:'RESOLVED', doc:'ALERT', vals:['ingest','api 5xx','job #7'],
