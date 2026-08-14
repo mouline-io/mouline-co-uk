@@ -545,6 +545,7 @@ footer .meta a{color:var(--ink-soft)}
           <div class="scene-cap"><span id="capText">7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.</span><span class="cap-r" id="capSys">Gmail · shared AP mailbox</span></div>
           <div class="controls">
             <div class="dots" id="dots"></div>
+            <button class="ctl-btn" id="voBtn" aria-pressed="false" title="Narration">🔇 Sound off</button>
             <button class="ctl-btn" id="pauseBtn">❚❚ Pause</button>
             <button class="ctl-btn" id="replayBtn">↺ Replay</button>
           </div>
@@ -608,7 +609,12 @@ function track(n,p){ if(typeof gtag==='function') gtag('event',n,p||{}); }
 /* Generation-based cancellation: newCtl() bumps ctl.gen, which invalidates every
    pending wait() from the previous run — no stale scene can paint over a new one. */
 var ctl = { paused:false, gen:0 };
-function newCtl(){ ctl.paused = false; ctl.gen++; pauseBtn.textContent = '❚❚ Pause'; }
+/* Set by the first run from any trigger. Clicking Play scrolls the stage into
+   view, which used to trip the scroll autoplay as well and start a second run
+   over the top of the first — invisible while the demo was silent, audible as a
+   restarted narration clip once it wasn't. */
+var runStarted = false;
+function newCtl(){ ctl.paused = false; ctl.gen++; pauseBtn.textContent = '❚❚ Pause'; voStop(); }
 function wait(ms){
   var g = ctl.gen;
   return new Promise(function(res){
@@ -640,6 +646,7 @@ var curTag = document.getElementById('curTag');
 var closing = document.getElementById('closing');
 var pauseBtn = document.getElementById('pauseBtn');
 var playBtn = document.getElementById('playBtn');
+var voBtn = document.getElementById('voBtn');
 var dotsWrap = document.getElementById('dots');
 
 /* ---------- cursor ---------- */
@@ -660,12 +667,73 @@ var rsteps = $all('.rstep');
 function railSet(i, cls){ if(i<0) return; var el=rsteps[i]; if(!el) return; el.classList.remove('active'); el.classList.add(cls); }
 function railReset(){ rsteps.forEach(function(el){ el.classList.remove('active','done'); }); }
 var SCENE_META = [
-  { id:'gmail',    url:'mail.google.com/mail/u/0/#inbox',            cap:'7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.', sys:'Gmail · shared AP mailbox',      dot:'Gmail',     pill:'Nova is working in this tab', rail:0 },
-  { id:'netsuite', url:'3688214.app.netsuite.com/app center/…',      cap:'The PO, found by its number from the invoice header — the way Dana taught her.', sys:'NetSuite · purchase orders',   dot:'NetSuite',  pill:'Nova is working in this tab', rail:1 },
-  { id:'drive',    url:'drive.google.com/drive/folders/contracts',   cap:'The rate comes from the signed contract — Appendix B, always.', sys:'Google Drive · contract store',      dot:'Contract',  pill:'Nova is working in this tab', rail:2 },
-  { id:'match',    url:'nova.internal · run #1,842',                 cap:'The three-way match, in Nova’s own working view: quantities tie out — the rate doesn’t.', sys:'Nova · three-way match',  dot:'The match', pill:'Nova internal view',         rail:3 },
-  { id:'slack',    url:'app.slack.com/client/T…/C-accounts-payable', cap:'One message sums up the morning. The judgment call goes to Dana — with everything attached.', sys:'Slack · #accounts-payable', dot:'The gate', pill:'Nova is working in this tab', rail:4 }
+  { id:'gmail',    url:'mail.google.com/mail/u/0/#inbox',            cap:'7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.', sys:'Gmail · shared AP mailbox',      dot:'Gmail',     pill:'Nova is working in this tab', rail:0, vo:'audio/scene-01-gmail.mp3' },
+  { id:'netsuite', url:'3688214.app.netsuite.com/app center/…',      cap:'The PO, found by its number from the invoice header — the way Dana taught her.', sys:'NetSuite · purchase orders',   dot:'NetSuite',  pill:'Nova is working in this tab', rail:1, vo:'audio/scene-02-netsuite.mp3' },
+  { id:'drive',    url:'drive.google.com/drive/folders/contracts',   cap:'The rate comes from the signed contract — Appendix B, always.', sys:'Google Drive · contract store',      dot:'Contract',  pill:'Nova is working in this tab', rail:2, vo:'audio/scene-03-contract.mp3' },
+  { id:'match',    url:'nova.internal · run #1,842',                 cap:'The three-way match, in Nova’s own working view: quantities tie out — the rate doesn’t.', sys:'Nova · three-way match',  dot:'The match', pill:'Nova internal view',         rail:3, vo:'audio/scene-04-match.mp3' },
+  { id:'slack',    url:'app.slack.com/client/T…/C-accounts-payable', cap:'One message sums up the morning. The judgment call goes to Dana — with everything attached.', sys:'Slack · #accounts-payable', dot:'The gate', pill:'Nova is working in this tab', rail:4, vo:'audio/scene-05-gate.mp3' }
 ];
+/* ---------- voiceover ---------- */
+/* Three-state preference: 'on' / 'off' / unset. Unset stays silent for the
+   scroll-triggered run — browsers block unprompted audio anyway — but turns on
+   when someone explicitly asks for the run via Play or Replay. An explicit
+   'off' is never overridden. */
+var VO_KEY = 'nova-demo-vo';
+function voPref(){ try { return localStorage.getItem(VO_KEY); } catch(e){ return null; } }
+function voSavePref(v){ try { localStorage.setItem(VO_KEY, v); } catch(e){} }
+var voWanted = voPref() === 'on';
+var voClips = null, voCur = null, curIdx = 0;
+
+function voLoad(){
+  if(voClips) return;
+  voClips = {};
+  SCENE_META.forEach(function(m){
+    var a = new Audio(m.vo);
+    a.preload = 'auto';
+    voClips[m.id] = a;
+  });
+}
+function voStop(){
+  if(!voCur) return;
+  voCur.pause();
+  try { voCur.currentTime = 0; } catch(e){}
+  voCur = null;
+}
+function voStart(i){
+  voStop();
+  if(!voWanted) return;
+  voLoad();
+  var a = voClips[SCENE_META[i].id];
+  if(!a) return;
+  voCur = a;
+  try { a.currentTime = 0; } catch(e){}
+  var p = a.play();
+  /* blocked by autoplay policy, or the file is missing: run silently */
+  if(p && p.catch) p.catch(function(){ if(voCur === a) voCur = null; });
+}
+/* How much narration is left once the scene's animation has finished. The run
+   waits this out rather than cutting the voice off mid-sentence. */
+function voRemainingMs(){
+  if(!voCur || !voWanted || voCur.ended) return 0;
+  if(!isFinite(voCur.duration)) return 0;
+  return Math.max(0, (voCur.duration - voCur.currentTime) * 1000);
+}
+function voSyncBtn(){
+  if(!voBtn) return;
+  voBtn.textContent = voWanted ? '🔊 Sound on' : '🔇 Sound off';
+  voBtn.setAttribute('aria-pressed', voWanted ? 'true' : 'false');
+}
+/* Play/Replay are unambiguous "show me this" gestures, so they satisfy the
+   autoplay policy and switch narration on for anyone who hasn't opted out. */
+function voOnPlayGesture(){
+  if(voPref() !== null) return;
+  voWanted = true;
+  voSavePref('on');
+  voSyncBtn();
+  voLoad();
+}
+voSyncBtn();
+
 var dots = [];
 SCENE_META.forEach(function(m,i){
   var b = document.createElement('button');
@@ -683,6 +751,7 @@ SCENE_META.forEach(function(m){ sceneEls[m.id] = document.getElementById('sc-'+m
 var builders = {}, players = {};
 function showScene(i){
   var m = SCENE_META[i];
+  curIdx = i;
   SCENE_META.forEach(function(mm){ sceneEls[mm.id].classList.remove('on'); });
   sceneEls[m.id].innerHTML = builders[m.id]();
   sceneEls[m.id].classList.add('on');
@@ -1054,6 +1123,7 @@ players.slack = async function(root){
 /* ================= orchestration ================= */
 async function startFrom(i){
   newCtl();
+  runStarted = true;
   var gen = ctl.gen;
   closing.classList.remove('on');
   /* when jumping mid-run, mark earlier scenes done */
@@ -1066,7 +1136,12 @@ async function startFrom(i){
     showScene(s);
     railSet(m.rail, 'active');
     track('demo_scene',{scene:m.id});
+    voStart(s);
     await players[m.id](sceneEls[m.id]);
+    if(ctl.gen!==gen) return;
+    /* hold the scene until its narration finishes */
+    var tail = voRemainingMs();
+    if(tail > 150){ if(!await wait(tail)) return; }
     if(ctl.gen!==gen) return;
     rsteps[m.rail].classList.remove('active'); rsteps[m.rail].classList.add('done');
     if(m.id==='slack'){ rsteps[5].classList.remove('active'); rsteps[5].classList.add('done'); }
@@ -1105,6 +1180,7 @@ function renderStatic(){
   playBtn.textContent = '▶ Step through the run';
   playBtn.addEventListener('click', function(){ showFinal(Math.min(i+1, SCENE_META.length-1)); document.getElementById('stage').scrollIntoView({behavior:'auto',block:'center'}); });
   pauseBtn.style.display = 'none';
+  voBtn.style.display = 'none'; /* no timed run to narrate */
   document.getElementById('replayBtn').addEventListener('click', function(){ showFinal(0); });
   document.getElementById('replayBtn2').addEventListener('click', function(){ showFinal(0); });
 }
@@ -1113,11 +1189,23 @@ function renderStatic(){
 pauseBtn.addEventListener('click', function(){
   ctl.paused = !ctl.paused;
   pauseBtn.textContent = ctl.paused ? '▶ Resume' : '❚❚ Pause';
+  if(voCur){
+    if(ctl.paused){ voCur.pause(); }
+    else { var p = voCur.play(); if(p && p.catch) p.catch(function(){}); }
+  }
 });
-document.getElementById('replayBtn').addEventListener('click', function(){ startFrom(0); });
-document.getElementById('replayBtn2').addEventListener('click', function(){ startFrom(0); });
+voBtn.addEventListener('click', function(){
+  voWanted = !voWanted;
+  voSavePref(voWanted ? 'on' : 'off');
+  voSyncBtn();
+  track('demo_audio_toggle', { state: voWanted ? 'on' : 'off' });
+  if(voWanted) voStart(curIdx); else voStop();
+});
+document.getElementById('replayBtn').addEventListener('click', function(){ voOnPlayGesture(); startFrom(0); });
+document.getElementById('replayBtn2').addEventListener('click', function(){ voOnPlayGesture(); startFrom(0); });
 playBtn.addEventListener('click', function(){
   if(reduced) return; /* handled in renderStatic */
+  voOnPlayGesture();
   document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'center'});
   startFrom(0);
 });
@@ -1131,10 +1219,9 @@ if(reduced){
   $all('.gm-row', sceneEls.gmail).forEach(function(r){ r.classList.add('in'); });
   $('#gmR1', sceneEls.gmail).classList.add('sel');
 
-  var played = false;
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
-      if(e.isIntersecting && !played){ played = true; io.disconnect(); startFrom(0); }
+      if(e.isIntersecting && !runStarted){ io.disconnect(); startFrom(0); }
     });
   }, {threshold:.35});
   io.observe(document.getElementById('stage'));
