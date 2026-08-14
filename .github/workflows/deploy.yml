@@ -1,13 +1,14 @@
 name: Deploy landing to production
 
-# On-demand deploy. Click "Run workflow" in the Actions tab to publish.
+# Content is pushed into public/ by nova-marketing's publish-landing workflow.
+# This repo no longer reaches into nova-marketing, so that repo never needs to
+# be made public. Manual dispatch redeploys whatever is currently in public/.
 on:
+  push:
+    branches: [main]
+    paths:
+      - public/**
   workflow_dispatch:
-    inputs:
-      source_file:
-        description: "Path (within nova-marketing) of the landing to publish"
-        required: true
-        default: docs/landing-mouline-v2.html
 
 # Grant the built-in GITHUB_TOKEN exactly what Pages deployment needs.
 permissions:
@@ -27,25 +28,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Fetch the landing from the public dev repo
-        run: |
-          set -euo pipefail
-          git clone --depth 1 https://github.com/mouline-io/nova-marketing.git src
-          if [ ! -f "src/${{ inputs.source_file }}" ]; then
-            echo "::error::source_file 'src/${{ inputs.source_file }}' not found in nova-marketing"
-            exit 1
-          fi
-          mkdir site
-          cp "src/${{ inputs.source_file }}" site/index.html
-          echo "mouline.co.uk" > site/CNAME
-          touch site/.nojekyll
-          echo "Published ${{ inputs.source_file }} -> index.html"
+      - name: Check out the site content
+        uses: actions/checkout@v7
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
-          path: site
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
