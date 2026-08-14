@@ -2,30 +2,30 @@
 
 Production site served at **https://mouline.co.uk** via GitHub Pages.
 
-This repo holds **only the deployment mechanism** — it has no source content of
-its own. The actual landing pages are authored in
-[`mouline-io/nova-marketing`](https://github.com/mouline-io/nova-marketing).
+This repo holds the deployment mechanism plus the published site under `public/`.
+It has no source of its own — the pages are authored in
+[`mouline-io/nova-marketing`](https://github.com/mouline-io/nova-marketing) and
+mirrored here automatically.
 
-## How to deploy
+## How it works (push model)
 
-**Actions → "Deploy landing to production" → Run workflow.**
+The source repo pushes to this one; nothing here reads from the source repo.
 
-The workflow clones `nova-marketing`, copies the chosen landing file to
-`index.html`, and publishes it to GitHub Pages. By default it ships
-`docs/landing-mouline-v2.html`; override the `source_file` input to publish a
-different version.
+1. A publishing workflow in the source repo mirrors its publish folder into
+   `public/` here and pushes.
+2. That push triggers `.github/workflows/deploy.yml`, which uploads `public/` and
+   deploys it to this repo's GitHub Pages using the built-in `GITHUB_TOKEN`.
 
-## How it works (no-key pull model)
+To redeploy the current content without a source change: **Actions → "Deploy landing
+to production" → Run workflow.**
 
-The deploy job runs *here* and pulls *from* `nova-marketing`:
+## Don't hand-edit `public/`
 
-1. `git clone` the public `nova-marketing` repo (no auth needed — it's public).
-2. Copy the selected landing → `index.html`, add `CNAME` + `.nojekyll`.
-3. Deploy to this repo's own GitHub Pages using the built-in `GITHUB_TOKEN`.
-
-No deploy keys or secrets are involved.
+It is deleted and rebuilt from scratch on every publish, so local edits are silently
+overwritten. Change the page in `nova-marketing` instead.
 
 > [!IMPORTANT]
-> This depends on `nova-marketing` being **public**. If it is ever made
-> private, the unauthenticated clone in `.github/workflows/deploy.yml` will fail
-> and the deploy mechanism must be reworked (e.g. a deploy key).
+> The source repo is private and stays private. Deploys do **not** require it to be
+> public — the mirroring push is authenticated. If the site stops updating, fix the
+> publishing workflow in `nova-marketing`; never make that repo public to restore
+> deploys.
