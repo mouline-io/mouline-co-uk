@@ -178,10 +178,68 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .thesis-body p:last-child{margin-bottom:0}
 .thesis-body p b{color:var(--ink)}
 
+/* ---------- The day stage (section 02): the one dark surface on the page ---------- */
+.dy{--dy-ground:#16140f;--dy-rise:#231f18;--dy-edge:#3a3428;--dy-dim:#8d877a;
+  margin:36px 0 0;background:var(--dy-ground);border:1px solid #2b261d;border-radius:14px;overflow:hidden;
+  box-shadow:0 1px 0 rgba(0,0,0,.02),0 40px 70px -40px rgba(28,22,12,.55)}
+.dy-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid #2b261d;background:#12100c}
+.dy-acts{display:flex;gap:4px;flex-wrap:wrap}
+.dy-act{font-family:var(--sans);font-size:13px;color:#8d877a;background:transparent;border:1px solid transparent;
+  border-radius:20px;padding:5px 13px;cursor:pointer;transition:color .18s,background .18s,border-color .18s}
+.dy-act:hover{color:#e8dcc0}
+.dy-act[aria-selected="true"]{color:#16140f;background:#e8dcc0;border-color:#e8dcc0;font-weight:600}
+.dy-read{margin-left:auto;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12.5px;color:#8d877a}
+.dy-clock{color:#e8dcc0;font-variant-numeric:tabular-nums}
+.dy-tag{border:1px solid #3a3428;border-radius:4px;padding:2px 7px;font-size:10px;letter-spacing:.04em;color:#8d877a}
+.dy-tag.model{color:#d9a441;border-color:#5c4a24}
+.dy-tag.human{color:#e0563f;border-color:#5e2c22}
+.dy-tag.fixed{color:#6bbd74;border-color:#2c4d31}
+.dy-canvas{display:block;width:100%;height:452px;touch-action:pan-y}
+@media(max-width:760px){.dy-canvas{height:315px}}
+.dy-foot{display:flex;gap:14px 30px;padding:15px 18px 17px;border-top:1px solid #2b261d;background:#12100c}
+.dy-main{flex:1 1 auto;min-width:0}
+/* the headline metric is a stat, not part of the diagram: keeping it in the DOM
+   means it can never collide with a label on the board */
+.dy-stat{flex:0 0 auto;text-align:right;padding-left:22px;border-left:1px solid #2b261d}
+.dy-stat .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#6b665c}
+.dy-stat .v{display:block;font-family:var(--serif);font-size:46px;line-height:1.05;font-weight:600;letter-spacing:-0.03em;color:#e8dcc0;font-variant-numeric:tabular-nums}
+.dy-stat.nova .v{color:#e0563f}
+.dy-stat .c{display:block;font-family:var(--mono);font-size:10.5px;color:#6b665c;margin-top:5px}
+@media(max-width:700px){
+  .dy-foot{flex-direction:column;gap:14px}
+  .dy-stat{order:-1;text-align:left;padding:0 0 13px;border-left:none;border-bottom:1px solid #2b261d;width:100%}
+  .dy-stat .v{font-size:40px}
+}
+.dy-narr{font-family:var(--serif);font-size:clamp(16px,2.1vw,20px);line-height:1.35;letter-spacing:-0.01em;color:#e8dcc0;margin:0;min-height:2.7em}
+.dy-narr b{color:#fff;font-weight:600}
+.dy-prog{height:2px;background:#2b261d;border-radius:2px;margin-top:14px;overflow:hidden}
+.dy-prog i{display:block;height:100%;width:0;background:#e0563f;transition:width .12s linear}
+.dy-ctl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.dy-replay{font-family:var(--sans);font-size:12.5px;color:#8d877a;background:transparent;border:1px solid #3a3428;
+  border-radius:20px;padding:5px 13px;cursor:pointer}
+.dy-replay:hover{color:#e8dcc0;border-color:#8d877a}
+.dy-replay[aria-pressed="true"]{color:#e8dcc0;border-color:#8d877a}
+.dy :focus-visible{outline:2px solid #e0563f;outline-offset:2px}
+
+/* what the change is worth */
+.gains{display:grid;gap:0;grid-template-columns:1fr;margin-top:44px}
+@media(min-width:860px){.gains{grid-template-columns:repeat(3,1fr)}}
+.gain{border-top:2px solid var(--ink);padding:16px 0 0}
+.gain+.gain{margin-top:22px}
+@media(min-width:860px){
+  .gain{padding:16px 30px 0 0;margin-top:0}
+  .gain+.gain{padding:16px 30px 0 30px;border-left:1px solid var(--rule);margin-top:0}
+  .gain:last-child{padding-right:0}
+}
+.gain h3{font-size:21px;margin:0 0 9px;letter-spacing:-0.015em}
+.gain h3 em{font-style:italic;color:var(--red)}
+.gain p{font-size:15px;color:var(--ink-soft);margin:0}
+
+
 .loop-foot{margin-top:30px;font-family:var(--serif);font-size:clamp(19px,2.6vw,25px);line-height:1.3;letter-spacing:-0.01em;text-align:center;color:var(--ink)}
 .loop-foot em{font-style:italic;color:var(--red)}
 
-/* demo CTA (section 04) */
+/* demo CTA (section 03) */
 .rv-cta{display:flex;align-items:center;justify-content:space-between;gap:26px;margin-top:30px;background:var(--card);border:1px solid var(--rule-strong);border-left:3px solid var(--red);border-radius:0 10px 10px 0;padding:20px 24px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 20px 44px -30px rgba(40,30,10,.3)}
 .rv-cta-txt{font-size:15px;color:var(--ink-soft);max-width:58ch}
 .rv-cta-txt b{color:var(--ink)}
@@ -251,15 +309,6 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .pillar ul{margin:0;padding:0;list-style:none}
 .pillar li{font-size:14px;color:var(--ink-soft);padding:6px 0 6px 20px;position:relative;border-top:1px solid var(--rule)}
 .pillar li::before{content:"→";position:absolute;left:0;color:var(--red)}
-
-/* metrics */
-.metrics{display:grid;gap:30px;grid-template-columns:1fr}
-@media(min-width:760px){.metrics{grid-template-columns:repeat(3,1fr)}}
-.metric{border-top:2px solid var(--ink);padding-top:18px}
-.metric .v{font-family:var(--serif);font-size:clamp(52px,7vw,76px);line-height:.95;font-weight:600;letter-spacing:-0.03em}
-.metric .v.red{color:var(--red)}
-.metric h3{font-size:18px;margin:14px 0 8px;font-weight:600}
-.metric p{font-size:14.5px;color:var(--ink-soft);margin:0}
 
 /* deploy steps */
 .deploy{display:grid;gap:18px;grid-template-columns:1fr}
@@ -476,10 +525,10 @@ footer .meta a{color:var(--ink-soft)}
   <div class="wrap">
     <div class="sec-head"><span class="sec-num">01</span><h2>The problem</h2></div>
     <div class="thesis">
-      <blockquote class="pullquote">Every team runs on work nobody wrote down. It repeats dozens of times a week — and it lives in the heads of the few people who've done it <em>a hundred times</em>.</blockquote>
+      <blockquote class="pullquote">Every team runs on work nobody ever wrote down. It lives in the heads of the people who <em>always</em> handle it.</blockquote>
       <div class="thesis-body">
-        <p>The check that follows the same policy. The reconciliation that traces the same systems. The request that follows the same five rules. It's real, it repeats dozens of times a week — and it costs your senior people's hours. When they're busy, the work waits; when they leave, it walks out the door.</p>
-        <p>Worse is the case nobody thought to check: it doesn't show up in a checklist. It shows up later as a missed number, a customer ticket, a compliance gap — long after it was cheap to catch.</p>
+        <p>The check that follows the same policy. The reconciliation that traces the same four systems. The exception that follows the same five rules.</p>
+        <p>It repeats dozens of times a week, it costs your most senior people their afternoons, and when they leave it walks out with them.</p>
       </div>
     </div>
   </div>
@@ -489,36 +538,61 @@ footer .meta a{color:var(--ink-soft)}
 <section id="what">
   <div class="wrap">
     <div class="sec-head"><span class="sec-num">02</span><h2>What Nova does</h2></div>
-    <div class="thesis">
-      <blockquote class="pullquote">Think of Nova as a new colleague — one who <em>does the work</em>, not just advises on it.</blockquote>
-      <div class="thesis-body">
-        <p>She arrives already fluent in your tools and holding the right accesses. From day one she picks up real tasks: she reads across your systems, does the job, and hands back a finished result.</p>
-        <p>Your team steers, teaches, and reviews her — but only when it's needed, and less and less over time. She improves fast and never forgets, so she needs less guidance, fewer gates, and less review the longer she works with you.</p>
-        <p><b>One identity across many systems:</b> @-mention her in MS Teams or Slack, leave a note in a comment thread, reply on the ticket — one agent behind all of it.</p>
+    <p class="lede" style="margin-bottom:12px">Most of a working day is transport. A task arrives in Slack or a shared inbox. Someone opens one system to get the facts, opens a second to check them against the rule, makes a call that follows the same logic it followed last time, and types the outcome into a third.</p>
+    <p class="lede"><b>The systems do not talk to each other, so a person is the thing carrying the context between them.</b> Nova connects to those same systems and does the carrying.</p>
+
+    <div class="dy" id="dy">
+      <div class="dy-head">
+        <div class="dy-acts" role="tablist" aria-label="Pick a version of the same task">
+          <button class="dy-act" role="tab" aria-selected="true" data-act="0">The day today</button>
+          <button class="dy-act" role="tab" aria-selected="false" data-act="1">The same task, with Nova</button>
+          <button class="dy-act" role="tab" aria-selected="false" data-act="2">The tenth time</button>
+        </div>
+        <div class="dy-read">
+          <span class="dy-clock" id="dyClock">09:02</span>
+          <span class="dy-tag" id="dyTag">by hand</span>
+        </div>
+      </div>
+      <canvas class="dy-canvas" id="dyCanvas" role="img" aria-label="An isometric board of four systems. One invoice exception travels between them, first carried by a person and then run by Nova."></canvas>
+      <div class="dy-foot">
+        <div class="dy-main">
+          <p class="dy-narr" id="dyNarr">An invoice lands in the shared inbox. 4471 does not match the purchase order.</p>
+          <div class="dy-prog"><i id="dyProg"></i></div>
+          <div class="dy-ctl">
+            <button class="dy-replay" id="dyReplay">↺ Replay</button>
+            <button class="dy-replay" id="dyVo" aria-pressed="false">🔇 Sound off</button>
+          </div>
+        </div>
+        <div class="dy-stat" id="dyStat">
+          <span class="k">Tasks per person, per day</span>
+          <span class="v" id="dyStatV">11</span>
+          <span class="c" id="dyStatC">39 min of a person’s time each</span>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- WHERE WE PROVED IT FIRST -->
-<section id="proof">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-num">03</span><h2>Where we proved it first</h2></div>
-    <p class="lede" style="margin-bottom:22px">Any company that sells software has a team responsible for keeping it working. When a data feed stops or an overnight job fails, someone has to drop everything and work out what broke, where, and why — usually a <b>senior engineer</b>: the most experienced, most expensive, and most stretched person on the team.</p>
-    <p class="lede" style="margin-bottom:48px">We pointed Nova at exactly this at our first customer. It picks up the alert, runs the investigation across every system involved, finds the cause, and writes up the fix for a person to approve. <b>An hour of expert digging becomes minutes</b> — and the routine cases stop reaching a human at all.</p>
-    <div class="metrics">
-      <div class="metric reveal"><div class="v red">100%</div><h3>Every issue picked up and investigated</h3><p>None fall back to the old manual scramble.</p></div>
-      <div class="metric reveal"><div class="v">80%</div><h3>Diagnosed with a fix inside 30 minutes</h3><p>Eight in ten correctly diagnosed, with a proposed fix attached.</p></div>
-      <div class="metric reveal"><div class="v">80%</div><h3>No senior engineer pulled in</h3><p>Nova runs the investigation; a person only approves the fix.</p></div>
+    <div class="gains">
+      <div class="gain reveal">
+        <h3>Eleven a day becomes <em>ninety</em></h3>
+        <p>The same person, the same queue. Their time per task falls from the thirty-nine minutes it takes to do it to the five it takes to read what Nova did and approve it.</p>
+      </div>
+      <div class="gain reveal">
+        <h3>The same check, <em>every time</em></h3>
+        <p>A proven path runs the same way on the tenth case as on the first, including the one nobody remembered to look at. It does not get tired, busy, or promoted.</p>
+      </div>
+      <div class="gain reveal">
+        <h3>Your people stop being <em>the transport</em></h3>
+        <p>They point Nova at the work and approve what comes back. Judgment and accountability stay with them, which is the part that always needed a person.</p>
+      </div>
     </div>
-    <p class="deploy-foot">Why this is the right proof: the work is high-volume, repeats constantly, and burns expensive expert time — the exact conditions where automation pays back the most. <b>And it's the same underlying shape as an invoice exception, a reconciliation, or a policy approval.</b></p>
+
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section id="how">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">04</span><h2>How it works</h2></div>
+    <div class="sec-head"><span class="sec-num">03</span><h2>How it works</h2></div>
     <p class="lede" style="margin-bottom:36px">It's one engine, pointed at different work. Nova hardens each kind the same way — <b>only the systems and the output change</b>.</p>
     <div class="fdemo" id="fdemo">
       <div class="fs-list" id="fsList" role="tablist" aria-label="Pick a kind of work"></div>
@@ -544,7 +618,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHY WE BUILT IT THIS WAY -->
 <section id="why">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">05</span><h2>Why we built it this way</h2></div>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Why we built it this way</h2></div>
     <div class="thesis" style="margin-bottom:48px">
       <blockquote class="pullquote">Most AI agents sell <em>more autonomy</em>. Nova is the opposite bet: an Agent that does <em>less</em> on its own over time, because what it learns becomes a fixed, inspectable, rigid flow.</blockquote>
       <div class="thesis-body">
@@ -575,7 +649,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- ENTERPRISE-READY -->
 <section id="enterprise">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">06</span><h2>Your data, your models, your controls</h2></div>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Your data, your models, your controls</h2></div>
     <p class="lede" style="margin-bottom:36px">Nova is built for teams that can't be casual about data, access, or spend — in plain terms:</p>
     <div class="cases">
       <div class="case reveal"><div class="ck">Privacy</div><h3>Your data stays yours — and never trains anyone's model</h3><p>Nova runs in a dedicated, fully isolated environment. Your data is never pooled with other customers, never shared with the AI provider, and never used to train anyone's models.</p></div>
@@ -590,7 +664,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE DEPLOY -->
 <section id="deploy">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">07</span><h2>How we deploy</h2></div>
+    <div class="sec-head"><span class="sec-num">06</span><h2>How we deploy</h2></div>
     <p class="lede" style="margin-bottom:36px">Three steps — the infrastructure is ready in about a week, mostly on us.</p>
     <div class="deploy">
       <div class="dstep"><div class="dn">1</div><h3>Integrations</h3><p>You name the stack — your dev, ops, finance and data tools. We map it.</p></div>
@@ -622,7 +696,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE ENGAGE -->
 <section id="engage">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">08</span><h2>How we engage</h2></div>
+    <div class="sec-head"><span class="sec-num">07</span><h2>How we engage</h2></div>
     <p class="lede" style="margin-bottom:36px">We ship it, install it <b>with</b> your team, and keep it hardening. A hybrid model, built so you see value before you pay to keep it.</p>
     <div class="engage">
       <div class="plan reveal">
@@ -645,7 +719,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO THIS IS FOR -->
 <section id="who">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">09</span><h2>Who it's for</h2></div>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Who it's for</h2></div>
     <div class="icp">
       <div class="icp-fit">
         <h3>Nova is for you if…</h3>
@@ -671,7 +745,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO BUILDS IT -->
 <section id="team">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">10</span><h2>Who builds it</h2></div>
+    <div class="sec-head"><span class="sec-num">09</span><h2>Who builds it</h2></div>
     <p class="team-note">We're the two founders — UK/Canada-based technical leaders with deep experience in AI, platform engineering, and SRE. We have designed and operated enterprise AI systems at <b>Deutsche Bank, Behavox, SAP, Mail.Ru, and Lightspeed</b> — production environments consuming billions of LLM tokens a month and orchestrating hundreds of independent agents across customer support, incident management, and the SDLC.</p>
     <div class="founders">
       <div class="founder">
@@ -863,6 +937,8 @@ footer .meta a{color:var(--ink-soft)}
 /* ---- The work stage: one engine, five kinds of work ---- */
 (function(){
   var NOVA_IMG = 'data:image/jpeg;base64,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';
+
+  window.NOVA_AVATAR = NOVA_IMG;   /* the day stage below draws the same portrait */
 
   var FLOWS = [
     { name:'Invoice &amp; billing exceptions', hook:'accounts payable',
@@ -1164,6 +1240,553 @@ footer .meta a{color:var(--ink-soft)}
     el.classList.add('photo');
     el.style.backgroundImage = 'url("'+NOVA_IMG+'")';
   });
+})();
+</script>
+
+<script>
+/* ---- The day stage: one invoice exception, carried by hand and then run by Nova ---- */
+(function(){
+  var cv = document.getElementById('dyCanvas');
+  if(!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var narrEl = document.getElementById('dyNarr'),
+      clockEl = document.getElementById('dyClock'),
+      tagEl = document.getElementById('dyTag'),
+      progEl = document.getElementById('dyProg'),
+      replayEl = document.getElementById('dyReplay'),
+      voBtn = document.getElementById('dyVo'),
+      statEl = document.getElementById('dyStat'),
+      statV = document.getElementById('dyStatV'),
+      statC = document.getElementById('dyStatC'),
+      tabs = [].slice.call(document.querySelectorAll('.dy-act'));
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- the board --- */
+  var NODES = {
+    hub:   {gx:0,    gy:0,    z:0,    label:'YOUR TEAM',    short:'YOUR TEAM',  sub:'Slack / Teams'    },
+    inbox: {gx:0,    gy:-3.0, z:0.62, label:'OUTLOOK / GMAIL',    short:'OUTLOOK',    sub:'invoice 4471 arrives', icon:'mail'    },
+    a:     {gx:-3.0, gy:0.3,  z:0.62, label:'NETSUITE / SAP',     short:'NETSUITE',   sub:'the purchase order',   icon:'records' },
+    b:     {gx:0.5,  gy:3.0,  z:0.62, label:'SHAREPOINT / DRIVE', short:'SHAREPOINT', sub:'the signed contract',  icon:'contract'},
+    c:     {gx:3.0,  gy:-0.2, z:0.62, label:'XERO / QUICKBOOKS',  short:'XERO',       sub:'the ledger entry',     icon:'ledger'  },
+    human: {gx:0,    gy:0,    z:1.75, label:'',             short:'',           sub:''                 }
+  };
+  var SLABS = ['inbox','a','b','c'];
+  var WARM = '#e8dcc0', RED = '#e0563f', GREEN = '#6bbd74', AMBER = '#d9a441';
+
+  /* --- three runs of the same task ---
+     No hand-tuned durations: each beat is held for as long as its caption takes
+     to read (see durOf), and longer still if a voiceover clip is playing. The
+     ids double as the audio filenames, audio/day-<act>-<id>.mp3. */
+  var ACTS = [
+    { key:'today', actor:'human', perDay:11, cost:'39 min of a person\u2019s time each',
+      beats:[
+        {id:'01-arrives', from:'inbox', to:'hub', clock:'09:02', tag:'by hand',
+         text:'An invoice lands in the shared inbox. <b>4471 does not match the purchase order.</b>'},
+        {id:'02-erp', from:'hub', to:'a', clock:'09:04', tag:'switch 2 / 9',
+         text:'Opens NetSuite to find the purchase order.'},
+        {id:'03-note', from:'a', to:'hub', clock:'09:09', tag:'switch 3 / 9',
+         text:'Copies the figures into a note. The systems do not talk, so the person is the integration.'},
+        {id:'04-contract', from:'hub', to:'b', clock:'09:11', tag:'switch 4 / 9',
+         text:'Opens SharePoint for the rate that was actually agreed.'},
+        {id:'05-clause', from:'b', to:'hub', clock:'09:18', tag:'switch 5 / 9',
+         text:'Reads three pages to find the clause that applies.'},
+        {id:'06-decide', from:'hub', to:'hub', clock:'09:22', tag:'switch 6 / 9',
+         text:'Compares the two by hand and makes the call: <b>billed over contract.</b>'},
+        {id:'07-ledger', from:'hub', to:'c', clock:'09:29', tag:'switch 7 / 9',
+         text:'Opens Xero and types the outcome in.'},
+        {id:'08-back', from:'c', to:'hub', clock:'09:33', tag:'switch 8 / 9',
+         text:'Back again to write it up.'},
+        {id:'09-reply', from:'hub', to:'inbox', clock:'09:41', tag:'switch 9 / 9',
+         text:'Replies to the vendor. <b>Thirty-nine minutes, nine switches, one person the whole way.</b>'}
+      ]},
+    { key:'nova', actor:'nova', perDay:90, cost:'5 min of a person\u2019s time each',
+      beats:[
+        {id:'01-picks-up', from:'inbox', to:'hub', clock:'09:02', tag:'same inbox',
+         text:'The same invoice, the same inbox. <b>Nova picks it up.</b>'},
+        {id:'02-parallel', fan:['a','b','c'], draw:1900, clock:'09:02', tag:'in parallel',
+         text:'It reads NetSuite, SharePoint and Xero <b>at the same time.</b> Nothing is carried by hand.'},
+        {id:'03-draft', from:'hub', to:'hub', clock:'09:03', tag:'model', tagK:'model',
+         text:'Finds the clause, compares the figures, drafts the reply to the vendor.'},
+        {id:'04-approve', from:'hub', to:'human', clock:'09:04', tag:'human', tagK:'human',
+         text:'<b>One person reads the result and approves it.</b> Nothing leaves the building before that.'},
+        {id:'05-write', from:'hub', to:'c', clock:'09:05', tag:'write',
+         text:'Writes the outcome to Xero.'},
+        {id:'06-sent', from:'hub', to:'inbox', clock:'09:06', tag:'done', tagK:'fixed',
+         text:'Sends the reply. <b>Four minutes, one approval, nobody carrying anything.</b>'}
+      ]},
+    { key:'tenth', actor:'nova', hardened:true, perDay:150, cost:'3 min of a person\u2019s time each',
+      beats:[
+        {id:'01-again', from:'inbox', to:'hub', clock:'09:02', tag:'fixed', tagK:'fixed',
+         text:'The tenth time this exact case arrives.'},
+        {id:'02-fixed', fan:['a','b','c'], draw:1500, clock:'09:02', tag:'fixed', tagK:'fixed',
+         text:'The reads are fixed steps now. <b>Nova is no longer working out what to do.</b>'},
+        {id:'03-model', from:'hub', to:'hub', clock:'09:03', tag:'model', tagK:'model',
+         text:'One judgment call still runs on a model. Everything around it is written down and inspectable.'},
+        {id:'04-human', from:'hub', to:'human', clock:'09:03', tag:'human', tagK:'human',
+         text:'<b>The approval stays.</b> It is the part that always needed a person.'},
+        {id:'05-done', from:'hub', to:'c', clock:'09:04', tag:'recipe \u00b7 v3', tagK:'fixed',
+         text:'Two minutes, and the same result every time. <b>Your team never wrote this down. Nova did.</b>'}
+      ]}
+  ];
+
+  /* A caption gets read at about 190 words a minute, floored so even three
+     words stay on screen long enough to land. */
+  function durOf(b){
+    if(b._d) return b._d;
+    var words = b.text.replace(/<[^>]+>/g, '').split(/\s+/).length;
+    b._d = Math.max(2400, Math.min(5600, 900 + words * 200));
+    return b._d;
+  }
+  /* The line is drawn briskly and then the beat holds: slow motion reads as
+     sluggish, a long hold reads as time to think. */
+  function drawOf(b){ return Math.min(b.draw || 1300, durOf(b) * 0.55); }
+
+  /* --- projection --- */
+  var W=0, H=0, S=1, CX=0, CY=0, dpr=1;
+  function iso(gx, gy, z){
+    return { x: CX + (gx - gy) * 0.866 * S, y: CY + (gx + gy) * 0.5 * S - (z||0) * S };
+  }
+  function nodePt(k){ var n = NODES[k]; return iso(n.gx, n.gy, n.z); }
+
+  function resize(){
+    var r = cv.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.round(r.width); H = Math.round(r.height);
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    /* the board needs 3.9S either side and about 5.1S top to bottom, labels included */
+    S = Math.min(W / 8.2, H / 5.75);
+    CX = W / 2; CY = H / 2 + S * 0.12;
+  }
+
+  /* --- pieces --- */
+
+  /* centred text that never runs off the board */
+  function ctext(str, x, y){
+    var hw = ctx.measureText(str).width / 2;
+    var px = Math.max(hw + 8, Math.min(W - hw - 8, x));
+    /* a halo in the ground colour keeps a word legible even where a path
+       passes directly behind it */
+    ctx.save();
+    ctx.lineJoin = 'round'; ctx.miterLimit = 2;
+    ctx.strokeStyle = '#16140f'; ctx.lineWidth = 5.5;
+    ctx.strokeText(str, px, y);
+    ctx.restore();
+    ctx.fillText(str, px, y);
+  }
+  function tight(){ return S < 62; }
+
+  /* icons say what a system is for; the label says which product it is */
+  function icon(kind, x, y, size, color){
+    var u = size / 24;
+    ctx.save();
+    ctx.translate(x - size/2, y - size/2); ctx.scale(u, u);
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = 1.9; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if(kind === 'mail'){
+      ctx.beginPath(); ctx.rect(2, 5, 20, 14); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2.6, 6); ctx.lineTo(12, 13.4); ctx.lineTo(21.4, 6); ctx.stroke();
+    } else if(kind === 'records'){
+      for(var i=0; i<3; i++){
+        var ry = 4 + i*6.4;
+        ctx.beginPath(); ctx.rect(3, ry, 18, 4.4); ctx.stroke();
+        ctx.beginPath(); ctx.arc(6.4, ry + 2.2, 1.05, 0, 6.284); ctx.fill();
+      }
+    } else if(kind === 'contract'){
+      ctx.beginPath(); ctx.rect(4, 2, 13.5, 20); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(7, 7); ctx.lineTo(14.5, 7); ctx.moveTo(7, 10.6); ctx.lineTo(14.5, 10.6);
+      ctx.moveTo(7, 14.2); ctx.lineTo(12, 14.2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(17.2, 17.8, 3.4, 0, 6.284); ctx.fill();
+    } else if(kind === 'ledger'){
+      ctx.beginPath(); ctx.rect(3, 4, 18, 16); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(12, 4); ctx.lineTo(12, 20); ctx.stroke();
+      ctx.lineWidth = 1.5;
+      for(var j=0; j<3; j++){
+        var ly = 8.4 + j*3.9;
+        ctx.beginPath(); ctx.moveTo(5.4, ly); ctx.lineTo(9.8, ly); ctx.moveTo(14.2, ly); ctx.lineTo(18.6, ly); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function slabBody(k, glow){
+    var n = NODES[k], hw = 0.72, hh = 0.46, z = n.z;
+    var t = [ iso(n.gx-hw, n.gy-hh, z), iso(n.gx+hw, n.gy-hh, z), iso(n.gx+hw, n.gy+hh, z), iso(n.gx-hw, n.gy+hh, z) ];
+    var b = [ iso(n.gx-hw, n.gy-hh, 0), iso(n.gx+hw, n.gy-hh, 0), iso(n.gx+hw, n.gy+hh, 0), iso(n.gx-hw, n.gy+hh, 0) ];
+    function face(p1,p2,p3,p4,fill){
+      ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.lineTo(p3.x,p3.y); ctx.lineTo(p4.x,p4.y); ctx.closePath();
+      ctx.fillStyle = fill; ctx.fill();
+    }
+    face(t[3],t[2],b[2],b[3], '#1a1712');
+    face(t[2],t[1],b[1],b[2], '#221e17');
+    face(t[0],t[1],t[2],t[3], glow ? '#332b20' : '#26221a');
+    ctx.beginPath(); ctx.moveTo(t[0].x,t[0].y); ctx.lineTo(t[1].x,t[1].y); ctx.lineTo(t[2].x,t[2].y); ctx.lineTo(t[3].x,t[3].y); ctx.closePath();
+    ctx.strokeStyle = glow ? glow : '#3a3428'; ctx.lineWidth = glow ? 1.6 : 1; ctx.stroke();
+    if(glow){ ctx.save(); ctx.shadowColor = glow; ctx.shadowBlur = 16; ctx.stroke(); ctx.restore(); }
+
+    var top = iso(n.gx, n.gy, z);
+    if(n.icon) icon(n.icon, top.x, top.y - S*0.09, S*0.44, glow ? '#f2e9d6' : '#7e786d');
+  }
+
+  /* Labels are a separate pass drawn after every path and glyph, so a line can
+     never be laid over a word. */
+  function slabLabel(k, glow){
+    var n = NODES[k], top = iso(n.gx, n.gy, n.z);
+    ctx.textAlign = 'center';
+    ctx.font = '600 ' + Math.max(11.5, S*0.115) + 'px "JetBrains Mono", ui-monospace, monospace';
+    ctx.fillStyle = glow ? '#f2e9d6' : '#a8a193';
+    ctext(tight() ? n.short : n.label, top.x, top.y - S*0.70);
+    if(n.sub && !tight()){
+      ctx.font = Math.max(9, S*0.098) + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillStyle = glow ? '#b8b0a0' : '#6b665c';
+      ctext(n.sub, top.x, top.y - S*0.70 + Math.max(12, S*0.15));
+    }
+  }
+
+  /* the hub is where every leg meets: in the old way, that point is a person */
+  function hubPad(color){
+    var p = nodePt('hub'), rx = S*0.62, ry = S*0.36;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y-ry); ctx.lineTo(p.x+rx, p.y); ctx.lineTo(p.x, p.y+ry); ctx.lineTo(p.x-rx, p.y);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(45,39,29,0.75)'; ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  function hubLabel(label, color){
+    var p = nodePt('hub'), ry = S*0.36;
+    ctx.textAlign = 'center';
+    ctx.font = '600 ' + Math.max(11.5, S*0.105) + 'px "JetBrains Mono", ui-monospace, monospace';
+    ctx.fillStyle = color;
+    ctext(label, p.x, p.y + ry + Math.max(17, S*0.22));
+    if(!tight()){
+      ctx.font = Math.max(9, S*0.092) + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillStyle = '#6b665c';
+      ctext('Slack / Teams', p.x, p.y + ry + Math.max(27, S*0.37));
+    }
+  }
+
+  function personGlyph(p, color, scale){
+    var r = S * 0.10 * (scale||1);
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(p.x, p.y - r*1.9, r, 0, 6.284); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(p.x - r*1.35, p.y + r*1.5);
+    ctx.quadraticCurveTo(p.x, p.y - r*1.5, p.x + r*1.35, p.y + r*1.5);
+    ctx.closePath(); ctx.fill();
+  }
+
+  /* the same portrait Nova wears in the Slack replay and the work stage */
+  var novaImg = null, novaReady = false;
+  if(window.NOVA_AVATAR){
+    novaImg = new Image();
+    novaImg.onload = function(){ novaReady = true; if(!playing) redraw(); };
+    novaImg.src = window.NOVA_AVATAR;
+  }
+
+  function novaGlyph(p, pulse){
+    var r = S * 0.23;
+    ctx.save();
+    ctx.shadowColor = RED; ctx.shadowBlur = 22 + pulse * 14;
+    ctx.fillStyle = '#bb3a2b';
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.284); ctx.fill();
+    ctx.restore();
+    if(novaReady){
+      ctx.save();
+      ctx.beginPath(); ctx.arc(p.x, p.y, r - 2.5, 0, 6.284); ctx.clip();
+      ctx.drawImage(novaImg, p.x - (r-2.5), p.y - (r-2.5), (r-2.5)*2, (r-2.5)*2);
+      ctx.restore();
+      ctx.strokeStyle = RED; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(p.x, p.y, r - 1.2, 0, 6.284); ctx.stroke();
+    } else {
+      ctx.fillStyle = '#ffece7';
+      ctx.font = '700 ' + (S*0.16) + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('N', p.x, p.y + S*0.008);
+      ctx.textBaseline = 'alphabetic';
+    }
+    if(pulse > 0){
+      ctx.strokeStyle = 'rgba(224,86,63,' + (0.5 * (1-pulse)) + ')';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(p.x, p.y, r + pulse * S*0.55, 0, 6.284); ctx.stroke();
+    }
+  }
+
+  /* a leg is a quadratic arc; the bow keeps overlapping legs from stacking into one stripe */
+  function leg(fromK, toK, i){
+    var p0 = nodePt(fromK), p1 = nodePt(toK);
+    var mx = (p0.x+p1.x)/2, my = (p0.y+p1.y)/2;
+    var dx = p1.x-p0.x, dy = p1.y-p0.y, len = Math.hypot(dx,dy) || 1;
+    var bow = (i % 2 ? -1 : 1) * Math.min(len * 0.16, S * 0.5);
+    return { p0:p0, p1:p1, cx: mx + (-dy/len)*bow, cy: my + (dx/len)*bow };
+  }
+  function at(L, t){
+    var u = 1-t;
+    return { x: u*u*L.p0.x + 2*u*t*L.cx + t*t*L.p1.x, y: u*u*L.p0.y + 2*u*t*L.cy + t*t*L.p1.y };
+  }
+  function strokeLeg(L, t, color, width, glow){
+    if(t <= 0) return;
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
+    if(glow){ ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = glow; }
+    ctx.beginPath(); ctx.moveTo(L.p0.x, L.p0.y);
+    if(t >= 1){ ctx.quadraticCurveTo(L.cx, L.cy, L.p1.x, L.p1.y); }
+    else {
+      for(var s=1; s<=24; s++){ var q = at(L, (s/24) * t); ctx.lineTo(q.x, q.y); }
+    }
+    ctx.stroke();
+    if(glow) ctx.restore();
+  }
+
+  function ground(){
+    ctx.fillStyle = '#16140f'; ctx.fillRect(0,0,W,H);
+    var g = ctx.createRadialGradient(CX, CY - S*0.2, S*0.2, CX, CY, S*4.2);
+    g.addColorStop(0, 'rgba(60,52,38,0.55)'); g.addColorStop(1, 'rgba(22,20,15,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(CX, CY, S*4.2, 0, 6.284); ctx.fill();
+    ctx.strokeStyle = 'rgba(58,52,40,0.5)'; ctx.lineWidth = 1;
+    for(var i=-4; i<=4; i++){
+      var a1 = iso(i, -4, 0), a2 = iso(i, 4, 0), b1 = iso(-4, i, 0), b2 = iso(4, i, 0);
+      ctx.beginPath(); ctx.moveTo(a1.x,a1.y); ctx.lineTo(a2.x,a2.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(b1.x,b1.y); ctx.lineTo(b2.x,b2.y); ctx.stroke();
+    }
+  }
+
+  /* what one person can get through in a 450-minute day at this rate */
+  /* The headline stat lives in the DOM, not on the canvas: on the board it
+     collided with the top-left system label at tablet widths, and as text it
+     stays crisp and selectable. It eases up as the run settles. */
+  function readout(A, i, prog){
+    var n = A.beats.length, k = Math.min(1, ((i + prog) / n) / 0.4);
+    statV.textContent = String(Math.round(A.perDay * (1 - Math.pow(1 - k, 3))));
+  }
+
+  function redraw(){ if(reduce || finished) showAll(); else render(0); }
+
+  /* --- voiceover ---
+     Same three-state preference as the demo page: unset stays silent for the
+     scroll-triggered run, because browsers block unprompted audio anyway, and
+     turns on when someone asks for the run with Replay. An explicit off is
+     never overridden. Missing clips simply fail to play and the run is silent. */
+  var VO_KEY = 'nova-day-vo';
+  function voPref(){ try { return localStorage.getItem(VO_KEY); } catch(e){ return null; } }
+  function voSave(v){ try { localStorage.setItem(VO_KEY, v); } catch(e){} }
+  var voWanted = voPref() === 'on', voClips = {}, voCur = null;
+
+  function voClip(A, b){
+    var k = A.key + '/' + b.id;
+    if(!voClips[k]){
+      var a = new Audio('audio/day-' + A.key + '-' + b.id + '.mp3');
+      a.preload = 'none';
+      voClips[k] = a;
+    }
+    return voClips[k];
+  }
+  function voStop(){
+    if(!voCur) return;
+    voCur.pause();
+    try { voCur.currentTime = 0; } catch(e){}
+    voCur = null;
+  }
+  function voStart(A, b){
+    voStop();
+    if(!voWanted || !b || !b.id) return;
+    var a = voClip(A, b);
+    voCur = a;
+    try { a.currentTime = 0; } catch(e){}
+    var pr = a.play();
+    if(pr && pr.catch) pr.catch(function(){ if(voCur === a) voCur = null; });
+  }
+  function voRemainingMs(){
+    if(!voCur || !voWanted || voCur.ended) return 0;
+    if(!isFinite(voCur.duration)) return 0;
+    return Math.max(0, (voCur.duration - voCur.currentTime) * 1000);
+  }
+  function voSyncBtn(){
+    if(!voBtn) return;
+    voBtn.textContent = voWanted ? '🔊 Sound on' : '🔇 Sound off';
+    voBtn.setAttribute('aria-pressed', voWanted ? 'true' : 'false');
+  }
+
+  /* --- state --- */
+  var act = 0, beat = 0, t0 = 0, playing = false, raf = 0, visible = false, finished = false;
+
+  function beatsOf(a){ return ACTS[a].beats; }
+  function legsFor(b, i){
+    if(b.fan) return b.fan.map(function(k, j){ return leg('hub', k, i + j); });
+    return [ leg(b.from, b.to, i) ];
+  }
+
+  function render(prog){
+    var A = ACTS[act], bs = A.beats, cur = bs[beat];
+    var accent = A.key === 'today' ? WARM : RED;
+    ground();
+
+    /* completed legs stay on the board: today they accumulate into a tangle */
+    for(var i=0; i<beat; i++){
+      var done = legsFor(bs[i], i);
+      for(var j=0; j<done.length; j++){
+        strokeLeg(done[j], 1, A.key === 'today' ? 'rgba(232,220,192,0.52)' : 'rgba(224,86,63,0.46)',
+                  A.hardened ? 3 : 2, 0);
+      }
+    }
+
+    var active = {};
+    if(cur.fan){ cur.fan.forEach(function(k){ active[k] = 1; }); active.hub = 1; }
+    else { active[cur.from] = 1; active[cur.to] = 1; }
+
+    hubPad(accent);
+    SLABS.forEach(function(k){ slabBody(k, active[k] ? accent : null); });
+
+    var live = legsFor(cur, beat);
+    for(var m=0; m<live.length; m++){
+      strokeLeg(live[m], prog, accent, A.hardened ? 3 : 2, 14);
+    }
+
+    var hub = nodePt('hub'), approving = false;
+    if(A.actor === 'nova'){
+      novaGlyph(hub, (cur.from === 'hub' && cur.to === 'hub') ? (prog % 1) : 0);
+      var hp = nodePt('human');
+      approving = (cur.to === 'human');
+      if(approving){ ctx.save(); ctx.shadowColor = GREEN; ctx.shadowBlur = 20; }
+      personGlyph(hp, approving ? GREEN : '#b8b0a0', 1.25);
+      if(approving) ctx.restore();
+    } else {
+      /* today the person is the token: they are the thing that moves */
+      var pos = live[0] ? at(live[0], prog) : hub;
+      if(cur.from === 'hub' && cur.to === 'hub'){
+        pos = hub;
+        ctx.strokeStyle = 'rgba(232,220,192,' + (0.55 * (1 - (prog % 1))) + ')';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(hub.x, hub.y, S*0.18 + (prog % 1) * S*0.5, 0, 6.284); ctx.stroke();
+      }
+      ctx.save(); ctx.shadowColor = WARM; ctx.shadowBlur = 18;
+      personGlyph(pos, WARM, 1.25);
+      ctx.restore();
+    }
+
+    /* the diamond marks the one step that still reasons */
+    if(cur.tagK === 'model'){
+      var d = S*0.13, dy = hub.y - S*0.62;
+      ctx.fillStyle = AMBER;
+      ctx.beginPath(); ctx.moveTo(hub.x, dy-d); ctx.lineTo(hub.x+d, dy); ctx.lineTo(hub.x, dy+d); ctx.lineTo(hub.x-d, dy); ctx.closePath(); ctx.fill();
+    }
+
+    labelPass(A, active, approving);
+  }
+
+  /* every word on the board, drawn last */
+  function labelPass(A, active, approving){
+    var accent = A.key === 'today' ? WARM : RED;
+    SLABS.forEach(function(k){ slabLabel(k, active[k] ? accent : null); });
+    hubLabel(A.actor === 'nova' ? 'NOVA' : 'YOUR TEAM', accent);
+    if(A.actor === 'nova'){
+      var hp = nodePt('human');
+      ctx.textAlign = 'center';
+      ctx.font = '600 ' + Math.max(11.5, S*0.105) + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillStyle = approving ? GREEN : '#a8a193';
+      ctext(approving ? 'APPROVED' : 'YOUR TEAM', hp.x, hp.y - S*0.52);
+    }
+  }
+
+  function paint(){
+    var A = ACTS[act], cur = A.beats[beat];
+    statC.textContent = A.cost;
+    statEl.className = 'dy-stat' + (A.actor === 'nova' ? ' nova' : '');
+    narrEl.innerHTML = cur.text;
+    clockEl.textContent = cur.clock;
+    tagEl.textContent = cur.tag;
+    tagEl.className = 'dy-tag' + (cur.tagK ? ' ' + cur.tagK : '');
+  }
+
+  function frame(ts){
+    if(!playing) return;
+    if(!t0) t0 = ts;
+    var bs = beatsOf(act), cur = bs[beat], el = ts - t0;
+    var p = Math.min(el / drawOf(cur), 1);
+    render(p);
+    var span = 1 / bs.length, held = Math.min(el / durOf(cur), 1);
+    readout(ACTS[act], beat, held);
+    progEl.style.width = ((beat * span + span * held) * 100).toFixed(1) + '%';
+    /* never cut a sentence off: a clip still speaking extends its own beat */
+    if(held >= 1 && voRemainingMs() <= 0){
+      if(beat < bs.length - 1){ beat++; t0 = ts; paint(); voStart(ACTS[act], bs[beat]); }
+      else { playing = false; finished = true; return; }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function play(){
+    cancelAnimationFrame(raf);
+    voStop();
+    beat = 0; t0 = 0; finished = false; paint();
+    if(reduce){ showAll(); return; }
+    voStart(ACTS[act], beatsOf(act)[0]);
+    playing = true; raf = requestAnimationFrame(frame);
+  }
+
+  /* reduced motion: the finished board, no movement */
+  function showAll(){
+    var A = ACTS[act], bs = A.beats;
+    var accent = A.key === 'today' ? WARM : RED, all = {};
+    ground();
+    hubPad(accent);
+    SLABS.forEach(function(k){ all[k] = 1; slabBody(k, accent); });
+    for(var i=0; i<bs.length; i++){
+      var ls = legsFor(bs[i], i);
+      for(var j=0; j<ls.length; j++){
+        strokeLeg(ls[j], 1, A.key === 'today' ? 'rgba(232,220,192,0.55)' : 'rgba(224,86,63,0.55)', A.hardened ? 3 : 2, 0);
+      }
+    }
+    var hub = nodePt('hub');
+    if(A.actor === 'nova'){ novaGlyph(hub, 0); personGlyph(nodePt('human'), GREEN, 1.25); }
+    else personGlyph(hub, WARM, 1.25);
+    labelPass(A, all, A.actor === 'nova');
+    readout(A, bs.length - 1, 1);
+    beat = bs.length - 1; paint();
+    progEl.style.width = '100%';
+  }
+
+  function setAct(i){
+    act = i;
+    tabs.forEach(function(t, j){ t.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
+    cv.setAttribute('aria-label', ACTS[i].beats.map(function(b){ return b.text.replace(/<[^>]+>/g, ''); }).join(' '));
+    play();
+  }
+
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ setAct(parseInt(t.getAttribute('data-act'), 10)); });
+  });
+  /* Replay is an unambiguous "show me this" gesture, so it satisfies the
+     autoplay policy and turns narration on for anyone who has not opted out. */
+  replayEl.addEventListener('click', function(){
+    if(voPref() === null){ voWanted = true; voSave('on'); voSyncBtn(); }
+    play();
+  });
+  voBtn.addEventListener('click', function(){
+    voWanted = !voWanted;
+    voSave(voWanted ? 'on' : 'off');
+    voSyncBtn();
+    if(voWanted) voStart(ACTS[act], beatsOf(act)[beat]); else voStop();
+  });
+  voSyncBtn();
+
+  window.addEventListener('resize', function(){
+    resize();
+    if(!playing){ (reduce || finished) ? showAll() : render(0); }
+  });
+
+  resize(); paint();
+  if(reduce){ showAll(); }
+  else {
+    render(0);
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting && !visible){ visible = true; play(); }
+          else if(!e.isIntersecting){ visible = false; playing = false; cancelAnimationFrame(raf); voStop(); }
+        });
+      }, {threshold: 0.35}).observe(cv);
+    } else { play(); }
+  }
 })();
 </script>
 </body>

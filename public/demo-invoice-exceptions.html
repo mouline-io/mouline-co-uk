@@ -409,56 +409,6 @@ footer .meta a{color:var(--ink-soft)}
 .waity{position:absolute;right:16px;bottom:12px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--blue);background:#e9f0f6;border:1px solid #b9d0e2;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
 .waity.in{opacity:1}
 
-/* ---------- recipe-forming widget (moved from the landing §05) ---------- */
-.recipe-section{padding:8px 0 66px;border-top:1px solid var(--rule)}
-.recipe-section .rsec-head{max-width:76ch;margin-bottom:30px}
-.recipe-section .rsec-head h2{font-size:clamp(26px,3.4vw,38px);line-height:1.1;font-weight:600;letter-spacing:-0.02em;margin-bottom:12px}
-.recipe-section .rsec-head p{font-size:16.5px;color:var(--ink-soft);margin:0}
-.recipe-section .rsec-head p b{color:var(--ink)}
-.loop{display:grid;gap:18px;grid-template-columns:1fr}
-@media(min-width:720px){.loop{grid-template-columns:repeat(4,1fr)}}
-.loop-step{position:relative;cursor:pointer;width:100%;margin:0;padding:22px 20px 24px;background:var(--card);border:1px solid var(--rule);border-radius:8px;font-family:var(--sans);text-align:left;transition:border-color .18s ease}
-.loop-step:hover{border-color:var(--rule-strong)}
-.loop-step.on{border-color:var(--acc,var(--red))}
-.loop-step.on .n{color:var(--acc,var(--red))}
-.loop-step .n{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
-.loop-step .ls-h{display:block;font-family:var(--serif);font-weight:500;letter-spacing:-0.012em;font-size:21px;line-height:1.2;color:var(--ink);margin:10px 0 8px}
-.loop-step .ls-p{display:block;font-size:14.5px;line-height:1.6;color:var(--ink-soft)}
-.loop-step .ls-prog{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--acc,var(--red));opacity:.55}
-.loop-step.on .ls-prog.run{animation:fsprog 7s linear forwards}
-@keyframes fsprog{from{width:0}to{width:100%}}
-.recipe-view{margin-top:22px;background:var(--card);border:1px solid var(--rule-strong);border-radius:10px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 48px -28px rgba(40,30,10,.25)}
-.rv-bar{display:flex;align-items:flex-end;gap:8px;padding:8px 16px 0 10px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
-.rv-tabs{display:flex;align-items:flex-end;gap:4px;min-width:0}
-.rv-tab{appearance:none;-webkit-appearance:none;cursor:pointer;margin:0 0 -1px;padding:8px 13px 9px;background:transparent;border:1px solid transparent;border-radius:8px 8px 0 0;font-family:var(--mono);font-size:12px;line-height:1;color:var(--ink-faint);display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0;transition:color .18s ease}
-.rv-tab:hover{color:var(--ink-soft)}
-.rv-tab.on{background:var(--card);border-color:var(--rule-strong);border-bottom-color:var(--card);color:var(--ink)}
-.rv-dot{width:8px;height:8px;border-radius:50%;background:var(--rule-strong);flex:none;transition:background .3s}
-.rv-tab.on .rv-dot{background:var(--acc,var(--red))}
-.rv-kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--rule-strong);border-radius:10px;padding:1px 7px;flex:none;align-self:center;margin-bottom:6px}
-.rv-ver{margin-left:auto;align-self:center;margin-bottom:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--acc,var(--red));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}
-.rv-body{padding:10px 0;min-height:238px}
-.rline{display:flex;align-items:baseline;gap:12px;padding:7px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.5;opacity:0;transform:translateY(6px);animation:rlin .38s ease forwards}
-@keyframes rlin{to{opacity:1;transform:none}}
-.rline .ln{color:var(--ink-faint);font-size:10.5px;flex:none;width:16px;text-align:right}
-.rline .op{flex:none;width:10px;color:var(--ink-faint)}
-.rline .lbl{color:var(--ink);flex:none;font-weight:500}
-.rline .note{color:var(--ink-faint);font-size:11.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rline .tag{flex:none;font-size:10px;letter-spacing:.02em;color:var(--ink-faint)}
-.rline .tag.model{color:var(--amber)}
-.rline .tag.fixed{color:var(--green)}
-.rline .tag.always{color:var(--red);font-weight:700}
-.rline.human{font-family:var(--sans);font-size:13.5px;background:#e9f0f6;border-left:3px solid var(--blue);padding-left:15px;margin:2px 0}
-.rline.human .who-h{font-weight:700;color:var(--blue);flex:none}
-.rline.human .say{color:var(--ink-soft);font-style:italic;flex:1;min-width:0}
-.rline.add{background:var(--green-bg)}
-.rline.add .op{color:var(--green);font-weight:700}
-.rline.gated{background:#fbf7ee;border-left:3px solid var(--amber);padding-left:15px;margin-top:2px}
-.rv-foot{padding:13px 18px 15px;border-top:1px solid var(--rule);font-size:13.5px;color:var(--ink-soft)}
-.rv-foot b{color:var(--ink)}
-@media(max-width:600px){.rline .note{display:none}.rv-body{min-height:0}.rv-kind{display:none}.rv-tab{padding:8px 9px 9px;font-size:11px;gap:6px}.rv-ver{font-size:10px;max-width:38%}}
-@media(prefers-reduced-motion:reduce){.rline{animation:none;opacity:1;transform:none}.loop-step.on .ls-prog.run{animation:none}}
-
 @media(prefers-reduced-motion:reduce){
   .scene,.msg,.gm-row,.callout,.xchip,.match-t td,.nv-verdict{transition:none!important}
   .nova-pill .np-dot,.rstep.active .rs-dot{animation:none!important}
@@ -489,7 +439,6 @@ footer .meta a{color:var(--ink-soft)}
     </div>
     <div class="cta-row" style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap">
       <button class="btn big" id="playBtn">▶ Play the morning run</button>
-      <a class="btn ghost big" href="#how">How the recipe formed ↓</a>
     </div>
   </div>
 </section>
@@ -555,39 +504,9 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<section class="recipe-section" id="how">
-  <div class="wrap">
-    <div class="rsec-head">
-      <div class="eyebrow">Same recipe · how it formed</div>
-      <h2>The pinned recipe wasn't born pinned.</h2>
-      <p>Every recipe passes through the same four stages — watch <span class="mono">invoice.exceptions</span> go from improvising to pinned, the exact evolution behind the morning run above. <b>Tab across to <span class="mono">ledger.reconcile</span> and the same engine does it at month-end close.</b></p>
-    </div>
-    <div id="hardenWrap">
-      <div class="loop" id="loopTabs" role="tablist" aria-label="How Nova hardens work into a recipe">
-        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">01</span><span class="ls-h">Does the work — day one</span><span class="ls-p">At delivery, Nova picks up real tasks across your systems and produces a finished result, not just a suggestion — visible in Slack, MS Teams, Jira, GitHub or GitLab.</span><span class="ls-prog"></span></button>
-        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">02</span><span class="ls-h">Reviewed before it ships</span><span class="ls-p">Early on, a person signs off her output before it reaches a customer or the ledger — like reviewing a new hire's work.</span><span class="ls-prog"></span></button>
-        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">03</span><span class="ls-h">Learns from corrections</span><span class="ls-p">Each edit or approval teaches Nova the proven path — a versioned recipe: fixed steps, scoped tools, human-approved gates.</span><span class="ls-prog"></span></button>
-        <button class="loop-step" type="button" role="tab" aria-controls="recipePanel"><span class="n mono">04</span><span class="ls-h">Hardens into routine</span><span class="ls-p">Cases she has handled many times run the same way every time — more predictable and more hands-off, freeing your people for the new and the ambiguous.</span><span class="ls-prog"></span></button>
-      </div>
-      <div class="recipe-view" id="recipePanel" role="tabpanel" aria-label="The recipe as it forms">
-        <div class="rv-bar">
-          <div class="rv-tabs" role="tablist" aria-label="Scenario">
-            <button class="rv-tab on" type="button" role="tab" aria-selected="true" aria-controls="recipePanel"><span class="rv-dot"></span>invoice.exceptions</button>
-            <button class="rv-tab" type="button" role="tab" aria-selected="false" aria-controls="recipePanel"><span class="rv-dot"></span>ledger.reconcile</button>
-          </div>
-          <span class="rv-kind">recipe</span>
-          <span class="rv-ver" id="rvVer">run 1 · improvising</span>
-        </div>
-        <div class="rv-body" id="rvBody"></div>
-        <div class="rv-foot" id="rvFoot"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="fine-zone">
   <div class="wrap">
-    <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs; the companies and numbers are fictional, but the workflow — the systems touched, the order, the match, the gate — is the one our customers run. The recipe lines on the left are the actual pinned recipe: fixed steps where the route is known, judgment kept where it's needed, and a person on every write that leaves the building.</p>
+    <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs, and the companies and numbers are fictional. What is real is the shape of the work: the systems touched, the order, the match, the gate. The recipe lines on the left show fixed steps where the route is known, judgment kept where it's needed, and a person on every write that leaves the building.</p>
   </div>
 </section>
 </main>
@@ -1229,124 +1148,5 @@ if(reduced){
 })();
 </script>
 
-<script>
-/* ---- recipe-forming widget (moved from the landing §05) ---- */
-(function(){
-  var wrap = document.getElementById('hardenWrap');
-  if(!wrap) return;
-  function l(n,lbl,note,tag,cls){
-    return '<div class="rline'+(cls?' '+cls:'')+'">'
-      + (cls==='add' ? '<span class="op">+</span>' : '<span class="ln">'+n+'</span>')
-      + '<span class="lbl">'+lbl+'</span><span class="note">'+note+'</span>'
-      + (tag ? '<span class="tag '+tag+'">'+(tag==='model'?'◆ judgment':tag==='fixed'?'fixed':'human gate')+'</span>' : '')
-      + '</div>';
-  }
-  function human(who,say){
-    return '<div class="rline human"><span class="who-h">'+who+'</span><span class="say">'+say+'</span></div>';
-  }
-  var STAGE_META = [
-    { ver:'run 1 · improvising', acc:'#9a6e15' },
-    { ver:'run 2 · being taught', acc:'#2f6f9e' },
-    { ver:'v1 · first recipe', acc:'#3c7a45' },
-    { ver:'v3 · pinned — runs the same every time', acc:'#1c1a16' }
-  ];
-  var SCENARIOS = [
-    { file:'invoice.exceptions', stages:[
-      { foot:'Day one, Nova does the whole job — but every step is her own choice. Slow, exploratory, and all of it visible in the AP channel.',
-        body: l('1','read the invoice','PDF from the AP inbox — every vendor formats it differently','model')
-            + l('2','hunt for the PO','searching NetSuite by vendor name — slow','model')
-            + l('3','find the contract','picked v2 — the outdated one','model')
-            + l('4','flag a mismatch','can’t say if it’s an error or a new rate','model')
-            + l('5','draft a hold note','held for review','model') },
-      { foot:'Early on, a person signs off everything. Each edit isn’t just a correction — <b>it’s a lesson with a name attached</b>.',
-        body: l('1','hunt for the PO','by vendor name again — 20 minutes','model')
-            + human('Dana (AP lead)','“Match on the PO number in the invoice header — and rates live in the signed contract, Appendix B.”')
-            + l('2','pull the PO by number','there it is','model')
-            + l('3','rate from Appendix B','$18/unit — the invoice says $21','model')
-            + l('4','draft exception note','held for Dana’s sign-off','model')
-            + human('Dana','approved · sent to the vendor with the clause quoted ✓') },
-      { foot:'The proven path compiles into a recipe: <b>fixed steps where the route is known</b>, judgment kept only where it’s genuinely needed.',
-        body: l('1','read the invoice','every vendor formats it differently','model','add')
-            + l('2','pull the PO by its number','Dana’s edit — no more guessing','fixed','add')
-            + l('3','rate from Appendix B','the signed contract, always','fixed','add')
-            + l('4','three-way match','invoice · PO · goods receipt','fixed','add')
-            + l('5','classify the mismatch','approved rate change, or billing error?','model','add') },
-      { foot:'<b>v3 clears the AP inbox every morning</b> — clean invoices queued, the one mismatch escalated with the exact line and the clause that disagrees. Last month: a line billed $2,400 over contract, caught.',
-        body: l('1','read the invoice','every vendor formats it differently','model')
-            + l('2','pull the PO by its number','Dana’s edit — no more guessing','fixed')
-            + l('3','rate from Appendix B','the signed contract, always','fixed')
-            + l('4','three-way match','invoice · PO · goods receipt','fixed')
-            + l('5','classify the mismatch','approved rate change, or billing error?','model')
-            + l('G','a person approves','before anything is queued for payment','always','gated') }
-    ]},
-    { file:'ledger.reconcile', stages:[
-      { foot:'Day one, Nova runs the whole close check — but improvises the method, and totals hide what transactions reveal.',
-        body: l('1','pull Stripe payouts','the month’s payments','model')
-            + l('2','pull the ledger','NetSuite, same period','model')
-            + l('3','match the totals','totals, not transactions — a gap hides','model')
-            + l('4','list what’s off','$4,112 unexplained','model')
-            + l('5','draft a summary','“something doesn’t tie out”','model') },
-      { foot:'Early on, a person signs off everything. Each edit isn’t just a correction — <b>it’s a lesson with a name attached</b>.',
-        body: l('1','match the totals','still $4,112 off','model')
-            + human('Maya (accountant)','“Match transaction-by-transaction — and pull the bank feed too, payouts straddle months.”')
-            + l('2','match one-by-one','three orphans found','model')
-            + l('3','check the bank feed','one payout lands next month','model')
-            + human('Maya','approved · two entries drafted, one explained ✓') },
-      { foot:'The proven path compiles into a recipe: <b>fixed steps where the route is known</b>, judgment kept only where it’s genuinely needed.',
-        body: l('1','pull all three sides','Stripe · ledger · bank feed','fixed','add')
-            + l('2','match one-by-one','every transaction, both directions','fixed','add')
-            + l('3','classify each orphan','refund never booked? straddling payout? FX rounding?','model','add')
-            + l('4','draft the journal entry','the fix, ready to post','fixed','add') },
-      { foot:'<b>The tie-out that ate a day of month-end takes an hour</b> — and only entries a person approves are posted.',
-        body: l('1','pull all three sides','Stripe · ledger · bank feed','fixed')
-            + l('2','match one-by-one','every transaction, both directions','fixed')
-            + l('3','classify each orphan','refund never booked? straddling payout? FX rounding?','model')
-            + l('4','draft the journal entry','the fix, ready to post','fixed')
-            + l('G','the accountant posts it','Nova never writes to the ledger','always','gated') }
-    ]}
-  ];
-  var tabs = Array.prototype.slice.call(wrap.querySelectorAll('#loopTabs .loop-step'));
-  var fileTabs = Array.prototype.slice.call(wrap.querySelectorAll('.rv-tab'));
-  var body = document.getElementById('rvBody');
-  var ver = document.getElementById('rvVer');
-  var foot = document.getElementById('rvFoot');
-  var scen = 0, idx = 0, auto = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches), visible = false, hover = false;
-  function render(si,i){
-    scen = si; idx = i;
-    var m = STAGE_META[i], s = SCENARIOS[si].stages[i];
-    wrap.style.setProperty('--acc', m.acc);
-    tabs.forEach(function(t,j){
-      t.classList.toggle('on', j===i);
-      t.setAttribute('aria-selected', j===i ? 'true' : 'false');
-      var p = t.querySelector('.ls-prog');
-      p.classList.remove('run');
-      if(j===i && auto){ void p.offsetWidth; p.classList.add('run'); }
-    });
-    fileTabs.forEach(function(t,j){
-      t.classList.toggle('on', j===si);
-      t.setAttribute('aria-selected', j===si ? 'true' : 'false');
-    });
-    ver.textContent = m.ver;
-    body.innerHTML = s.body;
-    Array.prototype.forEach.call(body.children, function(el,j){ el.style.animationDelay = (j*70)+'ms'; });
-    foot.innerHTML = s.foot;
-  }
-  tabs.forEach(function(t,i){ t.addEventListener('click', function(){ auto = false; render(scen, i); }); });
-  fileTabs.forEach(function(t,i){ t.addEventListener('click', function(){ auto = false; render(i, idx); }); });
-  wrap.addEventListener('mouseenter', function(){ hover = true; });
-  wrap.addEventListener('mouseleave', function(){ hover = false; });
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(es){ es.forEach(function(e){ visible = e.isIntersecting; }); },{threshold:.25}).observe(wrap);
-  } else { visible = true; }
-  setInterval(function(){
-    if(auto && visible && !hover){
-      var ni = idx + 1, ns = scen;
-      if(ni >= STAGE_META.length){ ni = 0; ns = (scen + 1) % SCENARIOS.length; }
-      render(ns, ni);
-    }
-  }, 7000);
-  render(0,0);
-})();
-</script>
 </body>
 </html>
