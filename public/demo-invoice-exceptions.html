@@ -29,6 +29,7 @@
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --maxw:1300px;
+  --ease-soft:cubic-bezier(.32,.72,0,1);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -68,30 +69,7 @@ header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.88);bac
 /* ---------- Stage ---------- */
 .stage-zone{padding:6px 0 60px}
 .stage-scroll{overflow-x:auto;padding-bottom:8px}
-.stage{display:grid;grid-template-columns:248px minmax(0,1fr);gap:18px;min-width:1020px}
-
-/* recipe rail */
-.rail{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 0 10px;align-self:start;position:sticky;top:76px}
-.rail-head{padding:0 16px 10px;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.rail-head .rh-file{font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:500}
-.rail-head .rh-ver{font-family:var(--mono);font-size:9.5px;color:var(--green);white-space:nowrap}
-.rstep{display:flex;gap:10px;padding:10px 16px;border-top:1px solid transparent;opacity:.48;transition:opacity .3s}
-.rstep:first-of-type{border-top:none}
-.rstep .rs-dot{width:16px;height:16px;border-radius:50%;border:2px solid #cfcdcd;flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;margin-top:2px;transition:background .3s,border-color .3s}
-.rstep.active{opacity:1}
-.rstep.active .rs-dot{border-color:var(--red);border-top-color:transparent;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.rstep.done{opacity:1}
-.rstep.done .rs-dot{background:var(--green);border-color:var(--green)}
-.rstep.done .rs-dot::after{content:"✓"}
-.rstep .rs-lbl{font-size:13.5px;line-height:1.35;color:var(--ink);font-weight:500}
-.rstep .rs-note{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-top:2px}
-.rstep .rs-tag{display:block;font-family:var(--mono);font-size:9px;margin-top:3px;color:var(--ink-faint)}
-.rstep .rs-tag.model{color:var(--amber)}
-.rstep .rs-tag.fixed{color:var(--green)}
-.rstep .rs-tag.gate{color:var(--red);font-weight:700}
-.rstep.gatestep{background:#fbf7ee;border-left:3px solid var(--amber);padding-left:13px;margin-top:4px;opacity:.7}
-.rstep.gatestep.active,.rstep.gatestep.done{opacity:1}
+.stage{min-width:820px;max-width:980px;margin:0 auto}
 
 /* browser window */
 .winwrap{min-width:0}
@@ -112,6 +90,43 @@ header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.88);bac
 .scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .45s ease}
 .scene.on{opacity:1;pointer-events:auto}
 
+/* Transport lives in one corner control and nowhere else. Nothing is laid over
+   the scene and nothing but the control takes a click, so the mock interfaces
+   underneath stay free to become clickable in their own right. */
+
+/* the frame dims while the run is not advancing; never takes pointer events */
+.dim{position:absolute;inset:0;z-index:29;background:rgba(20,18,15,.13);
+     opacity:0;pointer-events:none;transition:opacity .5s var(--ease-soft)}
+.dim.on{opacity:1}
+
+/* dark frosted glass: every scene behind it is light */
+.vctl{position:absolute;left:16px;bottom:16px;z-index:31;appearance:none;margin:0;font:inherit;cursor:pointer;
+      height:38px;width:38px;padding:0;gap:0;
+      display:flex;align-items:center;justify-content:center;border-radius:999px;color:#fff;
+      background:rgba(22,20,17,.74);border:1px solid rgba(255,255,255,.14);
+      -webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);
+      box-shadow:0 12px 36px -12px rgba(20,16,10,.55),0 1px 2px rgba(20,16,10,.2);
+      transition:transform .5s var(--ease-soft),opacity .4s var(--ease-soft),background .35s var(--ease-soft),border-color .35s}
+.vctl svg{width:13px;height:13px;fill:currentColor;display:block;flex:none}
+.vctl .g-play{margin-left:2px}
+.vctl .g-pause{display:none}
+.vctl.playing .g-play{display:none}
+.vctl.playing .g-pause{display:block;margin-left:0}
+/* it names itself until the first press, then collapses to a disc */
+.vctl .vlbl{display:none;font-family:var(--sans);font-size:13.5px;font-weight:500;letter-spacing:-0.008em;white-space:nowrap}
+.vctl.named{width:auto;padding:0 18px 0 16px;gap:9px}
+.vctl.named .vlbl{display:block}
+.vctl.named .g-play{margin-left:0}
+/* a run in progress is worth watching, so the control steps back until asked for */
+.vctl.playing{opacity:.55}
+.win:hover .vctl.playing{opacity:1}
+.vctl:hover,.vctl:focus-visible{opacity:1;background:rgba(22,20,17,.9);border-color:rgba(255,255,255,.26);transform:scale(1.05)}
+/* over a dark scene corner (Slack's sidebar) the same glass inverts */
+.vctl.on-dark{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.44);box-shadow:0 12px 36px -12px rgba(0,0,0,.6),0 1px 2px rgba(0,0,0,.3)}
+.vctl.on-dark:hover,.vctl.on-dark:focus-visible{background:rgba(255,255,255,.4);border-color:rgba(255,255,255,.66)}
+.vctl.hide{opacity:0;visibility:hidden;pointer-events:none}
+@media(hover:none){ .vctl.playing{opacity:1} }
+
 /* Nova cursor */
 #cursor{position:absolute;left:0;top:0;z-index:40;pointer-events:none;opacity:0;transition:opacity .3s}
 #cursor.show{opacity:1}
@@ -130,13 +145,18 @@ header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.88);bac
 .scene-cap .cap-r{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);white-space:nowrap}
 .controls{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
 .dots{display:flex;gap:6px;flex:1;flex-wrap:wrap}
-.dot-btn{appearance:none;border:1px solid var(--rule-strong);background:var(--card);border-radius:20px;padding:6px 13px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .2s;position:relative;overflow:hidden}
+.dot-btn{appearance:none;border:1px solid var(--rule-strong);background:var(--card);border-radius:12px;padding:6px 13px 7px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);cursor:pointer;display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.3;text-align:left;transition:all .2s;position:relative;overflow:hidden}
 .dot-btn:hover{border-color:var(--ink);color:var(--ink-soft)}
 .dot-btn .d-n{color:var(--ink-faint)}
 .dot-btn.on{border-color:var(--ink);color:var(--ink);background:var(--paper)}
 .dot-btn.on .d-n{color:var(--red)}
 .dot-btn.done{color:var(--ink-soft);border-color:var(--rule-strong)}
 .dot-btn.done .d-n{color:var(--green)}
+/* how the recipe treats this step — the distinction the whole demo is about */
+.dot-btn .d-tag{font-size:9px;color:var(--ink-faint)}
+.dot-btn .d-tag em{font-style:normal;color:var(--amber)}
+.dot-btn .d-tag b{font-weight:500;color:var(--green)}
+.dot-btn .d-tag i{font-style:normal;font-weight:700;color:var(--red)}
 .ctl-btn{appearance:none;border:1px solid var(--rule-strong);background:transparent;border-radius:20px;padding:7px 15px;font-family:var(--sans);font-size:12.5px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
 .ctl-btn:hover{border-color:var(--ink);background:var(--card)}
 
@@ -210,7 +230,8 @@ footer .meta a{color:var(--ink-soft)}
 .gm-att .pic{width:26px;height:32px;background:#d93025;border-radius:3px;color:#fff;font-size:7.5px;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;flex:none}
 .gm-att .anm{font-size:12px;color:#202124;font-weight:500}
 .gm-att .asz{font-size:10.5px;color:#5f6368}
-.gm-counter{position:absolute;left:14px;bottom:12px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--green);background:var(--green-bg);border:1px solid #a9d3bd;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
+/* left:68px, not 14px — the transport control owns the bottom-left corner */
+.gm-counter{position:absolute;left:68px;bottom:14px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--green);background:var(--green-bg);border:1px solid #a9d3bd;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
 .gm-counter.in{opacity:1}
 
 /* PDF preview overlay (Gmail attachment viewer) */
@@ -464,7 +485,7 @@ footer .meta a{color:var(--ink-soft)}
 
 @media(prefers-reduced-motion:reduce){
   .scene,.msg,.gm-row,.callout,.xchip,.match-t td,.nv-verdict{transition:none!important}
-  .nova-pill .np-dot,.rstep.active .rs-dot{animation:none!important}
+  .nova-pill .np-dot{animation:none!important}
 }
 </style>
 </head>
@@ -500,17 +521,6 @@ footer .meta a{color:var(--ink-soft)}
   <div class="wrap">
     <div class="stage-scroll">
       <div class="stage" id="stage">
-        <!-- recipe rail -->
-        <div class="rail" id="rail">
-          <div class="rail-head"><span class="rh-file">invoice.exceptions</span><span class="rh-ver">v3 · pinned</span></div>
-          <div class="rstep" data-step="0"><span class="rs-dot"></span><span><span class="rs-lbl">read the invoice</span><span class="rs-note">every vendor formats it differently</span><span class="rs-tag model">◆ judgment</span></span></div>
-          <div class="rstep" data-step="1"><span class="rs-dot"></span><span><span class="rs-lbl">pull the PO by its number</span><span class="rs-note">Dana's edit — no more guessing</span><span class="rs-tag fixed">fixed</span></span></div>
-          <div class="rstep" data-step="2"><span class="rs-dot"></span><span><span class="rs-lbl">rate from Appendix B</span><span class="rs-note">the signed contract, always</span><span class="rs-tag fixed">fixed</span></span></div>
-          <div class="rstep" data-step="3"><span class="rs-dot"></span><span><span class="rs-lbl">three-way match</span><span class="rs-note">invoice · PO · goods receipt</span><span class="rs-tag fixed">fixed</span></span></div>
-          <div class="rstep" data-step="4"><span class="rs-dot"></span><span><span class="rs-lbl">classify the mismatch</span><span class="rs-note">rate change, or billing error?</span><span class="rs-tag model">◆ judgment</span></span></div>
-          <div class="rstep gatestep" data-step="5"><span class="rs-dot"></span><span><span class="rs-lbl">a person approves</span><span class="rs-note">before anything is queued for payment</span><span class="rs-tag gate">human gate</span></span></div>
-        </div>
-
         <!-- browser window -->
         <div class="winwrap">
           <div class="win">
@@ -527,6 +537,14 @@ footer .meta a{color:var(--ink-soft)}
               <div class="scene" id="sc-slack"></div>
 
               <div id="cursor"><div class="cur-dot" id="curDot"></div><div class="cur-tag" id="curTag">Nova</div></div>
+
+              <!-- the run's only transport control -->
+              <div class="dim on" id="dim" aria-hidden="true"></div>
+              <button class="vctl named" id="vctl" type="button" aria-label="Play the run">
+                <svg class="g-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.7 5.66c0-.96 1.05-1.55 1.87-1.05l9.06 5.54c.79.48.79 1.62 0 2.1l-9.06 5.54c-.82.5-1.87-.09-1.87-1.05V5.66Z"/></svg>
+                <svg class="g-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7.4" y="4.8" width="3.5" height="14.4" rx="1.75"/><rect x="13.1" y="4.8" width="3.5" height="14.4" rx="1.75"/></svg>
+                <span class="vlbl" id="vctlLbl">Play the run</span>
+              </button>
 
               <!-- closing overlay -->
               <div class="closing" id="closing">
@@ -547,8 +565,7 @@ footer .meta a{color:var(--ink-soft)}
           <div class="scene-cap"><span id="capText">7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.</span><span class="cap-r" id="capSys">Gmail · shared AP mailbox</span></div>
           <div class="controls">
             <div class="dots" id="dots"></div>
-            <button class="ctl-btn" id="voBtn" aria-pressed="false" title="Narration">🔇 Sound off</button>
-            <button class="ctl-btn" id="pauseBtn">❚❚ Pause</button>
+            <button class="ctl-btn" id="voBtn" aria-pressed="true" title="Mute or unmute the narration">🔊 Narration on</button>
             <button class="ctl-btn" id="replayBtn">↺ Replay</button>
           </div>
         </div>
@@ -559,7 +576,7 @@ footer .meta a{color:var(--ink-soft)}
 
 <section class="fine-zone">
   <div class="wrap">
-    <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs, and the companies and numbers are fictional. What is real is the shape of the work: the systems touched, the order, the match, the gate. The recipe lines on the left show fixed steps where the route is known, judgment kept where it's needed, and a person on every write that leaves the building.</p>
+    <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs, and the companies and numbers are fictional. What is real is the shape of the work: the systems touched, the order, the match, the gate. Each step under the window is tagged the way the pinned recipe treats it: <b>fixed</b> where the route is known, <b>judgment</b> kept where it's needed, and a <b>person</b> on every write that leaves the building.</p>
   </div>
 </section>
 </main>
@@ -581,12 +598,11 @@ function track(n,p){ if(typeof gtag==='function') gtag('event',n,p||{}); }
 /* Generation-based cancellation: newCtl() bumps ctl.gen, which invalidates every
    pending wait() from the previous run — no stale scene can paint over a new one. */
 var ctl = { paused:false, gen:0 };
-/* Set by the first run from any trigger. Clicking Play scrolls the stage into
-   view, which used to trip the scroll autoplay as well and start a second run
-   over the top of the first — invisible while the demo was silent, audible as a
-   restarted narration clip once it wasn't. */
-var runStarted = false;
-function newCtl(){ ctl.paused = false; ctl.gen++; pauseBtn.textContent = '❚❚ Pause'; voStop(); }
+/* True from the moment a run starts until it reaches the closing card. Paused
+   still counts as running — it is what tells the transport to say "Resume"
+   rather than "Play the run". */
+var running = false;
+function newCtl(){ ctl.paused = false; ctl.gen++; voStop(); }
 function wait(ms){
   var g = ctl.gen;
   return new Promise(function(res){
@@ -616,10 +632,36 @@ var cursorEl = document.getElementById('cursor');
 var curDot = document.getElementById('curDot');
 var curTag = document.getElementById('curTag');
 var closing = document.getElementById('closing');
-var pauseBtn = document.getElementById('pauseBtn');
+var dim = document.getElementById('dim');
+var vctl = document.getElementById('vctl');
+var vctlLbl = document.getElementById('vctlLbl');
 var playBtn = document.getElementById('playBtn');
 var voBtn = document.getElementById('voBtn');
 var dotsWrap = document.getElementById('dots');
+
+/* ---------- transport ---------- */
+/* One control, bottom left of the window, in three states: named before the
+   first press, a pause disc while the run advances, a play disc while it is
+   held. The frame dims whenever the run is not advancing, which is the only
+   thing ever drawn over a scene — and it takes no pointer events. */
+function transportSet(){
+  var over = closing.classList.contains('on'); /* the closing card owns the surface */
+  vctl.classList.toggle('hide', over);
+  dim.classList.toggle('on', !over && (!running || ctl.paused));
+  vctl.classList.toggle('playing', running && !ctl.paused);
+  vctl.classList.toggle('named', !running);
+  var lbl = !running ? 'Play the run' : (ctl.paused ? 'Resume' : 'Pause');
+  vctlLbl.textContent = lbl;
+  vctl.setAttribute('aria-label', lbl);
+}
+function setPaused(p){
+  ctl.paused = p;
+  if(voCur){
+    if(p){ voCur.pause(); }
+    else { var q = voCur.play(); if(q && q.catch) q.catch(function(){}); }
+  }
+  transportSet();
+}
 
 /* ---------- cursor ---------- */
 var curX = 0, curY = 0;
@@ -634,27 +676,27 @@ function cursorTo(el, inst){
   return inst ? true : wait(620);
 }
 
-/* ---------- rail + dots ---------- */
-var rsteps = $all('.rstep');
-function railSet(i, cls){ if(i<0) return; var el=rsteps[i]; if(!el) return; el.classList.remove('active'); el.classList.add(cls); }
-function railReset(){ rsteps.forEach(function(el){ el.classList.remove('active','done'); }); }
+/* ---------- scenes ---------- */
+/* `tag` carries what the recipe rail used to say: whether this step is pinned
+   to a fixed route, left to the model's judgment, or held for a person. */
 var SCENE_META = [
-  { id:'gmail',    url:'mail.google.com/mail/u/0/#inbox',            cap:'7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.', sys:'Gmail · shared AP mailbox',      dot:'Gmail',     pill:'Nova is working in this tab', rail:0, vo:'audio/scene-01-gmail.mp3' },
-  { id:'netsuite', url:'3688214.app.netsuite.com/app center/…',      cap:'The PO, found by its number from the invoice header — the way Dana taught her.', sys:'NetSuite · purchase orders',   dot:'NetSuite',  pill:'Nova is working in this tab', rail:1, vo:'audio/scene-02-netsuite.mp3' },
-  { id:'drive',    url:'drive.google.com/drive/folders/contracts',   cap:'The rate comes from the signed contract — Appendix B, always.', sys:'Google Drive · contract store',      dot:'Contract',  pill:'Nova is working in this tab', rail:2, vo:'audio/scene-03-contract.mp3' },
-  { id:'match',    url:'nova.internal · run #1,842',                 cap:'The three-way match, in Nova’s own working view: quantities tie out — the rate doesn’t.', sys:'Nova · three-way match',  dot:'The match', pill:'Nova internal view',         rail:3, vo:'audio/scene-04-match.mp3' },
-  { id:'slack',    url:'app.slack.com/client/T…/C-accounts-payable', cap:'One message sums up the morning. The judgment call goes to Dana — with everything attached.', sys:'Slack · #accounts-payable', dot:'The gate', pill:'Nova is working in this tab', rail:4, vo:'audio/scene-05-gate.mp3' }
+  { id:'gmail',    url:'mail.google.com/mail/u/0/#inbox',            cap:'7:58 AM — three invoices land in the AP inbox overnight. Nova reads each one.', sys:'Gmail · shared AP mailbox',      dot:'Gmail',     tag:'<em>◆ judgment</em>',       pill:'Nova is working in this tab', vo:'audio/scene-01-gmail.mp3' },
+  { id:'netsuite', url:'3688214.app.netsuite.com/app center/…',      cap:'The PO, found by its number from the invoice header — the way Dana taught her.', sys:'NetSuite · purchase orders',   dot:'NetSuite',  tag:'<b>fixed</b>',              pill:'Nova is working in this tab', vo:'audio/scene-02-netsuite.mp3' },
+  { id:'drive',    url:'drive.google.com/drive/folders/contracts',   cap:'The rate comes from the signed contract — Appendix B, always.', sys:'Google Drive · contract store',      dot:'Contract',  tag:'<b>fixed</b>',              pill:'Nova is working in this tab', vo:'audio/scene-03-contract.mp3' },
+  { id:'match',    url:'nova.internal · run #1,842',                 cap:'The three-way match, in Nova’s own working view: quantities tie out — the rate doesn’t.', sys:'Nova · three-way match',  dot:'The match', tag:'<b>fixed</b> + <em>◆ judgment</em>', pill:'Nova internal view',    vo:'audio/scene-04-match.mp3' },
+  { id:'slack',    url:'app.slack.com/client/T…/C-accounts-payable', cap:'One message sums up the morning. The judgment call goes to Dana — with everything attached.', sys:'Slack · #accounts-payable', dot:'The gate', tag:'<i>human gate</i>',   pill:'Nova is working in this tab', vo:'audio/scene-05-gate.mp3', darkCorner:true }
 ];
 /* ---------- voiceover ---------- */
-/* Three-state preference: 'on' / 'off' / unset. Unset stays silent for the
-   scroll-triggered run — browsers block unprompted audio anyway — but turns on
-   when someone explicitly asks for the run via Play or Replay. An explicit
-   'off' is never overridden. */
+/* Narration is a pure mute switch: the clip for the current scene always plays
+   with the run, muted or not, so toggling it never starts, stops or reseeks the
+   demo — and the pacing is identical either way. Muted playback is exempt from
+   autoplay policy, and every run now begins with a click, so unmuted audio is
+   allowed too. Default is on; only an explicit 'off' is remembered against it. */
 var VO_KEY = 'nova-demo-vo';
 function voPref(){ try { return localStorage.getItem(VO_KEY); } catch(e){ return null; } }
 function voSavePref(v){ try { localStorage.setItem(VO_KEY, v); } catch(e){} }
-var voWanted = voPref() === 'on';
-var voClips = null, voCur = null, curIdx = 0;
+var voWanted = voPref() !== 'off';
+var voClips = null, voCur = null;
 
 function voLoad(){
   if(voClips) return;
@@ -673,36 +715,28 @@ function voStop(){
 }
 function voStart(i){
   voStop();
-  if(!voWanted) return;
   voLoad();
   var a = voClips[SCENE_META[i].id];
   if(!a) return;
   voCur = a;
+  a.muted = !voWanted;
   try { a.currentTime = 0; } catch(e){}
   var p = a.play();
   /* blocked by autoplay policy, or the file is missing: run silently */
   if(p && p.catch) p.catch(function(){ if(voCur === a) voCur = null; });
 }
 /* How much narration is left once the scene's animation has finished. The run
-   waits this out rather than cutting the voice off mid-sentence. */
+   waits this out rather than cutting the voice off mid-sentence — and holds the
+   same beat when muted, so the demo doesn't change length with the toggle. */
 function voRemainingMs(){
-  if(!voCur || !voWanted || voCur.ended) return 0;
+  if(!voCur || voCur.ended) return 0;
   if(!isFinite(voCur.duration)) return 0;
   return Math.max(0, (voCur.duration - voCur.currentTime) * 1000);
 }
 function voSyncBtn(){
   if(!voBtn) return;
-  voBtn.textContent = voWanted ? '🔊 Sound on' : '🔇 Sound off';
+  voBtn.textContent = voWanted ? '🔊 Narration on' : '🔇 Narration off';
   voBtn.setAttribute('aria-pressed', voWanted ? 'true' : 'false');
-}
-/* Play/Replay are unambiguous "show me this" gestures, so they satisfy the
-   autoplay policy and switch narration on for anyone who hasn't opted out. */
-function voOnPlayGesture(){
-  if(voPref() !== null) return;
-  voWanted = true;
-  voSavePref('on');
-  voSyncBtn();
-  voLoad();
 }
 voSyncBtn();
 
@@ -710,7 +744,7 @@ var dots = [];
 SCENE_META.forEach(function(m,i){
   var b = document.createElement('button');
   b.className = 'dot-btn'; b.type='button';
-  b.innerHTML = '<span class="d-n">0'+(i+1)+'</span> '+m.dot;
+  b.innerHTML = '<span class="d-top"><span class="d-n">0'+(i+1)+'</span> '+m.dot+'</span><span class="d-tag">'+m.tag+'</span>';
   b.addEventListener('click', function(){ track('demo_scene',{scene:m.id,via:'dot'}); startFrom(i); });
   dotsWrap.appendChild(b); dots.push(b);
 });
@@ -723,7 +757,6 @@ SCENE_META.forEach(function(m){ sceneEls[m.id] = document.getElementById('sc-'+m
 var builders = {}, players = {};
 function showScene(i){
   var m = SCENE_META[i];
-  curIdx = i;
   SCENE_META.forEach(function(mm){ sceneEls[mm.id].classList.remove('on'); });
   sceneEls[m.id].innerHTML = builders[m.id]();
   sceneEls[m.id].classList.add('on');
@@ -732,6 +765,9 @@ function showScene(i){
   capSys.textContent = m.sys;
   novaPillTxt.textContent = m.pill;
   novaPill.classList.remove('idle');
+  /* Slack puts its sidebar under the transport's corner: flip to light glass so
+     the control doesn't go dark on dark */
+  vctl.classList.toggle('on-dark', !!m.darkCorner);
   dotsSet(i);
   cursorHide();
 }
@@ -832,7 +868,7 @@ builders.netsuite = function(){
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="callout" id="nsCallout" style="left:34px;bottom:26px">PO number came from the <b>invoice header</b> — Dana’s lesson, now a fixed step.<br>No searching by vendor name. No guessing.</div>' +
+      '<div class="callout" id="nsCallout" style="left:70px;bottom:26px">PO number came from the <b>invoice header</b> — Dana’s lesson, now a fixed step.<br>No searching by vendor name. No guessing.</div>' +
     '</div>' +
   '</div>';
 };
@@ -1136,7 +1172,6 @@ players.slack = async function(root){
   novaPill.classList.add('idle');
   novaPillTxt.textContent = 'Nova is waiting on the human gate';
   $('#slWait', root).classList.add('in');
-  railSet(4, 'done'); railSet(5, 'active');
   if(!await wait(1700)) return;
   $('#slWait', root).classList.remove('in');
   if(!userClicked){
@@ -1156,18 +1191,18 @@ players.slack = async function(root){
 /* ================= orchestration ================= */
 async function startFrom(i){
   newCtl();
-  runStarted = true;
+  running = true;
   var gen = ctl.gen;
   closing.classList.remove('on');
+  transportSet();
   /* when jumping mid-run, mark earlier scenes done */
-  railReset(); dotsReset();
-  for(var p=0;p<i;p++){ railSet(p,'done'); dots[p].classList.add('done'); }
+  dotsReset();
+  for(var p=0;p<i;p++){ dots[p].classList.add('done'); }
   if(i===0) track('demo_play',{from:0});
   for(var s=i; s<SCENE_META.length; s++){
     if(ctl.gen!==gen) return;
     var m = SCENE_META[s];
     showScene(s);
-    railSet(m.rail, 'active');
     track('demo_scene',{scene:m.id});
     voStart(s);
     await players[m.id](sceneEls[m.id]);
@@ -1176,15 +1211,15 @@ async function startFrom(i){
     var tail = voRemainingMs();
     if(tail > 150){ if(!await wait(tail)) return; }
     if(ctl.gen!==gen) return;
-    rsteps[m.rail].classList.remove('active'); rsteps[m.rail].classList.add('done');
-    if(m.id==='slack'){ rsteps[5].classList.remove('active'); rsteps[5].classList.add('done'); }
     if(s < SCENE_META.length-1){ if(!await wait(700)) return; }
   }
   if(ctl.gen!==gen) return;
+  running = false;
   novaPill.classList.add('idle');
   novaPillTxt.textContent = 'run complete';
   dots.forEach(function(d){ d.classList.add('done'); });
   closing.classList.add('on');
+  transportSet();
   track('demo_complete',{});
 }
 
@@ -1192,8 +1227,7 @@ function renderStatic(){
   /* reduced motion: all scenes in final state, clickable via dots */
   newCtl();
   closing.classList.remove('on');
-  railReset(); dotsReset();
-  rsteps.forEach(function(r){ r.classList.add('done'); });
+  dotsReset();
   var i = 0;
   function showFinal(j){
     i = j;
@@ -1212,33 +1246,39 @@ function renderStatic(){
   showFinal(0);
   playBtn.textContent = '▶ Step through the run';
   playBtn.addEventListener('click', function(){ showFinal(Math.min(i+1, SCENE_META.length-1)); document.getElementById('stage').scrollIntoView({behavior:'auto',block:'center'}); });
-  pauseBtn.style.display = 'none';
-  voBtn.style.display = 'none'; /* no timed run to narrate */
+  /* nothing to play or narrate, so the transport and its dim go away */
+  vctl.style.display = 'none';
+  dim.classList.remove('on');
+  voBtn.style.display = 'none';
   document.getElementById('replayBtn').addEventListener('click', function(){ showFinal(0); });
   document.getElementById('replayBtn2').addEventListener('click', function(){ showFinal(0); });
 }
 
 /* ---------- controls ---------- */
-pauseBtn.addEventListener('click', function(){
-  ctl.paused = !ctl.paused;
-  pauseBtn.textContent = ctl.paused ? '▶ Resume' : '❚❚ Pause';
-  if(voCur){
-    if(ctl.paused){ voCur.pause(); }
-    else { var p = voCur.play(); if(p && p.catch) p.catch(function(){}); }
-  }
+/* Deliberately the only click target for transport: the rest of the window
+   belongs to the scenes, whose own affordances (the Slack approve button today,
+   more of the mock interfaces later) must keep their clicks. */
+vctl.addEventListener('click', function(){
+  if(reduced) return;
+  if(!running){ track('demo_play',{via:'transport'}); startFrom(0); }
+  else { setPaused(!ctl.paused); track('demo_pause',{state: ctl.paused ? 'paused' : 'playing'}); }
 });
+/* Narration is mute-only. It must never start, stop or reseek the run — that
+   was the old bug, where toggling sound restarted the current scene's clip. */
 voBtn.addEventListener('click', function(){
   voWanted = !voWanted;
   voSavePref(voWanted ? 'on' : 'off');
   voSyncBtn();
   track('demo_audio_toggle', { state: voWanted ? 'on' : 'off' });
-  if(voWanted) voStart(curIdx); else voStop();
+  if(voCur) voCur.muted = !voWanted;
 });
-document.getElementById('replayBtn').addEventListener('click', function(){ voOnPlayGesture(); startFrom(0); });
-document.getElementById('replayBtn2').addEventListener('click', function(){ voOnPlayGesture(); startFrom(0); });
+/* reduced motion has no timed run to replay — renderStatic wires these to reset
+   the step-through instead */
+function onReplay(){ if(reduced) return; startFrom(0); }
+document.getElementById('replayBtn').addEventListener('click', onReplay);
+document.getElementById('replayBtn2').addEventListener('click', onReplay);
 playBtn.addEventListener('click', function(){
   if(reduced) return; /* handled in renderStatic */
-  voOnPlayGesture();
   document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'center'});
   startFrom(0);
 });
@@ -1247,17 +1287,13 @@ playBtn.addEventListener('click', function(){
 if(reduced){
   renderStatic();
 } else {
-  /* pre-render the first scene in a static pre-state so the window isn't empty */
+  /* Paused by default: the first scene is pre-rendered in a static pre-state,
+     so the window shows something real before the visitor asks for the run.
+     Nothing autoplays on scroll. */
   showScene(0);
   $all('.gm-row', sceneEls.gmail).forEach(function(r){ r.classList.add('in'); });
   $('#gmR1', sceneEls.gmail).classList.add('sel');
-
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting && !runStarted){ io.disconnect(); startFrom(0); }
-    });
-  }, {threshold:.35});
-  io.observe(document.getElementById('stage'));
+  transportSet();
 }
 })();
 </script>
