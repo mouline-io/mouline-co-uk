@@ -175,6 +175,22 @@ header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.88);bac
 .fine-zone{padding:0 0 56px}
 .fine{font-size:13px;color:var(--ink-faint);max-width:72ch;line-height:1.6}
 .fine b{color:var(--ink-soft)}
+
+/* closing call to action — mirrors the landing's .final band */
+.final{background:var(--ink);color:var(--paper);text-align:center;padding:88px 0}
+.final h2{color:var(--paper);font-size:clamp(30px,4.6vw,48px);line-height:1.06;max-width:20ch;margin:0 auto 18px}
+.final h2 em{font-style:italic;font-weight:400;color:#e8a598}
+.final p{color:#c8c1b0;font-size:18px;max-width:52ch;margin:0 auto 32px;line-height:1.55}
+.final .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.final .btn{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.final .btn:hover{background:#fff}
+.final .btn.ghost{background:transparent;color:var(--paper);border-color:rgba(246,242,233,.4)}
+.final .btn.ghost:hover{background:rgba(246,242,233,.08);border-color:var(--paper);transform:none}
+.final .note{color:#9a9284;font-size:12.5px;margin:28px auto 0;max-width:56ch}
+/* the header carries the same ask, always in reach */
+.top-actions{display:flex;align-items:center;gap:10px}
+.top-actions .btn{white-space:nowrap}
+@media(max-width:620px){ .top-actions .btn.ghost{display:none} }
 footer{padding:34px 0;background:var(--paper-2);border-top:1px solid var(--rule)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
 footer .brand{font-size:18px}
@@ -495,7 +511,10 @@ footer .meta a{color:var(--ink-soft)}
   <div class="wrap">
     <a class="brand" href="./"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline <small>Nova</small></a>
     <div class="demo-tag">live demo · <span class="dt-file">invoice.exceptions</span> · recipe v3</div>
-    <a class="btn ghost" href="./">← Back to site</a>
+    <div class="top-actions">
+      <a class="btn ghost" href="./">← Back to site</a>
+      <a class="btn" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a call</a>
+    </div>
   </div>
 </header>
 
@@ -577,6 +596,18 @@ footer .meta a{color:var(--ink-soft)}
 <section class="fine-zone">
   <div class="wrap">
     <p class="fine"><b>About this demo.</b> The Gmail, NetSuite, Google Drive and Slack screens above are faithful recreations of the real products' web UIs, and the companies and numbers are fictional. What is real is the shape of the work: the systems touched, the order, the match, the gate. Each step under the window is tagged the way the pinned recipe treats it: <b>fixed</b> where the route is known, <b>judgment</b> kept where it's needed, and a <b>person</b> on every write that leaves the building.</p>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>That was one recipe. <em>Your team runs dozens.</em></h2>
+    <p>Nova deploys in about a week. The first step is a short call to map your stack and confirm access. From there the agent is working on real cases within days.</p>
+    <div class="cta-row">
+      <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
+      <a class="btn ghost big" href="./">See how Nova works</a>
+    </div>
+    <p class="note">Every write still waits for a person. Nova runs on your own network, on hardware you control.</p>
   </div>
 </section>
 </main>
