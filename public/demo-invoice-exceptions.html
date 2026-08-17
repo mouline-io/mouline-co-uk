@@ -355,23 +355,67 @@ footer .meta a{color:var(--ink-soft)}
 .nv-verdict .vchip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--red);background:var(--red-bg);border:1px solid #e6c4bd;border-radius:6px;padding:5px 12px;margin-left:8px}
 
 /* ================= SLACK ================= */
-.slack{--s-text:#1d1c1d;--s-2:#616061;--s-bd:rgba(29,28,29,.13);--s-hover:#f8f8f8;--s-green:#007a5a;position:absolute;inset:0;font-family:'Lato','Slack-Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#fff;color:var(--s-text);display:flex;flex-direction:column}
-.slack-top{display:flex;align-items:center;padding:7px 12px;background:#3f0e40;flex:none}
+.slack{--s-text:#1d1c1d;--s-2:#616061;--s-bd:rgba(29,28,29,.13);--s-hover:#f8f8f8;--s-green:#007a5a;--s-av:#3f0e40;--s-av-dark:#350d36;--s-active:#1164a3;--s-pres:#2bac76;position:absolute;inset:0;font-family:'Lato','Slack-Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#fff;color:var(--s-text);display:flex}
+/* aubergine workspace sidebar */
+.srail{width:204px;flex:none;background:var(--s-av);color:#fff;display:flex;flex-direction:column;font-size:14px}
+.sr-head{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s-av-dark);border-bottom:1px solid rgba(0,0,0,.25)}
+.sr-head .ws-ic{width:27px;height:27px;border-radius:7px;background:#fff;color:var(--s-av);font-weight:900;font-size:13.5px;display:flex;align-items:center;justify-content:center;flex:none}
+.sr-head .ws-name{font-weight:900;font-size:15.5px;flex:1}
+.sr-head svg{width:15px;height:15px;color:rgba(255,255,255,.75);flex:none}
+.sr-sec{margin-top:13px}
+.sr-lbl{padding:0 16px 5px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:space-between}
+.sr-lbl .sr-add{color:rgba(255,255,255,.65);font-size:16px;line-height:1;font-weight:400}
+.sr-row{display:flex;align-items:center;gap:6px;margin:0 7px;padding:3px 9px;border-radius:5px;color:rgba(255,255,255,.88);font-size:14px;line-height:1.55}
+.sr-row .sr-hash{font-weight:700;opacity:.7}
+.sr-row.on{background:var(--s-active);color:#fff;font-weight:700}
+.sr-row.on .sr-hash{opacity:1}
+.sr-row .dm-av{width:20px;height:20px;border-radius:5px;background:var(--blue);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none}
+.sr-row .sr-pres{width:8px;height:8px;border-radius:50%;background:var(--s-pres);margin-left:auto;flex:none}
+.sr-user{margin-top:auto;display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--s-av-dark);border-top:1px solid rgba(0,0,0,.25)}
+.sr-user .uav{position:relative;width:26px;height:26px;border-radius:6px;background:var(--blue);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none}
+.sr-user .uav .pres{position:absolute;right:-3px;bottom:-3px;width:10px;height:10px;border-radius:50%;background:var(--s-pres);border:2px solid var(--s-av-dark)}
+.sr-user .uname{font-size:13.5px;font-weight:700;flex:1;line-height:1.3}
+.sr-user .uname small{display:block;font-size:10.5px;font-weight:400;color:rgba(255,255,255,.6)}
+/* main pane */
+.slack-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.slack-top{display:flex;align-items:center;gap:16px;padding:7px 14px;background:var(--s-av);flex:none}
+.st-hist{display:flex;gap:14px;color:rgba(255,255,255,.75);flex:none}
+.st-hist svg{width:15px;height:15px;display:block}
 .st-search{flex:1;display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.72);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:4px 10px;max-width:520px}
 .st-search svg{width:12px;height:12px;flex:none;opacity:.75}
-.slack-bar{display:flex;align-items:center;gap:8px;padding:9px 16px;background:#fff;border-bottom:1px solid var(--s-bd);flex:none}
+.slack-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;background:#fff;border-bottom:1px solid var(--s-bd);flex:none}
 .slack-bar .star{color:var(--s-2);font-size:14px}
 .slack-bar .ch{font-weight:900;font-size:15px}
 .slack-bar .ch .hash{color:var(--s-2);font-weight:700}
 .slack-bar .runmeta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--s-2);background:var(--s-hover);border:1px solid var(--s-bd);padding:3px 9px;border-radius:20px;display:flex;align-items:center;gap:6px}
 .slack-bar .runmeta b{color:var(--s-text)}
+.slack-bar .members{display:flex;align-items:center;flex:none}
+.slack-bar .members .mav{width:22px;height:22px;border-radius:5px;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-7px}
+.slack-bar .members .mav:first-child{margin-left:0}
+.slack-bar .members .mcount{height:22px;display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--s-2);background:var(--s-hover);border:2px solid #fff;border-radius:11px;padding:0 8px;margin-left:-7px}
+.slack-bar .hicons{display:flex;align-items:center;gap:13px;color:var(--s-2);margin-left:16px}
+.slack-bar .hicons svg{width:15px;height:15px;opacity:.9}
 .thread{flex:1;padding:10px 0 14px;overflow-y:auto;scrollbar-width:thin;background:#fff}
-.msg{display:grid;grid-template-columns:34px 1fr;gap:9px;padding:5px 16px 6px;opacity:0;transform:translateY(8px);transition:opacity .42s ease,transform .42s ease}
+.thread::-webkit-scrollbar{width:8px}
+.thread::-webkit-scrollbar-thumb{background:rgba(29,28,29,.2);border-radius:8px}
+.sday{display:flex;align-items:center;gap:14px;padding:4px 20px 12px;font-size:12px;font-weight:700;color:var(--s-2)}
+.sday::before,.sday::after{content:"";flex:1;height:1px;background:var(--s-bd)}
+.msg{position:relative;display:grid;grid-template-columns:34px 1fr;gap:9px;padding:5px 16px 6px;opacity:0;transform:translateY(8px);transition:opacity .42s ease,transform .42s ease,background .1s ease}
+.msg:hover{background:var(--s-hover)}
+.mact{position:absolute;top:-13px;right:14px;display:flex;align-items:center;gap:1px;padding:2px 5px;background:#fff;border:1px solid var(--s-bd);border-radius:8px;box-shadow:0 1px 4px rgba(29,28,29,.14);opacity:0;pointer-events:none;transition:opacity .12s ease}
+.msg:hover .mact{opacity:1}
+.mact .ma-btn{display:flex;align-items:center;gap:2px;padding:4px 6px;border-radius:5px;color:var(--s-2)}
+.mact .ma-btn:hover{background:var(--s-hover)}
+.mact svg{width:15px;height:15px}
+.mact .ma-div{width:1px;height:16px;background:var(--s-bd);margin:0 3px}
+.mact .ma-reply{font-size:12px;font-weight:700;color:var(--s-2);padding:4px 7px;border-radius:5px}
+.mact .ma-reply:hover{background:var(--s-hover)}
 .msg.in{opacity:1;transform:none}
 .msg .av{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:800}
 .av.bot{background:#1d1d1f}
 .av.nova{background:var(--red)}
 .av.human{background:var(--blue)}
+.av.nova.photo,.mav.photo,.dm-av.photo{background-size:cover;background-position:center}
 .who{font-size:14px;line-height:1.4}
 .who .name{font-weight:900}
 .who .tag{font-size:9.5px;font-weight:700;text-transform:uppercase;background:#e8e8e8;color:var(--s-2);padding:1px 5px;border-radius:2px;margin-left:6px;vertical-align:1px}
@@ -406,7 +450,16 @@ footer .meta a{color:var(--ink-soft)}
 .draftnote .dn-b{font-size:12px;font-style:italic;color:#3a3a3a;line-height:1.5;margin-top:5px}
 .resolved{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s-green);font-weight:700;padding:4px 0}
 .resolved .badge{background:#e8f3ec;color:var(--s-green);font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #a9d3bd}
-.waity{position:absolute;right:16px;bottom:12px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--blue);background:#e9f0f6;border:1px solid #b9d0e2;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
+.slack-compose{flex:none;padding:0 16px 12px;background:#fff}
+.compose-in{display:flex;align-items:center;gap:11px;border:1px solid var(--s-bd);border-radius:8px;padding:8px 12px;color:var(--s-2)}
+.ci-add{display:flex;flex:none;color:var(--s-2)}
+.ci-add svg{width:16px;height:16px}
+.ci-place{flex:1;font-size:13.5px;color:var(--s-2)}
+.ci-icons{display:flex;align-items:center;gap:12px;flex:none;color:var(--s-2)}
+.ci-icons svg{width:15px;height:15px;opacity:.9}
+.ci-send{width:27px;height:27px;border-radius:7px;background:var(--s-green);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.ci-send svg{width:14px;height:14px}
+.waity{position:absolute;right:16px;bottom:70px;z-index:12;font-family:var(--mono);font-size:10.5px;color:var(--blue);background:#e9f0f6;border:1px solid #b9d0e2;border-radius:20px;padding:5px 12px;opacity:0;transition:opacity .4s}
 .waity.in{opacity:1}
 
 @media(prefers-reduced-motion:reduce){
@@ -685,6 +738,9 @@ function showScene(i){
 
 /* ================= SCENE BUILDERS ================= */
 
+/* Nova's portrait — same image the landing page uses for .av.nova.photo */
+var NOVA_IMG = 'data:image/jpeg;base64,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';
+
 /* ----- Gmail ----- */
 builders.gmail = function(){
   return '' +
@@ -844,10 +900,52 @@ builders.match = function(){
 builders.slack = function(){
   return '' +
   '<div class="slack">' +
-    '<div class="slack-top"><span class="st-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search Mouline</span></div>' +
-    '<div class="slack-bar"><span class="star">☆</span><span class="ch"><span class="hash">#</span>accounts-payable</span><span class="runmeta"><span style="width:6px;height:6px;border-radius:50%;background:#2eb67d;display:inline-block"></span> morning run · <b>recipe v3</b></span></div>' +
+    '<div class="srail">' +
+      '<div class="sr-head"><span class="ws-ic">M</span><span class="ws-name">Mouline</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>' +
+      '<div class="sr-sec">' +
+        '<div class="sr-lbl">Channels<span class="sr-add">+</span></div>' +
+        '<div class="sr-row on"><span class="sr-hash">#</span>accounts-payable</div>' +
+        '<div class="sr-row"><span class="sr-hash">#</span>finance-ops</div>' +
+        '<div class="sr-row"><span class="sr-hash">#</span>general</div>' +
+      '</div>' +
+      '<div class="sr-sec">' +
+        '<div class="sr-lbl">Direct messages<span class="sr-add">+</span></div>' +
+        '<div class="sr-row"><span class="dm-av">D</span>Dana<span class="sr-pres"></span></div>' +
+        '<div class="sr-row"><span class="dm-av" style="background:#e8912d">K</span>Kofi<span class="sr-pres" style="background:#b3b1ac"></span></div>' +
+      '</div>' +
+      '<div class="sr-sec">' +
+        '<div class="sr-lbl">Apps<span class="sr-add">+</span></div>' +
+        '<div class="sr-row"><span class="dm-av photo" style="background-image:url('+NOVA_IMG+')"></span>Nova<span class="sr-pres"></span></div>' +
+      '</div>' +
+      '<div class="sr-user"><span class="uav">D<span class="pres"></span></span><span class="uname">Dana<small>Active</small></span></div>' +
+    '</div>' +
+    '<div class="slack-main">' +
+    '<div class="slack-top">' +
+      '<span class="st-hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></span>' +
+      '<span class="st-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search Mouline</span>' +
+    '</div>' +
+    '<div class="slack-bar">' +
+      '<span class="star">☆</span><span class="ch"><span class="hash">#</span>accounts-payable</span>' +
+      '<span class="runmeta"><span style="width:6px;height:6px;border-radius:50%;background:#2eb67d;display:inline-block"></span> morning run · <b>recipe v3</b></span>' +
+      '<span class="members">' +
+        '<span class="mav photo" style="background-image:url('+NOVA_IMG+')"></span>' +
+        '<span class="mav" style="background:#2f6f9e">D</span>' +
+        '<span class="mav" style="background:#e8912d">K</span>' +
+        '<span class="mav" style="background:#007a5a">A</span>' +
+        '<span class="mcount">+9</span>' +
+      '</span>' +
+      '<span class="hicons">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' +
+      '</span>' +
+    '</div>' +
     '<div class="thread" id="slThread">' +
-      '<div class="msg" data-m="0"><div class="av nova">N</div><div>' +
+      '<div class="sday">Today</div>' +
+      '<div class="msg" data-m="0"><div class="av nova photo" style="background-image:url('+NOVA_IMG+')"></div><div>' +
+        '<div class="mact"><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><svg style="width:9px;height:9px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="12" r="1.8"/></svg></span><span class="ma-div"></span><span class="ma-reply">Reply</span></div>' +
         '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:04 AM</span></div>' +
         '<div class="body-txt">Morning. The AP inbox is cleared — <b>3 invoices</b> processed against POs, receipts and contracts.' +
           '<div class="apcard"><h4>AP inbox cleared — 3 invoices</h4>' +
@@ -858,7 +956,8 @@ builders.slack = function(){
           '</div>' +
         '</div>' +
       '</div></div>' +
-      '<div class="msg" data-m="1"><div class="av nova">N</div><div>' +
+      '<div class="msg" data-m="1"><div class="av nova photo" style="background-image:url('+NOVA_IMG+')"></div><div>' +
+        '<div class="mact"><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><svg style="width:9px;height:9px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="12" r="1.8"/></svg></span><span class="ma-div"></span><span class="ma-reply">Reply</span></div>' +
         '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:04 AM</span></div>' +
         '<div class="body-txt">' +
           '<div class="apcard"><h4>Exception — INV-10422 · Northwind Traders</h4>' +
@@ -869,7 +968,8 @@ builders.slack = function(){
           '</div>' +
         '</div>' +
       '</div></div>' +
-      '<div class="msg" data-m="2"><div class="av nova">N</div><div>' +
+      '<div class="msg" data-m="2"><div class="av nova photo" style="background-image:url('+NOVA_IMG+')"></div><div>' +
+        '<div class="mact"><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><svg style="width:9px;height:9px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="12" r="1.8"/></svg></span><span class="ma-div"></span><span class="ma-reply">Reply</span></div>' +
         '<div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:05 AM</span></div>' +
         '<div class="body-txt">Everything is staged. Nothing leaves until you approve.' +
           '<div class="draftnote"><div class="dn-h"><span>draft — to billing@northwindtraders.example</span><span>clause quoted</span></div>' +
@@ -882,11 +982,25 @@ builders.slack = function(){
         '</div>' +
       '</div></div>' +
       '<div class="msg" data-m="3"><div class="av human">D</div><div>' +
+        '<div class="mact"><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><svg style="width:9px;height:9px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span class="ma-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="12" r="1.8"/></svg></span><span class="ma-div"></span><span class="ma-reply">Reply</span></div>' +
         '<div class="who"><span class="name">Dana (AP lead)</span><span class="ts">8:05 AM</span></div>' +
         '<div class="body-txt">Approved — send it. Good catch on the rate. <span style="color:var(--s-green)">✓</span>' +
           '<div class="resolved">Done <span class="badge">inbox zero</span><span class="badge">7 min</span><span class="badge">$2,400 held</span><span class="badge">recipe v3</span></div>' +
         '</div>' +
       '</div></div>' +
+    '</div>' +
+    '<div class="slack-compose"><div class="compose-in">' +
+      '<span class="ci-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>' +
+      '<span class="ci-place">Message #accounts-payable</span>' +
+      '<span class="ci-icons">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>' +
+      '</span>' +
+      '<span class="ci-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>' +
+    '</div></div>' +
     '</div>' +
     '<div class="waity" id="slWait">waiting on Dana — the human gate</div>' +
   '</div>';
