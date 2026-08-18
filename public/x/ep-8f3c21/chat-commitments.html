@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova for Excel Plumbing &amp; Air — nothing agreed in a chat should die there</title>
+<meta name="description" content="A worked example: Nova does the job of catching work your crews agreed to in Viber that never became a change order, before the draw closes.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f6f2e9'/%3E%3Ccircle cx='20' cy='20' r='15.5' fill='none' stroke='%231c1a16' stroke-width='2'/%3E%3Cpath d='M8.4 9.6 Q24 16 31.2 31.4' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 16.8 Q19 22 28.4 34' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3Cpath d='M8.4 30.4 Q24 24 31.2 8.6' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 23.2 Q19 18 28.4 6' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f2e9; --paper-2:#efe9da; --card:#fffdf7;
+  --ink:#1c1a16; --ink-soft:#534e44; --ink-faint:#8d877a;
+  --rule:#ddd5c2; --rule-strong:#cfc6af;
+  --red:#bb3a2b; --red-bg:#f6e3df;
+  --amber:#9a6e15; --green:#3c7a45; --green-bg:#e2eee0;
+  --serif:'Fraunces','Iowan Old Style',Georgia,'Times New Roman',serif;
+  --sans:'Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --viber:#7360f2; --wa:#128c7e; --st:#12233d; --pc:#f47920; --tx:#c74634;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --maxw:1220px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.012em;margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.narrow{max-width:960px}
+
+/* ---------- top bar ---------- */
+header.top{position:sticky;top:0;z-index:60;background:rgba(246,242,233,.9);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:16px}
+.brand{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand .mark{width:23px;height:23px;flex:none}
+.brand small{font-family:var(--sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);font-weight:900}
+.top-tag{font-family:var(--mono);font-size:11px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-tag b{color:var(--red);font-weight:500}
+@media(max-width:720px){.top-tag{display:none}}
+
+/* ---------- intro ---------- */
+.intro{padding:58px 0 10px}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:900;margin:0 0 18px;display:flex;align-items:center;gap:11px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--red);flex:none}
+.intro h1{font-size:clamp(32px,5.4vw,56px);line-height:1.04;letter-spacing:-.028em;font-weight:600;max-width:18ch}
+.intro h1 em{font-style:italic;font-weight:400;color:var(--red)}
+.dek{font-size:18.5px;line-height:1.55;color:var(--ink-soft);margin:24px 0 0;max-width:62ch}
+.dek b{color:var(--ink);font-weight:700}
+.rail{margin:30px 0 0;border-left:2px solid var(--rule-strong);padding:3px 0 3px 16px;font-size:13px;color:var(--ink-faint);max-width:74ch;line-height:1.6}
+.rail b{color:var(--ink-soft);font-weight:700}
+
+/* ---------- transcript + recipe ---------- */
+.main{padding:46px 0 8px}
+.main .wrap{display:grid;grid-template-columns:minmax(0,1fr) 316px;gap:52px;align-items:start}
+
+.thread{position:relative;min-width:0}
+.thread::before{content:"";position:absolute;left:21px;top:6px;bottom:0;width:2px;
+  background:repeating-linear-gradient(to bottom,var(--rule) 0 5px,transparent 5px 11px)}
+
+.daymark{position:relative;padding:0 0 22px 62px;margin-top:8px}
+.daymark::before{content:"";position:absolute;left:14px;top:3px;width:16px;height:16px;border:2px solid var(--rule-strong);background:var(--paper);transform:rotate(45deg)}
+.daymark span{font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);background:var(--paper);padding-right:10px}
+.daymark b{color:var(--red);font-weight:500}
+
+.turn{position:relative;padding:0 0 32px 62px}
+.turn::before{content:"";position:absolute;left:15px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--rule-strong);z-index:2}
+/* a person is speaking, so the spine goes solid through this turn */
+.turn.human::after{content:"";position:absolute;left:21px;top:0;bottom:0;width:2px;background:var(--rule-strong)}
+.turn.human::before{background:var(--ink);border-color:var(--ink)}
+.turn.nova::before{background:var(--red-bg);border-color:var(--red)}
+/* the only moments on the page where the recipe changes */
+.turn.learn::after{content:"";position:absolute;left:19px;top:0;bottom:0;width:6px;background:var(--red);border-radius:3px}
+.turn.learn::before{background:var(--red);border-color:var(--red);box-shadow:0 0 0 5px var(--red-bg)}
+
+.who{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:9px}
+.who b{color:var(--ink-soft);font-weight:500}
+.who .ch{color:var(--viber)}
+.who .ch.wa{color:#1f9d55}
+
+.bub{display:inline-block;max-width:46ch;padding:10px 15px;border-radius:15px;font-size:15px;line-height:1.45}
+.bub.viber{background:#ede9ff;border:1px solid #d9d1ff;border-bottom-left-radius:4px}
+.bub.wa{background:#dcf8c6;border:1px solid #cdeab4;border-bottom-left-radius:4px}
+.bub .t{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);margin-top:6px}
+
+.say{font-family:var(--serif);font-size:19px;line-height:1.48;color:var(--ink);max-width:54ch;margin:0}
+.say em{font-style:italic;color:var(--red)}
+.note{font-size:14px;color:var(--ink-soft);margin:11px 0 0;max-width:60ch}
+
+/* ---------- app panels ---------- */
+.work{margin:18px 0 0;max-width:640px}
+.work-lbl{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-bottom:8px;display:flex;gap:9px;align-items:center}
+.work-lbl::before{content:"";width:16px;height:1px;background:var(--rule-strong);flex:none}
+.app{border:1px solid var(--rule-strong);border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 18px 38px -26px rgba(40,30,10,.55)}
+.app-bar{display:flex;align-items:center;gap:10px;padding:0 13px;height:36px;color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.01em}
+.app-bar .dotrow{display:flex;gap:5px;flex:none;opacity:.55}
+.app-bar .dotrow i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.app-bar .sp{margin-left:auto;font-weight:400;opacity:.8;font-family:var(--mono);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-body{font-size:12.5px;color:#222}
+.arow{display:flex;gap:12px;padding:10px 14px;border-bottom:1px solid #eceae5;align-items:baseline}
+.arow:last-child{border-bottom:0}
+.arow .k{font-family:var(--mono);font-size:10.5px;color:#8b8b8b;width:100px;flex:none}
+.arow .v{flex:1;min-width:0}
+.arow.hit{background:#fdf1ef;box-shadow:inset 3px 0 0 var(--red)}
+.arow.hit .v b{color:var(--red)}
+.arow.good{background:#f2f8f1;box-shadow:inset 3px 0 0 var(--green)}
+.tick{font-family:var(--mono);font-size:10px;color:var(--green)}
+.cross{font-family:var(--mono);font-size:10px;color:var(--red)}
+.atabs{display:flex;gap:0;border-bottom:1px solid #eceae5;background:#faf9f7}
+.atabs span{font-size:11px;padding:8px 13px;color:#8b8b8b;border-bottom:2px solid transparent}
+.atabs span.on{color:#222;border-bottom-color:var(--pc);font-weight:700}
+
+/* viber thread */
+.vth{background:#f3f1fb;padding:13px}
+.vmsg{max-width:78%;background:#fff;border-radius:13px;padding:8px 12px;font-size:12.5px;margin-bottom:9px;box-shadow:0 1px 2px rgba(0,0,0,.07);line-height:1.45}
+.vmsg .nm{display:block;font-size:10px;color:var(--viber);font-weight:700;margin-bottom:3px}
+.vmsg .tm{font-family:var(--mono);font-size:9px;color:#a09bb5;float:right;margin:4px 0 0 9px}
+/* the timestamp floats, so the bubble has to contain it or it lands on the next message */
+.vmsg::after{content:"";display:table;clear:both}
+.vmsg.me{margin-left:auto;background:#e7e2ff}
+.vmsg.flag{box-shadow:0 0 0 2px var(--red),0 1px 2px rgba(0,0,0,.07)}
+.vnote{font-family:var(--mono);font-size:9.5px;color:var(--red);margin:0 0 11px;line-height:1.5}
+.vbar{display:flex;align-items:center;gap:8px;padding:8px 13px;border-top:1px solid #e6e2f5;background:#fff;font-size:11.5px;color:#a09bb5}
+
+/* findings */
+.finds{margin:18px 0 0;border:1px solid var(--rule);background:var(--card);border-radius:5px;max-width:640px}
+.find{display:flex;gap:14px;padding:13px 16px;border-bottom:1px solid var(--rule);align-items:flex-start;transition:opacity .5s ease}
+.find:last-child{border-bottom:0}
+.find .n{font-family:var(--mono);font-size:11px;color:var(--ink-faint);width:14px;flex:none;padding-top:3px}
+.find .b{flex:1;min-width:0}
+.find .ttl{display:block;font-size:14.5px;font-weight:700;line-height:1.35}
+.find .ev{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:5px;line-height:1.65}
+.conf{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:11px;flex:none;margin-top:2px}
+.conf.sure{background:var(--green-bg);color:var(--green)}
+.conf.guess{background:#f7eed6;color:var(--amber)}
+.find.dropped{opacity:.42}
+.find.dropped .ttl{text-decoration:line-through}
+
+/* ---------- the recipe, assembling as you read ---------- */
+.rside{position:sticky;top:84px}
+.rcard{border:1px solid var(--ink);background:var(--card);border-radius:6px;overflow:hidden}
+.rhead{padding:14px 16px;border-bottom:1px solid var(--rule)}
+.rhead h3{font-size:17px;display:flex;align-items:baseline;gap:9px}
+.rver{font-family:var(--mono);font-size:11px;color:var(--red);font-weight:500;transition:opacity .3s}
+.rver.flip{animation:flip .7s var(--ease)}
+@keyframes flip{0%{opacity:0;transform:translateY(-6px)}60%{opacity:1}100%{opacity:1;transform:none}}
+.rhead .rsub{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:6px;display:block}
+.rsteps{list-style:none;margin:0;padding:0}
+.rstep{display:flex;gap:11px;padding:0 16px;font-size:13.5px;line-height:1.45;align-items:flex-start;
+  max-height:0;opacity:0;overflow:hidden;border-bottom:1px solid transparent;
+  transition:max-height .6s var(--ease),opacity .5s ease .1s,padding .6s var(--ease),border-color .6s}
+.rstep.in{max-height:190px;opacity:1;padding:11px 16px;border-bottom-color:var(--rule)}
+.rsteps li:last-child.in{border-bottom-color:transparent}
+.rstep .tg{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 0;border-radius:9px;flex:none;width:60px;text-align:center;margin-top:2px}
+.tg.fixed{background:var(--green-bg);color:var(--green)}
+.tg.judge{background:#f7eed6;color:var(--amber)}
+.tg.gate{background:var(--red-bg);color:var(--red)}
+.rstep.fresh{background:#fdf6f4}
+.rstep.fresh span:last-child::after{content:"learned in v2";display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-top:6px}
+.rfoot{padding:12px 16px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-faint);line-height:1.55;background:var(--paper-2)}
+.rfoot b{color:var(--ink-soft);font-weight:700}
+/* on narrow screens the recipe moves into the thread, so it has to sit above the spine */
+.rmob{display:none;position:relative;z-index:1;background:var(--paper)}
+
+/* ---------- acts ---------- */
+.act{padding:58px 0 0}
+.act h2{font-size:clamp(25px,3.4vw,36px);line-height:1.1;max-width:24ch;font-weight:600;letter-spacing:-.022em}
+.act h2 em{font-style:italic;color:var(--red);font-weight:400}
+.act .sub{color:var(--ink-soft);font-size:16.5px;margin-top:13px;max-width:64ch}
+
+.keeps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));margin:26px 0 0;border:1px solid var(--rule);border-radius:5px;overflow:hidden;background:var(--card)}
+.keep{padding:17px 19px;border-right:1px solid var(--rule)}
+.keep:last-child{border-right:0}
+.kn{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+.kt{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:9px;line-height:1.5}
+
+.board{margin:26px 0 0;border:1px solid var(--rule);background:var(--card);border-radius:5px;overflow:hidden}
+.bhead,.brow{display:grid;grid-template-columns:1fr 96px 108px 100px;gap:12px;padding:12px 17px;align-items:center}
+.bhead{background:var(--paper-2);font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.brow{border-top:1px solid var(--rule);font-size:14px}
+.brow.on{background:#fdf6f4;box-shadow:inset 3px 0 0 var(--red)}
+.brow .m{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft)}
+.brow .m.q{color:var(--amber)}
+.brow .nm b{font-weight:700}
+.brow .nm span{display:block;font-size:12px;color:var(--ink-faint)}
+
+/* ---------- final ---------- */
+.final{background:var(--ink);color:var(--paper);text-align:center;padding:86px 0;margin-top:70px}
+.final h2{color:var(--paper);font-size:clamp(29px,4.4vw,46px);line-height:1.06;max-width:20ch;margin:0 auto 18px}
+.final h2 em{font-style:italic;font-weight:400;color:#e8a598}
+.final p{color:#c8c1b0;font-size:17.5px;max-width:54ch;margin:0 auto 30px;line-height:1.55}
+.stages{display:flex;justify-content:center;flex-wrap:wrap;margin:0 auto 32px;max-width:760px}
+.stg{flex:1;min-width:190px;border:1px solid rgba(246,242,233,.24);padding:18px 20px;text-align:left}
+.stg+.stg{border-left:0}
+.stg .s{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#9a9284}
+.stg .p{display:block;font-family:var(--serif);font-size:26px;line-height:1.15;color:var(--paper);margin-top:8px}
+.stg .t{display:block;font-size:12.5px;color:#9a9284;margin-top:6px;line-height:1.5}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:15.5px;font-weight:700;background:var(--paper);color:var(--ink);border:1px solid var(--paper);padding:13px 24px;border-radius:2px;text-decoration:none;transition:transform .12s ease,background .15s}
+.btn:hover{background:#fff;transform:translateY(-1px)}
+.fnote{color:#9a9284;font-size:12.5px;margin:28px auto 0;max-width:62ch;line-height:1.6}
+footer{padding:34px 0;background:var(--paper-2);border-top:1px solid var(--rule)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+footer .brand{font-size:18px}
+footer .meta{font-size:12.5px;color:var(--ink-faint)}
+
+/* ---------- reveal ---------- */
+.js .rv{opacity:0;transform:translateY(14px);transition:opacity .65s ease,transform .65s var(--ease)}
+.js .rv.seen{opacity:1;transform:none}
+
+@media(max-width:1040px){
+  .main .wrap{grid-template-columns:minmax(0,1fr);gap:0}
+  .rside{display:none}
+  .rmob{display:block;margin:34px 0 0}
+}
+@media(max-width:760px){
+  .keep{border-right:0;border-bottom:1px solid var(--rule)}
+  .keep:last-child{border-bottom:0}
+  .bhead,.brow{grid-template-columns:1fr 84px;gap:9px}
+  .bhead .h3,.bhead .h4,.brow .c3,.brow .c4{display:none}
+  .work,.finds{max-width:none}
+  .turn,.daymark{padding-left:48px}
+  .thread::before{left:15px}
+  .turn::before{left:9px}
+  .turn.human::after{left:15px}
+  .turn.learn::after{left:13px}
+  .daymark::before{left:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv{opacity:1;transform:none;transition:none}
+  .rstep{transition:none}
+  .rver.flip{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="none" stroke="#1c1a16" stroke-width="2"/><path d="M8.4 9.6 Q24 16 31.2 31.4" fill="none" stroke="#1c1a16" stroke-width="1.7"/><path d="M5.2 16.8 Q19 22 28.4 34" fill="none" stroke="#bb3a2b" stroke-width="1.7"/><path d="M8.4 30.4 Q24 24 31.2 8.6" fill="none" stroke="#1c1a16" stroke-width="1.7"/><path d="M5.2 23.2 Q19 18 28.4 6" fill="none" stroke="#bb3a2b" stroke-width="1.7"/></svg>
+    Mouline <small>Nova</small>
+  </a>
+  <span class="top-tag">prepared for Excel Plumbing &amp; Air · recipe <b>chat.commitments</b></span>
+</div></header>
+
+<section class="intro" id="top"><div class="wrap narrow">
+  <p class="eyebrow">A worked example, for Dima</p>
+  <h1>Nothing agreed in a chat <em>should die there.</em></h1>
+  <p class="dek">Your crews agree to extra work in Viber every week. The work gets done. The hours land in ServiceTitan. Nobody writes the change order, so it never reaches the draw. Catching that is a real job, and today it belongs to a project manager who has to remember to do it. <b>Nova does that job. Mike taught it how in one sentence.</b></p>
+  <div class="rail"><b>This is a scenario, not your data.</b> We have not been inside your systems and will not be until you say go. Every name, job and number below is invented. What is real is how ServiceTitan, Procore, Textura and Viber actually work, which we researched from their own documentation. Discovery is where our guesses get replaced by your facts.</div>
+</div></section>
+
+<section class="main"><div class="wrap">
+
+  <div class="thread">
+
+    <div class="daymark rv"><span>Day 1 · Tuesday, 7:12 AM · four days before the draw closes</span></div>
+
+    <div class="turn human rv">
+      <p class="who"><b>Mike Sowa</b>, project manager <span class="ch">· Viber, direct to Nova</span></p>
+      <span class="bub viber">before the draw closes can you go through the crew chats and find anything we said yes to that never got written up<span class="t">7:12 AM</span></span>
+    </div>
+
+    <div class="turn nova rv" data-step="s1">
+      <p class="who"><b>Nova</b> · replies in 40 seconds</p>
+      <p class="say">Reading the last 30 days of crew threads. For anything that looks like a commitment I will check whether the work actually happened in ServiceTitan, and whether a change order exists in Procore. <em>Back to you before lunch.</em></p>
+      <p class="note">No form, no configuration, no new app to adopt. Mike asked in the tool he already had open, in the words he would have used with a person.</p>
+    </div>
+
+    <div class="turn nova rv">
+      <p class="who"><b>Nova</b> is working · 6 crew threads, 1,904 messages</p>
+      <div class="work">
+        <p class="work-lbl">Viber · Excel Field Crew, 4417 Lake Cook</p>
+        <div class="app">
+          <div class="app-bar" style="background:var(--viber)"><span class="dotrow"><i></i><i></i><i></i></span>Viber<span class="sp">4417 Lake Cook · 9 members</span></div>
+          <div class="vth">
+            <div class="vmsg"><span class="nm">R. Delgado · GC superintendent</span>guys we have a conflict at the north footing, can you swing the gas line around it? about 40 ft<span class="tm">Aug 4, 2:41 PM</span></div>
+            <div class="vmsg me flag"><span class="nm">Yuriy · foreman</span>ok we do it thursday<span class="tm">Aug 4, 2:58 PM</span></div>
+            <p class="vnote">◆ Nova: a commitment, made by us, to the general contractor. Nothing attached to it.</p>
+            <div class="vmsg"><span class="nm">R. Delgado · GC superintendent</span>thanks<span class="tm">Aug 4, 3:02 PM</span></div>
+          </div>
+          <div class="vbar">Write a message…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn nova rv" data-step="s4">
+      <p class="who"><b>Nova</b> · did the work actually happen?</p>
+      <div class="work">
+        <p class="work-lbl">ServiceTitan · project 4417, work order 118</p>
+        <div class="app">
+          <div class="app-bar" style="background:var(--st)"><span class="dotrow"><i></i><i></i><i></i></span>ServiceTitan<span class="sp">Projects · 4417 Lake Cook</span></div>
+          <div class="app-body">
+            <div class="arow"><span class="k">completed</span><span class="v">Thu Aug 7, crew of 3</span></div>
+            <div class="arow"><span class="k">labor</span><span class="v">26.5 hours</span></div>
+            <div class="arow"><span class="k">material</span><span class="v">40 ft CSST, 2 regulators, fittings</span></div>
+            <div class="arow hit"><span class="k">cost code</span><span class="v"><b>none.</b> No line on the schedule of values covers this work <span class="cross">✕</span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note">The work is real. Three men, a day, and material off the truck. It simply has nowhere to be billed.</p>
+    </div>
+
+    <div class="turn nova rv" data-step="s5">
+      <p class="who"><b>Nova</b> · was it ever written up?</p>
+      <div class="work">
+        <p class="work-lbl">Procore · the general contractor's system, where the paperwork has to land</p>
+        <div class="app">
+          <div class="app-bar" style="background:var(--pc)"><span class="dotrow"><i></i><i></i><i></i></span>Procore<span class="sp">4417 Lake Cook · Excel Plumbing (sub)</span></div>
+          <div class="atabs"><span>Drawings</span><span class="on">Change Orders</span><span>RFIs</span><span>Daily Log</span></div>
+          <div class="app-body">
+            <div class="arow hit"><span class="k">change orders</span><span class="v"><b>nothing</b> referencing the north footing <span class="cross">✕</span></span></div>
+            <div class="arow"><span class="k">RFI #118</span><span class="v">“North footing conflicts with gas run” · answered by the architect Aug 5 <span class="tick">✓ this is the paper trail</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="daymark rv"><span>Day 1 · 7:34 AM · twenty two minutes later</span></div>
+
+    <div class="turn nova rv" data-step="s2">
+      <p class="who"><b>Nova</b> · back to Mike, in the same Viber thread</p>
+      <p class="say">Four commitments in 30 days that never became paperwork. <em>Two I am confident about. Two I am guessing.</em></p>
+      <div class="finds">
+        <div class="find"><span class="n">1</span><span class="b"><span class="ttl">Gas line relocated 40 ft around the north footing</span><span class="ev">Viber Aug 4 · ST wo-118, 26.5 hrs + material · no CO · RFI #118 supports it</span></span><span class="conf sure">confident</span></div>
+        <div class="find"><span class="n">2</span><span class="b"><span class="ttl">Two extra floor cleanouts, level 1 corridor</span><span class="ev">WhatsApp Aug 11 · ST wo-131, 6 hrs · no CO</span></span><span class="conf sure">confident</span></div>
+        <div class="find" id="f3"><span class="n">3</span><span class="b"><span class="ttl">Trap primer lines at the mop sinks</span><span class="ev">Viber Jul 29 · ST wo-104, 11 hrs · no CO</span></span><span class="conf guess">guessing</span></div>
+        <div class="find"><span class="n">4</span><span class="b"><span class="ttl">Saturday crew held for the concrete pour</span><span class="ev">Viber Aug 9 · no ST record found</span></span><span class="conf guess">guessing</span></div>
+      </div>
+    </div>
+
+    <div class="turn human rv">
+      <p class="who"><b>Mike Sowa</b> <span class="ch">· Viber</span></p>
+      <span class="bub viber">3 isn't extra, trap primers are base scope<span class="t">7:41 AM</span></span>
+    </div>
+
+    <div class="turn nova learn rv" data-drop="f3">
+      <p class="who"><b>Nova</b> · this is the part that matters</p>
+      <p class="say">Dropped. What told you it was base scope? <em>I want to get this right without asking you next time.</em></p>
+    </div>
+
+    <div class="turn human rv">
+      <p class="who"><b>Mike Sowa</b> <span class="ch">· Viber</span></p>
+      <span class="bub viber">it's on the takeoff. if Nick measured it in PlanSwift when we bid it, we already priced it<span class="t">7:43 AM</span></span>
+    </div>
+
+    <div class="turn nova learn rv" data-step="s3" data-ver="v2">
+      <p class="who"><b>Nova</b> · the rule goes into the recipe, permanently</p>
+      <p class="say">Understood. From now on I check the PlanSwift takeoff before I flag anything, and if the quantity is already in the bid I leave it alone.</p>
+      <p class="note">Re-checked all four against the takeoff sheet. Item 3 withdrawn. Item 1 stands: there is no gas run on the north side of that footing anywhere in the bid. Item 4 stands, and I still cannot prove the Saturday hours, so it stays a question for you.</p>
+    </div>
+
+    <div class="daymark rv"><span>Day 3 · Thursday, 2:41 PM · <b>the same catch, 90 seconds after it happens</b></span></div>
+
+    <div class="turn human rv">
+      <p class="who"><b>Yuriy</b>, foreman <span class="ch wa">· WhatsApp, crew group, talking to the GC</span></p>
+      <span class="bub wa">yeah we can add the two floor drains by the loading dock, no problem<span class="t">2:41 PM</span></span>
+    </div>
+
+    <div class="turn nova rv" data-step="s6">
+      <p class="who"><b>Nova</b> · to Mike, unprompted, 2:43 PM</p>
+      <p class="say">Yuriy just committed to two floor drains at the loading dock. <em>Not in the takeoff. No change order in Procore.</em> Want me to draft one while the GC is still in the thread?</p>
+      <div class="work">
+        <p class="work-lbl">Textura · why the clock matters</p>
+        <div class="app">
+          <div class="app-bar" style="background:var(--tx)"><span class="dotrow"><i></i><i></i><i></i></span>Oracle Textura<span class="sp">4417 · draw 08 · subcontractor</span></div>
+          <div class="app-body">
+            <div class="arow"><span class="k">draw closes</span><span class="v">Thursday 5:00 PM CST</span></div>
+            <div class="arow"><span class="k">after that</span><span class="v">anything unsigned waits for draw 09, roughly thirty days</span></div>
+            <div class="arow good"><span class="k">as it stands</span><span class="v">a signed change order lands on the schedule of values <b>with two hours to spare</b> <span class="tick">✓</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn human rv">
+      <p class="who"><b>Mike Sowa</b> <span class="ch">· Viber</span></p>
+      <span class="bub viber">yes draft it<span class="t">2:44 PM</span></span>
+    </div>
+
+    <div class="rmob" id="recipe-mobile"></div>
+  </div>
+
+  <aside class="rside" aria-label="The recipe, as it is learned">
+    <div class="rcard" id="rcard">
+      <div class="rhead">
+        <h3>chat.commitments <span class="rver" id="rver">v1</span></h3>
+        <span class="rsub">written by Nova · taught by Mike Sowa</span>
+      </div>
+      <ol class="rsteps">
+        <li class="rstep" id="s1"><span class="tg fixed">always</span><span>Watch the crew threads in Viber and WhatsApp for a commitment made by us to the general contractor.</span></li>
+        <li class="rstep" id="s2"><span class="tg judge">judgment</span><span>Decide whether it is a commitment or ordinary chat. I get this wrong sometimes, so I show my confidence.</span></li>
+        <li class="rstep fresh" id="s3"><span class="tg fixed">always</span><span>Check the PlanSwift takeoff first. If the quantity is in the bid, it is base scope, and I say nothing.</span></li>
+        <li class="rstep" id="s4"><span class="tg fixed">always</span><span>Confirm the work happened: hours and material against the job in ServiceTitan.</span></li>
+        <li class="rstep" id="s5"><span class="tg fixed">always</span><span>Check Procore for an existing change order, and for an RFI that supports the claim.</span></li>
+        <li class="rstep" id="s6"><span class="tg gate">you decide</span><span>Bring it to Mike with the evidence attached. I never file anything with the GC on my own.</span></li>
+      </ol>
+      <p class="rfoot"><b>Nobody wrote this.</b> Every line arrived from something a person said in passing. Read it, argue with it, delete any line by saying so.</p>
+    </div>
+  </aside>
+
+</div></section>
+
+<section class="act"><div class="wrap narrow">
+  <h2>We replace <em>nothing.</em></h2>
+  <p class="sub">Nova is not a layer between your systems, and it is not another screen for someone to check. It is the work itself, the part that is done today by a person, from memory, under a deadline.</p>
+  <div class="keeps">
+    <div class="keep"><span class="kn">ServiceTitan</span><span class="kt">Stays your system of record. Nova opens it, reads the job and writes back to it, the way one of your people would.</span></div>
+    <div class="keep"><span class="kn">Procore</span><span class="kt">Stays the general contractor's. Nova has no opinion about it and does not ask it to change.</span></div>
+    <div class="keep"><span class="kn">PlanSwift</span><span class="kt">Stays on the estimator's desk. Nova checks the takeoff because Mike said to, not because it wants the data.</span></div>
+    <div class="keep"><span class="kn">Viber and WhatsApp</span><span class="kt">Stay where your crews already talk. Nobody has to move a conversation anywhere.</span></div>
+  </div>
+  <p class="rail" style="margin-top:24px">What goes away is not a piece of software. It is the eleven days of scrolling back through a crew thread before a deadline, which is what your project manager did instead of running the project.</p>
+</div></section>
+
+<section class="act"><div class="wrap narrow">
+  <h2>You asked us <em>which</em> processes to fix. This is how we would find out.</h2>
+  <p class="sub">Nova watched thirty days of ordinary work and ranked what it saw by how often it happens, how much manager time it eats, and where money is sitting. It did not need to be told what to look for. The board below is what Discovery produces, and every number on it is a question, not an answer.</p>
+  <div class="board">
+    <div class="bhead"><span>What keeps happening</span><span>How often</span><span class="h3">Manager time</span><span class="h4">Confidence</span></div>
+    <div class="brow on"><span class="nm"><b>Agreed in a chat, never written up</b><span>reaches the draw late, or never</span></span><span class="m">weekly</span><span class="m c3">high</span><span class="m c4">measured</span></div>
+    <div class="brow"><span class="nm"><b>Job closed without the required photos</b><span>crew already left the site</span></span><span class="m">daily</span><span class="m c3">high</span><span class="m c4">measured</span></div>
+    <div class="brow"><span class="nm"><b>Approved upsell never converted to a job</b><span>quote sits, customer moves on</span></span><span class="m">weekly</span><span class="m c3">medium</span><span class="m q c4">estimated</span></div>
+    <div class="brow"><span class="nm"><b>Compliance doc expires mid draw</b><span>Textura holds the payment</span></span><span class="m">monthly</span><span class="m c3">low</span><span class="m q c4">estimated</span></div>
+    <div class="brow"><span class="nm"><b>Texting plumbers for Saturday cover</b><span>a full time role today</span></span><span class="m">weekly</span><span class="m c3">very high</span><span class="m q c4">your call</span></div>
+  </div>
+  <p class="rail" style="margin-top:24px">We have deliberately not put a dollar figure on any of these. We do not know yours yet, and inventing one would be worth less to you than the honest list.</p>
+</div></section>
+
+<section class="final"><div class="wrap">
+  <h2>Two weeks of watching, <em>at our cost.</em></h2>
+  <p>You do not have to know which process to fix. You have to notice what annoyed you this week and say it out loud. That is the entire skill required.</p>
+  <div class="stages">
+    <div class="stg"><span class="s">Stage 1</span><span class="p">Discovery</span><span class="t">We watch how the work really runs and hand you the ranked list. At our cost.</span></div>
+    <div class="stg"><span class="s">Stage 2</span><span class="p">Build</span><span class="t">We build the first recipe, on whichever leak you pick.</span></div>
+    <div class="stg"><span class="s">Stage 3</span><span class="p">Licence</span><span class="t">It runs. This stage starts only once it is clearly earning its keep.</span></div>
+  </div>
+  <a class="btn" href="mailto:artsiom@mouline.work?subject=Excel%20Plumbing%20%26%20Air%20—%20goals%20meeting">Book the goals meeting</a>
+  <p class="fnote">Each stage is gated on the one before it. Nothing touches your systems until you say go. ServiceTitan stays your system of record. Nova does the work a person is doing by hand today, inside the tools that work already lives in, and writes down every step it took so you can read it.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <span class="brand">Mouline</span>
+  <span class="meta">Prepared for Excel Plumbing &amp; Air · August 2026 · private link, please do not share outside your team</span>
+</div></footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  root.className += ' js';
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rver = document.getElementById('rver');
+
+  function showStep(id){
+    var el = document.getElementById(id);
+    if(el) el.classList.add('in');
+  }
+  function bumpVersion(v){
+    if(!rver || rver.textContent === v) return;
+    rver.textContent = v;
+    if(!reduce){ rver.classList.remove('flip'); void rver.offsetWidth; rver.classList.add('flip'); }
+  }
+  function dropFinding(id){
+    var el = document.getElementById(id);
+    if(el) el.classList.add('dropped');
+  }
+
+  // Mirror the recipe under the transcript on narrow screens, where the rail is hidden.
+  var slot = document.getElementById('recipe-mobile');
+  var card = document.getElementById('rcard');
+  function placeCard(){
+    var narrow = window.matchMedia('(max-width: 1040px)').matches;
+    if(narrow && card.parentNode !== slot){ slot.appendChild(card); }
+    else if(!narrow && card.parentNode === slot){ document.querySelector('.rside').appendChild(card); }
+  }
+  placeCard();
+  window.addEventListener('resize', placeCard);
+
+  var nodes = [].slice.call(document.querySelectorAll('.rv'));
+
+  function activate(el){
+    el.classList.add('seen');
+    if(el.dataset.step) showStep(el.dataset.step);
+    if(el.dataset.ver) bumpVersion(el.dataset.ver);
+    if(el.dataset.drop) dropFinding(el.dataset.drop);
+  }
+
+  if(!('IntersectionObserver' in window) || reduce){
+    nodes.forEach(activate);
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      activate(e.target);
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -18% 0px', threshold: 0.15 });
+
+  nodes.forEach(function(n){ io.observe(n); });
+})();
+</script>
+</body>
+</html>
