@@ -203,37 +203,52 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
   margin:36px 0 0;background:var(--dy-ground);border:1px solid #2b261d;border-radius:14px;overflow:hidden;
   box-shadow:0 1px 0 rgba(0,0,0,.02),0 40px 70px -40px rgba(28,22,12,.55)}
 .dy-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid #2b261d;background:#12100c}
-.dy-acts{display:flex;gap:4px;flex-wrap:wrap}
-.dy-act{font-family:var(--sans);font-size:13px;color:#8d877a;background:transparent;border:1px solid transparent;
-  border-radius:20px;padding:5px 13px;cursor:pointer;transition:color .18s,background .18s,border-color .18s}
-.dy-act:hover{color:#e8dcc0}
-.dy-act[aria-selected="true"]{color:#16140f;background:#e8dcc0;border-color:#e8dcc0;font-weight:600}
+/* chapters mark progress through one continuous film; nothing to pick */
+.dy-chaps{display:flex;gap:18px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.dy-chap{position:relative;isolation:isolate;font-family:var(--sans);font-size:13px;color:#6b665c;padding:4px 0 7px;transition:color .3s;
+  background:none;border:0;cursor:pointer}
+.dy-chap:hover{color:#e8dcc0}
+.dy-chap i{position:absolute;left:0;bottom:0;height:2px;width:0;background:#e0563f;border-radius:2px}
+.dy-chap::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#2b261d;border-radius:2px;z-index:-1}
+.dy-chap.on{color:#e8dcc0;font-weight:600}
+.dy-chap.done{color:#8d877a}
 .dy-read{margin-left:auto;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12.5px;color:#8d877a}
-.dy-clock{color:#e8dcc0;font-variant-numeric:tabular-nums}
-.dy-tag{border:1px solid #3a3428;border-radius:4px;padding:2px 7px;font-size:10px;letter-spacing:.04em;color:#8d877a}
-.dy-tag.model{color:#d9a441;border-color:#5c4a24}
-.dy-tag.human{color:#e0563f;border-color:#5e2c22}
-.dy-tag.fixed{color:#6bbd74;border-color:#2c4d31}
-.dy-canvas{display:block;width:100%;height:452px;touch-action:pan-y}
-@media(max-width:760px){.dy-canvas{height:315px}}
+.dy-clock{color:#e8dcc0;font-variant-numeric:tabular-nums;font-size:15px}
+.dy-canvas{display:block;width:100%;height:480px;touch-action:pan-y}
 .dy-foot{display:flex;gap:14px 30px;padding:15px 18px 17px;border-top:1px solid #2b261d;background:#12100c}
 .dy-main{flex:1 1 auto;min-width:0}
-/* the headline metric is a stat, not part of the diagram: keeping it in the DOM
-   means it can never collide with a label on the board */
-.dy-stat{flex:0 0 auto;text-align:right;padding-left:22px;border-left:1px solid #2b261d}
+/* the scores are stats, not part of the diagram: in the DOM they stay crisp
+   and can never collide with a label on the board */
+.dy-stats{flex:0 0 auto;display:flex;gap:0;border-left:1px solid #2b261d}
+.dy-stat{text-align:right;padding:0 0 0 22px;min-width:118px}
+.dy-stat+.dy-stat{margin-left:22px;border-left:1px solid #2b261d}
 .dy-stat .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#6b665c}
 .dy-stat .v{display:block;font-family:var(--serif);font-size:46px;line-height:1.05;font-weight:600;letter-spacing:-0.03em;color:#e8dcc0;font-variant-numeric:tabular-nums}
 .dy-stat.nova .v{color:#e0563f}
 .dy-stat .c{display:block;font-family:var(--mono);font-size:10.5px;color:#6b665c;margin-top:5px}
 @media(max-width:700px){
   .dy-foot{flex-direction:column;gap:14px}
-  .dy-stat{order:-1;text-align:left;padding:0 0 13px;border-left:none;border-bottom:1px solid #2b261d;width:100%}
+  .dy-stats{order:-1;border-left:none;border-bottom:1px solid #2b261d;padding-bottom:13px;width:100%}
+  .dy-stat{text-align:left;padding:0;flex:1}
+  .dy-stat+.dy-stat{padding-left:18px;margin-left:0}
   .dy-stat .v{font-size:40px}
+  .dy-chaps{gap:12px}
+  .dy-chap{font-size:12px}
 }
 .dy-narr{font-family:var(--serif);font-size:clamp(16px,2.1vw,20px);line-height:1.35;letter-spacing:-0.01em;color:#e8dcc0;margin:0;min-height:2.7em}
 .dy-narr b{color:#fff;font-weight:600}
-.dy-prog{height:2px;background:#2b261d;border-radius:2px;margin-top:14px;overflow:hidden}
-.dy-prog i{display:block;height:100%;width:0;background:#e0563f;transition:width .12s linear}
+/* the bar is a scrubber, like a video player's: click, drag or use the arrow keys */
+.dy-scrub{position:relative;height:20px;margin-top:6px;cursor:pointer;touch-action:none}
+.dy-prog{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;background:#2b261d;border-radius:2px;overflow:hidden;transition:height .12s,margin-top .12s}
+.dy-prog i{display:block;height:100%;width:0;background:#e0563f}
+.dy-tick{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#12100c}
+.dy-knob{position:absolute;top:50%;left:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:#e0563f;
+  box-shadow:0 0 0 3px rgba(224,86,63,.18);transform:scale(0);transition:transform .12s}
+.dy-scrub:hover .dy-prog,.dy-scrub.drag .dy-prog,.dy-scrub:focus-visible .dy-prog{height:5px;margin-top:-2.5px}
+.dy-scrub:hover .dy-knob,.dy-scrub.drag .dy-knob,.dy-scrub:focus-visible .dy-knob{transform:scale(1)}
+.dy-tip{position:absolute;bottom:100%;left:0;transform:translateX(-50%);margin-bottom:2px;padding:3px 7px;border-radius:4px;
+  background:#e8dcc0;color:#16140f;font-family:var(--mono);font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s}
+.dy-scrub:hover .dy-tip,.dy-scrub.drag .dy-tip{opacity:1}
 .dy-ctl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .dy-replay{font-family:var(--sans);font-size:12.5px;color:#8d877a;background:transparent;border:1px solid #3a3428;
   border-radius:20px;padding:5px 13px;cursor:pointer}
@@ -594,30 +609,39 @@ footer .meta a{color:var(--ink-soft)}
 
     <div class="dy" id="dy">
       <div class="dy-head">
-        <div class="dy-acts" role="tablist" aria-label="Pick a version of the same task">
-          <button class="dy-act" role="tab" aria-selected="true" data-act="0">The day today</button>
-          <button class="dy-act" role="tab" aria-selected="false" data-act="1">The same task, with Nova</button>
-          <button class="dy-act" role="tab" aria-selected="false" data-act="2">The tenth time</button>
-        </div>
-        <div class="dy-read">
-          <span class="dy-clock" id="dyClock">09:02</span>
-          <span class="dy-tag" id="dyTag">by hand</span>
-        </div>
+        <ol class="dy-chaps" aria-label="What the film shows">
+          <li><button class="dy-chap on" data-chap="0">Same invoice<i></i></button></li>
+          <li><button class="dy-chap" data-chap="1">Same thirty-nine minutes<i></i></button></li>
+          <li><button class="dy-chap" data-chap="2">The tenth time<i></i></button></li>
+        </ol>
+        <div class="dy-read"><span class="dy-clock" id="dyClock">09:00</span></div>
       </div>
-      <canvas class="dy-canvas" id="dyCanvas" role="img" aria-label="An isometric board of four systems. One invoice exception travels between them, first carried by a person and then run by Nova."></canvas>
+      <canvas class="dy-canvas" id="dyCanvas" role="img" aria-label="Two copies of the same four systems. On the left a person carries one invoice between them by hand; on the right Nova clears the same queue and a person approves each one."></canvas>
       <div class="dy-foot">
         <div class="dy-main">
-          <p class="dy-narr" id="dyNarr">An invoice lands in the shared inbox. 4471 does not match the purchase order.</p>
-          <div class="dy-prog"><i id="dyProg"></i></div>
+          <p class="dy-narr" id="dyNarr" aria-live="polite">Two people, the same queue, the same morning. <b>One works by hand. One has Nova.</b></p>
+          <div class="dy-scrub" id="dyScrub" role="slider" tabindex="0" aria-label="Seek through the morning"
+               aria-valuemin="0" aria-valuemax="41" aria-valuenow="0" aria-valuetext="09:00">
+            <div class="dy-prog"><i id="dyProg"></i><span class="dy-tick" style="left:40.96%"></span><span class="dy-tick" style="left:62.65%"></span></div>
+            <b class="dy-knob" id="dyKnob"></b>
+            <span class="dy-tip" id="dyTip">09:00</span>
+          </div>
           <div class="dy-ctl">
             <button class="dy-replay" id="dyReplay">↺ Replay</button>
-            <button class="dy-replay" id="dyVo" aria-pressed="false">🔇 Sound off</button>
+            <button class="dy-replay" id="dyPause" aria-pressed="false">❚❚ Pause</button>
           </div>
         </div>
-        <div class="dy-stat" id="dyStat">
-          <span class="k">Tasks per person, per day</span>
-          <span class="v" id="dyStatV">11</span>
-          <span class="c" id="dyStatC">39 min of a person’s time each</span>
+        <div class="dy-stats">
+          <div class="dy-stat">
+            <span class="k">By hand</span>
+            <span class="v" id="dyHandV">0</span>
+            <span class="c" id="dyHandC">0 switches so far</span>
+          </div>
+          <div class="dy-stat nova">
+            <span class="k">With Nova</span>
+            <span class="v" id="dyNovaV">0</span>
+            <span class="c" id="dyNovaC">0 approvals by a person</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1314,143 +1338,150 @@ footer .meta a{color:var(--ink-soft)}
 </script>
 
 <script>
-/* ---- The day stage: one invoice exception, carried by hand and then run by Nova ---- */
+/* ---- The day stage: the same morning, run twice side by side ----
+   One continuous film, no tabs. Two copies of the same board share one clock:
+   on the left a person carries invoice 4471 between four systems by hand, on
+   the right Nova clears the same queue, a person approving every one. Plain
+   canvas 2D with a small perspective camera, so the page stays one file. */
 (function(){
   var cv = document.getElementById('dyCanvas');
   if(!cv || !cv.getContext) return;
   var ctx = cv.getContext('2d');
-  var narrEl = document.getElementById('dyNarr'),
-      clockEl = document.getElementById('dyClock'),
-      tagEl = document.getElementById('dyTag'),
-      progEl = document.getElementById('dyProg'),
-      replayEl = document.getElementById('dyReplay'),
-      voBtn = document.getElementById('dyVo'),
-      statEl = document.getElementById('dyStat'),
-      statV = document.getElementById('dyStatV'),
-      statC = document.getElementById('dyStatC'),
-      tabs = [].slice.call(document.querySelectorAll('.dy-act'));
+  function $(id){ return document.getElementById(id); }
+  var narrEl = $('dyNarr'), clockEl = $('dyClock'), progEl = $('dyProg'),
+      scrubEl = $('dyScrub'), knobEl = $('dyKnob'), tipEl = $('dyTip'),
+      replayEl = $('dyReplay'), pauseEl = $('dyPause'),
+      handV = $('dyHandV'), handC = $('dyHandC'), novaV = $('dyNovaV'), novaC = $('dyNovaC'),
+      chaps = [].slice.call(document.querySelectorAll('.dy-chap'));
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* --- the board --- */
-  var NODES = {
-    hub:   {gx:0,    gy:0,    z:0,    label:'YOUR TEAM',    short:'YOUR TEAM',  sub:'Slack / Teams'    },
-    inbox: {gx:0,    gy:-3.0, z:0.62, label:'OUTLOOK / GMAIL',    short:'OUTLOOK',    sub:'invoice 4471 arrives', icon:'mail'    },
-    a:     {gx:-3.0, gy:0.3,  z:0.62, label:'NETSUITE / SAP',     short:'NETSUITE',   sub:'the purchase order',   icon:'records' },
-    b:     {gx:0.5,  gy:3.0,  z:0.62, label:'SHAREPOINT / DRIVE', short:'SHAREPOINT', sub:'the signed contract',  icon:'contract'},
-    c:     {gx:3.0,  gy:-0.2, z:0.62, label:'XERO / QUICKBOOKS',  short:'XERO',       sub:'the ledger entry',     icon:'ledger'  },
-    human: {gx:0,    gy:0,    z:1.75, label:'',             short:'',           sub:''                 }
-  };
-  var SLABS = ['inbox','a','b','c'];
   var WARM = '#e8dcc0', RED = '#e0563f', GREEN = '#6bbd74', AMBER = '#d9a441';
+  var MONO = '"JetBrains Mono", ui-monospace, monospace';
 
-  /* --- three runs of the same task ---
-     No hand-tuned durations: each beat is held for as long as its caption takes
-     to read (see durOf), and longer still if a voiceover clip is playing. The
-     ids double as the audio filenames, audio/day-<act>-<id>.mp3. */
-  var ACTS = [
-    { key:'today', actor:'human', perDay:11, cost:'39 min of a person\u2019s time each',
-      beats:[
-        {id:'01-arrives', from:'inbox', to:'hub', clock:'09:02', tag:'by hand',
-         text:'An invoice lands in the shared inbox. <b>4471 does not match the purchase order.</b>'},
-        {id:'02-erp', from:'hub', to:'a', clock:'09:04', tag:'switch 2 / 9',
-         text:'Opens NetSuite to find the purchase order.'},
-        {id:'03-note', from:'a', to:'hub', clock:'09:09', tag:'switch 3 / 9',
-         text:'Copies the figures into a note. The systems do not talk, so the person is the integration.'},
-        {id:'04-contract', from:'hub', to:'b', clock:'09:11', tag:'switch 4 / 9',
-         text:'Opens SharePoint for the rate that was actually agreed.'},
-        {id:'05-clause', from:'b', to:'hub', clock:'09:18', tag:'switch 5 / 9',
-         text:'Reads three pages to find the clause that applies.'},
-        {id:'06-decide', from:'hub', to:'hub', clock:'09:22', tag:'switch 6 / 9',
-         text:'Compares the two by hand and makes the call: <b>billed over contract.</b>'},
-        {id:'07-ledger', from:'hub', to:'c', clock:'09:29', tag:'switch 7 / 9',
-         text:'Opens Xero and types the outcome in.'},
-        {id:'08-back', from:'c', to:'hub', clock:'09:33', tag:'switch 8 / 9',
-         text:'Back again to write it up.'},
-        {id:'09-reply', from:'hub', to:'inbox', clock:'09:41', tag:'switch 9 / 9',
-         text:'Replies to the vendor. <b>Thirty-nine minutes, nine switches, one person the whole way.</b>'}
-      ]},
-    { key:'nova', actor:'nova', perDay:90, cost:'5 min of a person\u2019s time each',
-      beats:[
-        {id:'01-picks-up', from:'inbox', to:'hub', clock:'09:02', tag:'same inbox',
-         text:'The same invoice, the same inbox. <b>Nova picks it up.</b>'},
-        {id:'02-parallel', fan:['a','b','c'], draw:1900, clock:'09:02', tag:'in parallel',
-         text:'It reads NetSuite, SharePoint and Xero <b>at the same time.</b> Nothing is carried by hand.'},
-        {id:'03-draft', from:'hub', to:'hub', clock:'09:03', tag:'model', tagK:'model',
-         text:'Finds the clause, compares the figures, drafts the reply to the vendor.'},
-        {id:'04-approve', from:'hub', to:'human', clock:'09:04', tag:'human', tagK:'human',
-         text:'<b>One person reads the result and approves it.</b> Nothing leaves the building before that.'},
-        {id:'05-write', from:'hub', to:'c', clock:'09:05', tag:'write',
-         text:'Writes the outcome to Xero.'},
-        {id:'06-sent', from:'hub', to:'inbox', clock:'09:06', tag:'done', tagK:'fixed',
-         text:'Sends the reply. <b>Four minutes, one approval, nobody carrying anything.</b>'}
-      ]},
-    { key:'tenth', actor:'nova', hardened:true, perDay:150, cost:'3 min of a person\u2019s time each',
-      beats:[
-        {id:'01-again', from:'inbox', to:'hub', clock:'09:02', tag:'fixed', tagK:'fixed',
-         text:'The tenth time this exact case arrives.'},
-        {id:'02-fixed', fan:['a','b','c'], draw:1500, clock:'09:02', tag:'fixed', tagK:'fixed',
-         text:'The reads are fixed steps now. <b>Nova is no longer working out what to do.</b>'},
-        {id:'03-model', from:'hub', to:'hub', clock:'09:03', tag:'model', tagK:'model',
-         text:'One judgment call still runs on a model. Everything around it is written down and inspectable.'},
-        {id:'04-human', from:'hub', to:'human', clock:'09:03', tag:'human', tagK:'human',
-         text:'<b>The approval stays.</b> It is the part that always needed a person.'},
-        {id:'05-done', from:'hub', to:'c', clock:'09:04', tag:'recipe \u00b7 v3', tagK:'fixed',
-         text:'Two minutes, and the same result every time. <b>Your team never wrote this down. Nova did.</b>'}
-      ]}
+  /* --- the board, in world units: y is up, the camera looks in from +z --- */
+  var NODES = {
+    inbox: {x:-2.75, z:-0.55, label:'OUTLOOK / GMAIL',   short:'GMAIL',      icon:'mail'},
+    a:     {x:-1.15, z:-2.65, label:'NETSUITE / SAP',    short:'NETSUITE',   icon:'records'},
+    b:     {x: 1.15, z:-2.65, label:'SHAREPOINT',        short:'SHAREPOINT', icon:'contract'},
+    c:     {x: 2.75, z:-0.55, label:'XERO / QUICKBOOKS', short:'XERO',       icon:'ledger'},
+    hub:   {x: 0,    z: 0.35},
+    team:  {x:-2.0,  z: 2.35},
+    out:   {x: 2.0,  z: 2.35}
+  };
+  var SYS = ['inbox','a','b','c'];
+  var HW = 0.74, HD = 0.48, SH = 0.78;   /* slab half width, half depth, height */
+  var ORB_Y = 1.45, QUEUE = 12, SHEET = 0.034;
+
+  /* --- one timeline: real seconds -> minutes after 09:00 ---
+     Slow while there is a lot to read, fast through the long middle of the
+     person's morning. */
+  var KF = [[0,0],[3.5,2],[8,3],[12.5,4.5],[17,7],[21.5,14],[26,22],[31,26],[36.5,37],[41.5,41]];
+  var END = 41.5, LOOP = END + 9;
+  function simAt(t){
+    if(t <= 0) return 0;
+    for(var i=1; i<KF.length; i++){
+      if(t <= KF[i][0]){
+        var a = KF[i-1], b = KF[i];
+        return a[1] + (b[1]-a[1]) * (t-a[0]) / (b[0]-a[0]);
+      }
+    }
+    return 41;
+  }
+
+  var CAPS = [
+    [0,    'Two people, the same queue, the same morning. <b>One works by hand. One has Nova.</b>'],
+    [3.5,  'Invoice 4471 lands in the shared inbox. <b>It does not match the purchase order.</b>'],
+    [8,    'By hand that means NetSuite, then SharePoint, then Xero, one at a time. <b>Nova reads all three at once.</b>'],
+    [12.5, 'Nova finds the clause and drafts the reply. <b>A person reads it and approves.</b> Nothing leaves before that.'],
+    [17,   'Nova’s first invoice is done in five minutes. <b>On the left, the person is still copying figures out of NetSuite.</b>'],
+    [21.5, 'Every trip on the left leaves a track. <b>The systems do not talk, so the person is the integration.</b>'],
+    [26,   'By the fifth invoice Nova has written the path down as <b>a recipe you can read</b>: fixed steps around one judgment call.'],
+    [31,   'The reads are fixed now, three minutes a case. <b>The approval stays.</b> It is the part that always needed a person.'],
+    [36.5, 'The tenth invoice runs exactly like the fifth. <b>Your team never wrote this down. Nova did.</b>'],
+    [41.5, '09:41. <b>By hand: one invoice, nine switches. With Nova: ten</b>, and a person approved every one.']
+  ];
+  var CHAPS = [0, 17, 26, END];
+
+  /* the person's morning: eight trips and one long think, nine switches */
+  var HLEGS = [
+    {t0:2,  t1:3,    from:'inbox', to:'hub'},
+    {t0:4,  t1:5,    from:'hub',   to:'a'},
+    {t0:8,  t1:9,    from:'a',     to:'hub'},
+    {t0:10, t1:11,   from:'hub',   to:'b'},
+    {t0:17, t1:18,   from:'b',     to:'hub'},
+    {t0:27, t1:28.5, from:'hub',   to:'c'},
+    {t0:32, t1:33,   from:'c',     to:'hub'},
+    {t0:39, t1:40.4, from:'hub',   to:'inbox'}
+  ];
+  var HSW = [2, 4, 8, 10, 17, 22, 27, 32, 39];
+
+  /* Nova's morning: four runs while it learns, then six on the written path */
+  var RUNS = [], HARD = 22;
+  (function(){ var s = 2; for(var k=0; k<10; k++){ var d = k < 4 ? 5 : 3; RUNS.push({s:s, e:s+d, hard:s >= HARD}); s += d; } })();
+  var PH = {inn:[0,0.13], fan:[0.13,0.46], think:[0.46,0.6], ok:[0.6,0.8], write:[0.8,0.92], out:[0.92,1]};
+  var STEPS = [
+    ['read the PO · NetSuite', 'fixed'],
+    ['read the contract · SharePoint', 'fixed'],
+    ['read the ledger · Xero', 'fixed'],
+    ['judge the variance', 'model'],
+    ['approve', 'human'],
+    ['write to Xero · reply', 'fixed']
   ];
 
-  /* A caption gets read at about 190 words a minute, floored so even three
-     words stay on screen long enough to land. */
-  function durOf(b){
-    if(b._d) return b._d;
-    var words = b.text.replace(/<[^>]+>/g, '').split(/\s+/).length;
-    b._d = Math.max(2400, Math.min(5600, 900 + words * 200));
-    return b._d;
-  }
-  /* The line is drawn briskly and then the beat holds: slow motion reads as
-     sluggish, a long hold reads as time to think. */
-  function drawOf(b){ return Math.min(b.draw || 1300, durOf(b) * 0.55); }
+  function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function ease(u){ u = clamp(u, 0, 1); return u < 0.5 ? 2*u*u : 1 - Math.pow(-2*u + 2, 2) / 2; }
+  function span(u, r){ return clamp((u - r[0]) / (r[1] - r[0]), 0, 1); }
+  function inR(u, r){ return u >= r[0] && u < r[1]; }
 
-  /* --- projection --- */
-  var W=0, H=0, S=1, CX=0, CY=0, dpr=1;
-  function iso(gx, gy, z){
-    return { x: CX + (gx - gy) * 0.866 * S, y: CY + (gx + gy) * 0.5 * S - (z||0) * S };
+  /* --- camera --- */
+  var C = null;
+  function P(x, y, z){
+    var dx = x - C.tx, dy = y - C.ty, dz = z - C.tz;
+    var x1 = dx*C.cy - dz*C.sy, z1 = dx*C.sy + dz*C.cy;
+    var y2 = dy*C.cp - z1*C.sp, z2 = dy*C.sp + z1*C.cp;
+    var d = C.dist - z2, k = C.F / d;
+    return {x: C.vx + x1*k, y: C.vy - y2*k, k: k, d: d};
   }
-  function nodePt(k){ var n = NODES[k]; return iso(n.gx, n.gy, n.z); }
-
-  function resize(){
-    var r = cv.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = Math.round(r.width); H = Math.round(r.height);
-    cv.width = W * dpr; cv.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    /* the board needs 3.9S either side and about 5.1S top to bottom, labels included */
-    S = Math.min(W / 8.2, H / 5.75);
-    CX = W / 2; CY = H / 2 + S * 0.12;
+  function camera(vp, side, t, s){
+    var intro = reduce ? 1 : ease(t / 3.4);
+    var yaw = (1 - intro) * (side === 'hand' ? 0.7 : -0.7) + (reduce ? 0 : 0.1 * Math.sin(t * 0.33 + (side === 'hand' ? 0 : 0.6)));
+    var pitch = 0.64 + (1 - intro) * 0.42;
+    var dist = 12 + (1 - intro) * 7;
+    var tx = 0;
+    /* the recipe needs a corner: the right camera eases back and over */
+    if(side === 'nova'){ var r = ease((s - 21.4) / 2); tx = 0.6 * r; dist += 1.4 * r; }
+    var F = Math.min(vp.w * 0.9, vp.h * 1.22) * 12 / 8.1;
+    C = {vx: vp.x + vp.w/2, vy: vp.y + vp.h*0.6, F: F, dist: dist, tx: tx, ty: 0.25, tz: 0.1,
+         cy: Math.cos(yaw), sy: Math.sin(yaw), cp: Math.cos(pitch), sp: Math.sin(pitch), vp: vp,
+         tight: vp.w < 400 || vp.h < 300};
   }
 
-  /* --- pieces --- */
+  /* --- drawing primitives --- */
+  function shade(rgb, f){ return 'rgb(' + Math.round(rgb[0]*f) + ',' + Math.round(rgb[1]*f) + ',' + Math.round(rgb[2]*f) + ')'; }
+  var FACES = [ [[4,5,6,7],1.0], [[7,6,2,3],0.66], [[6,5,1,2],0.5], [[4,7,3,0],0.78], [[5,4,0,1],0.42] ];
+  function box(x0, x1, y0, y1, z0, z1, rgb, edge, glow){
+    var v = [P(x0,y0,z0),P(x1,y0,z0),P(x1,y0,z1),P(x0,y0,z1),P(x0,y1,z0),P(x1,y1,z0),P(x1,y1,z1),P(x0,y1,z1)];
+    for(var f=0; f<FACES.length; f++){
+      var idx = FACES[f][0], a = 0;
+      for(var i=0; i<4; i++){ var p = v[idx[i]], q = v[idx[(i+1)%4]]; a += p.x*q.y - q.x*p.y; }
+      if(a <= 0) continue;
+      ctx.beginPath(); ctx.moveTo(v[idx[0]].x, v[idx[0]].y);
+      for(var j=1; j<4; j++) ctx.lineTo(v[idx[j]].x, v[idx[j]].y);
+      ctx.closePath(); ctx.fillStyle = shade(rgb, FACES[f][1]); ctx.fill();
+      if(f === 0 && edge){
+        ctx.strokeStyle = edge; ctx.lineWidth = glow ? 1.6 : 1;
+        if(glow){ ctx.save(); ctx.shadowColor = edge; ctx.shadowBlur = 16; ctx.stroke(); ctx.restore(); }
+        ctx.stroke();
+      }
+    }
+  }
 
-  /* centred text that never runs off the board */
-  function ctext(str, x, y){
-    var hw = ctx.measureText(str).width / 2;
-    var px = Math.max(hw + 8, Math.min(W - hw - 8, x));
-    /* a halo in the ground colour keeps a word legible even where a path
-       passes directly behind it */
+  /* icons say what a system is for; they sit on the slab's front face */
+  function frontIcon(kind, x, y, z, size, color){
+    var o = P(x, y, z), ex = P(x + size/24, y, z), ey = P(x, y - size/24, z);
     ctx.save();
-    ctx.lineJoin = 'round'; ctx.miterLimit = 2;
-    ctx.strokeStyle = '#16140f'; ctx.lineWidth = 5.5;
-    ctx.strokeText(str, px, y);
-    ctx.restore();
-    ctx.fillText(str, px, y);
-  }
-  function tight(){ return S < 62; }
-
-  /* icons say what a system is for; the label says which product it is */
-  function icon(kind, x, y, size, color){
-    var u = size / 24;
-    ctx.save();
-    ctx.translate(x - size/2, y - size/2); ctx.scale(u, u);
+    ctx.transform(ex.x-o.x, ex.y-o.y, ey.x-o.x, ey.y-o.y, o.x, o.y);
+    ctx.translate(-12, -12);
     ctx.strokeStyle = color; ctx.fillStyle = color;
     ctx.lineWidth = 1.9; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     if(kind === 'mail'){
@@ -1480,383 +1511,490 @@ footer .meta a{color:var(--ink-soft)}
     ctx.restore();
   }
 
-  function slabBody(k, glow){
-    var n = NODES[k], hw = 0.72, hh = 0.46, z = n.z;
-    var t = [ iso(n.gx-hw, n.gy-hh, z), iso(n.gx+hw, n.gy-hh, z), iso(n.gx+hw, n.gy+hh, z), iso(n.gx-hw, n.gy+hh, z) ];
-    var b = [ iso(n.gx-hw, n.gy-hh, 0), iso(n.gx+hw, n.gy-hh, 0), iso(n.gx+hw, n.gy+hh, 0), iso(n.gx-hw, n.gy+hh, 0) ];
-    function face(p1,p2,p3,p4,fill){
-      ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.lineTo(p3.x,p3.y); ctx.lineTo(p4.x,p4.y); ctx.closePath();
-      ctx.fillStyle = fill; ctx.fill();
+  /* a curve through the air (Nova) or along the floor (a person) */
+  function curve(a, b, lift, bow){
+    var mx = (a.x+b.x)/2, mz = (a.z+b.z)/2, dx = b.x-a.x, dz = b.z-a.z, len = Math.hypot(dx, dz) || 1;
+    var c = {x: mx - dz/len*bow, y: Math.max(a.y, b.y) + lift, z: mz + dx/len*bow};
+    var pts = [];
+    for(var i=0; i<=28; i++){
+      var u = i/28, w = 1-u;
+      pts.push({x: w*w*a.x + 2*w*u*c.x + u*u*b.x, y: w*w*a.y + 2*w*u*c.y + u*u*b.y, z: w*w*a.z + 2*w*u*c.z + u*u*b.z});
     }
-    face(t[3],t[2],b[2],b[3], '#1a1712');
-    face(t[2],t[1],b[1],b[2], '#221e17');
-    face(t[0],t[1],t[2],t[3], glow ? '#332b20' : '#26221a');
-    ctx.beginPath(); ctx.moveTo(t[0].x,t[0].y); ctx.lineTo(t[1].x,t[1].y); ctx.lineTo(t[2].x,t[2].y); ctx.lineTo(t[3].x,t[3].y); ctx.closePath();
-    ctx.strokeStyle = glow ? glow : '#3a3428'; ctx.lineWidth = glow ? 1.6 : 1; ctx.stroke();
-    if(glow){ ctx.save(); ctx.shadowColor = glow; ctx.shadowBlur = 16; ctx.stroke(); ctx.restore(); }
-
-    var top = iso(n.gx, n.gy, z);
-    if(n.icon) icon(n.icon, top.x, top.y - S*0.09, S*0.44, glow ? '#f2e9d6' : '#7e786d');
+    return pts;
   }
-
-  /* Labels are a separate pass drawn after every path and glyph, so a line can
-     never be laid over a word. */
-  function slabLabel(k, glow){
-    var n = NODES[k], top = iso(n.gx, n.gy, n.z);
-    ctx.textAlign = 'center';
-    ctx.font = '600 ' + Math.max(11.5, S*0.115) + 'px "JetBrains Mono", ui-monospace, monospace';
-    ctx.fillStyle = glow ? '#f2e9d6' : '#a8a193';
-    ctext(tight() ? n.short : n.label, top.x, top.y - S*0.70);
-    if(n.sub && !tight()){
-      ctx.font = Math.max(9, S*0.098) + 'px "JetBrains Mono", ui-monospace, monospace';
-      ctx.fillStyle = glow ? '#b8b0a0' : '#6b665c';
-      ctext(n.sub, top.x, top.y - S*0.70 + Math.max(12, S*0.15));
-    }
+  function along(pts, u){
+    var f = clamp(u, 0, 1) * (pts.length - 1), i = Math.min(pts.length - 2, Math.floor(f)), r = f - i;
+    var a = pts[i], b = pts[i+1];
+    return {x: a.x + (b.x-a.x)*r, y: a.y + (b.y-a.y)*r, z: a.z + (b.z-a.z)*r};
   }
-
-  /* the hub is where every leg meets: in the old way, that point is a person */
-  function hubPad(color){
-    var p = nodePt('hub'), rx = S*0.62, ry = S*0.36;
+  function stroke(pts, t0, t1, color, width, glow){
+    if(t1 <= t0) return;
+    var n = pts.length - 1, i0 = Math.floor(t0 * n), i1 = Math.ceil(t1 * n);
     ctx.beginPath();
-    ctx.moveTo(p.x, p.y-ry); ctx.lineTo(p.x+rx, p.y); ctx.lineTo(p.x, p.y+ry); ctx.lineTo(p.x-rx, p.y);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(45,39,29,0.75)'; ctx.fill();
-    ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+    var s = P.apply(null, xyz(along(pts, t0))); ctx.moveTo(s.x, s.y);
+    for(var i=i0+1; i<i1; i++){ var p = P(pts[i].x, pts[i].y, pts[i].z); ctx.lineTo(p.x, p.y); }
+    var e = P.apply(null, xyz(along(pts, t1))); ctx.lineTo(e.x, e.y);
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if(glow){ ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = glow; ctx.stroke(); ctx.restore(); }
+    else ctx.stroke();
   }
-  function hubLabel(label, color){
-    var p = nodePt('hub'), ry = S*0.36;
+  function xyz(p){ return [p.x, p.y, p.z]; }
+  function dot(p, r, color, glow){
+    var s = P(p.x, p.y, p.z);
+    ctx.save(); ctx.fillStyle = color;
+    if(glow){ ctx.shadowColor = color; ctx.shadowBlur = glow; }
+    ctx.beginPath(); ctx.arc(s.x, s.y, Math.max(1.5, r * s.k), 0, 6.284); ctx.fill(); ctx.restore();
+  }
+
+  /* text with a halo in the ground colour, kept inside its viewport */
+  function label(str, x, y, size, color, weight){
+    ctx.font = (weight || '600') + ' ' + size + 'px ' + MONO;
     ctx.textAlign = 'center';
-    ctx.font = '600 ' + Math.max(11.5, S*0.105) + 'px "JetBrains Mono", ui-monospace, monospace';
-    ctx.fillStyle = color;
-    ctext(label, p.x, p.y + ry + Math.max(17, S*0.22));
-    if(!tight()){
-      ctx.font = Math.max(9, S*0.092) + 'px "JetBrains Mono", ui-monospace, monospace';
-      ctx.fillStyle = '#6b665c';
-      ctext('Slack / Teams', p.x, p.y + ry + Math.max(27, S*0.37));
+    var hw = ctx.measureText(str).width / 2, vp = C.vp;
+    var px = clamp(x, vp.x + hw + 6, vp.x + vp.w - hw - 6);
+    ctx.save(); ctx.lineJoin = 'round'; ctx.miterLimit = 2;
+    ctx.strokeStyle = '#16140f'; ctx.lineWidth = 5; ctx.strokeText(str, px, y); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(str, px, y);
+  }
+
+  function sheet(p, scale, tilt){
+    var s = P(p.x, p.y, p.z), w = 0.3 * s.k * (scale||1), h = 0.38 * s.k * (scale||1);
+    ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(tilt || 0);
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+    ctx.fillStyle = '#f1e8d4'; ctx.fillRect(-w/2, -h/2, w, h);
+    ctx.shadowColor = 'transparent';
+    ctx.fillStyle = '#b9ad94';
+    for(var i=0; i<3; i++) ctx.fillRect(-w*0.32, -h*0.28 + i*h*0.2, w*(i === 2 ? 0.4 : 0.64), Math.max(1, h*0.06));
+    ctx.fillStyle = RED; ctx.fillRect(w*0.08, h*0.22, w*0.24, Math.max(1.2, h*0.08));
+    ctx.restore();
+  }
+  function stack(x, y, z, n){
+    for(var i=0; i<n; i++){
+      var j = ((i * 7) % 5 - 2) * 0.018;
+      box(x-0.26+j, x+0.26+j, y + i*SHEET, y + (i+1)*SHEET - 0.006, z-0.19, z+0.19, [226,214,190]);
     }
   }
 
-  function personGlyph(p, color, scale){
-    var r = S * 0.10 * (scale||1);
+  function person(x, z, color, bob, glow){
+    var f = P(x, 0, z), hd = P(x, 0.66 + (bob||0), z), k = f.k, r = 0.105 * k;
+    ctx.save(); ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(f.x, f.y, 0.24*k, 0.24*k*C.sp*0.6, 0, 0, 6.284); ctx.fill(); ctx.restore();
+    ctx.save();
+    if(glow){ ctx.shadowColor = color; ctx.shadowBlur = glow; }
     ctx.fillStyle = color;
-    ctx.beginPath(); ctx.arc(p.x, p.y - r*1.9, r, 0, 6.284); ctx.fill();
+    var sh = hd.y + r*1.35, ft = f.y - (bob||0)*k*0.4;
     ctx.beginPath();
-    ctx.moveTo(p.x - r*1.35, p.y + r*1.5);
-    ctx.quadraticCurveTo(p.x, p.y - r*1.5, p.x + r*1.35, p.y + r*1.5);
-    ctx.closePath(); ctx.fill();
+    ctx.moveTo(hd.x - r*1.45, ft); ctx.lineTo(hd.x - r*1.3, sh + r*0.5);
+    ctx.quadraticCurveTo(hd.x, sh - r*0.5, hd.x + r*1.3, sh + r*0.5);
+    ctx.lineTo(hd.x + r*1.45, ft); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(hd.x, hd.y, r, 0, 6.284); ctx.fill();
+    ctx.restore();
+    return hd;
   }
 
-  /* the same portrait Nova wears in the Slack replay and the work stage */
   var novaImg = null, novaReady = false;
   if(window.NOVA_AVATAR){
     novaImg = new Image();
-    novaImg.onload = function(){ novaReady = true; if(!playing) redraw(); };
+    novaImg.onload = function(){ novaReady = true; if(!running) draw(); };
     novaImg.src = window.NOVA_AVATAR;
   }
-
-  function novaGlyph(p, pulse){
-    var r = S * 0.23;
-    ctx.save();
-    ctx.shadowColor = RED; ctx.shadowBlur = 22 + pulse * 14;
-    ctx.fillStyle = '#bb3a2b';
-    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.284); ctx.fill();
-    ctx.restore();
+  function orb(p, pulse, think){
+    var s = P(p.x, p.y, p.z), r = 0.36 * s.k;
+    var fl = P(p.x, 0, p.z);
+    ctx.save(); ctx.fillStyle = 'rgba(224,86,63,0.16)';
+    ctx.beginPath(); ctx.ellipse(fl.x, fl.y, r*1.3, r*1.3*C.sp*0.6, 0, 0, 6.284); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.shadowColor = RED; ctx.shadowBlur = 24 + pulse*18;
+    ctx.fillStyle = '#bb3a2b'; ctx.beginPath(); ctx.arc(s.x, s.y, r, 0, 6.284); ctx.fill(); ctx.restore();
     if(novaReady){
-      ctx.save();
-      ctx.beginPath(); ctx.arc(p.x, p.y, r - 2.5, 0, 6.284); ctx.clip();
-      ctx.drawImage(novaImg, p.x - (r-2.5), p.y - (r-2.5), (r-2.5)*2, (r-2.5)*2);
-      ctx.restore();
-      ctx.strokeStyle = RED; ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.arc(p.x, p.y, r - 1.2, 0, 6.284); ctx.stroke();
+      ctx.save(); ctx.beginPath(); ctx.arc(s.x, s.y, r-2.5, 0, 6.284); ctx.clip();
+      ctx.drawImage(novaImg, s.x-(r-2.5), s.y-(r-2.5), (r-2.5)*2, (r-2.5)*2); ctx.restore();
+      ctx.strokeStyle = RED; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(s.x, s.y, r-1.2, 0, 6.284); ctx.stroke();
     } else {
-      ctx.fillStyle = '#ffece7';
-      ctx.font = '700 ' + (S*0.16) + 'px "JetBrains Mono", ui-monospace, monospace';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('N', p.x, p.y + S*0.008);
-      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#ffece7'; ctx.font = '700 ' + (r*0.8) + 'px ' + MONO;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', s.x, s.y); ctx.textBaseline = 'alphabetic';
     }
-    if(pulse > 0){
-      ctx.strokeStyle = 'rgba(224,86,63,' + (0.5 * (1-pulse)) + ')';
-      ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.arc(p.x, p.y, r + pulse * S*0.55, 0, 6.284); ctx.stroke();
+    if(think > 0){
+      var ph = (think * 3) % 1;
+      ctx.strokeStyle = 'rgba(217,164,65,' + (0.7*(1-ph)) + ')'; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(s.x, s.y, r + ph*r*1.4, 0, 6.284); ctx.stroke();
+      var d = r*0.34, dy = s.y - r - d*2.2;
+      ctx.fillStyle = AMBER;
+      ctx.beginPath(); ctx.moveTo(s.x, dy-d); ctx.lineTo(s.x+d, dy); ctx.lineTo(s.x, dy+d); ctx.lineTo(s.x-d, dy); ctx.closePath(); ctx.fill();
     }
+    return s;
   }
 
-  /* a leg is a quadratic arc; the bow keeps overlapping legs from stacking into one stripe */
-  function leg(fromK, toK, i){
-    var p0 = nodePt(fromK), p1 = nodePt(toK);
-    var mx = (p0.x+p1.x)/2, my = (p0.y+p1.y)/2;
-    var dx = p1.x-p0.x, dy = p1.y-p0.y, len = Math.hypot(dx,dy) || 1;
-    var bow = (i % 2 ? -1 : 1) * Math.min(len * 0.16, S * 0.5);
-    return { p0:p0, p1:p1, cx: mx + (-dy/len)*bow, cy: my + (dx/len)*bow };
+  /* --- geometry shared by both boards --- */
+  function top(k){ var n = NODES[k]; return {x:n.x, y:SH + 0.02, z:n.z}; }
+  function spot(k){
+    var n = NODES[k], h = NODES.hub;
+    if(k === 'hub') return {x:h.x, y:0.02, z:h.z};
+    var dx = h.x - n.x, dz = h.z - n.z, l = Math.hypot(dx, dz);
+    return {x: n.x + dx/l*0.95, y:0.02, z: n.z + dz/l*0.95};
   }
-  function at(L, t){
-    var u = 1-t;
-    return { x: u*u*L.p0.x + 2*u*t*L.cx + t*t*L.p1.x, y: u*u*L.p0.y + 2*u*t*L.cy + t*t*L.p1.y };
-  }
-  function strokeLeg(L, t, color, width, glow){
-    if(t <= 0) return;
-    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
-    if(glow){ ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = glow; }
-    ctx.beginPath(); ctx.moveTo(L.p0.x, L.p0.y);
-    if(t >= 1){ ctx.quadraticCurveTo(L.cx, L.cy, L.p1.x, L.p1.y); }
-    else {
-      for(var s=1; s<=24; s++){ var q = at(L, (s/24) * t); ctx.lineTo(q.x, q.y); }
+  var HPATH = HLEGS.map(function(L, i){ return curve(spot(L.from), spot(L.to), 0, (i % 2 ? -1 : 1) * (0.55 + 0.3 * (i % 3))); });
+  var ORB = {x:NODES.hub.x, y:ORB_Y, z:NODES.hub.z};
+  var FAN = ['a','b','c'].map(function(k, i){ return curve(ORB, top(k), 0.55, (i - 1) * 0.35); });
+  var NIN = curve(top('inbox'), ORB, 0.6, 0.3);
+  var NOK = curve(ORB, {x:NODES.team.x, y:0.95, z:NODES.team.z}, 0.35, -0.2);
+  var NWR = curve(ORB, top('c'), 0.9, -0.5);
+  var NRE = curve(ORB, top('inbox'), 0.9, 0.5);
+  var OUTP = {x:NODES.out.x, y:0.14, z:NODES.out.z};
+  var NOUT = curve(ORB, OUTP, 0.5, 0.2);
+  var HOUT = curve({x:spot('inbox').x, y:0.9, z:spot('inbox').z}, OUTP, 1.1, -0.4);
+
+  /* --- state of each board at sim minute s --- */
+  function handState(s){
+    var st = {pos: spot('inbox'), walk: -1, u: 0, at: 'inbox', carry: s >= 2 && s < 40.4, done: s >= 40.95 ? 1 : 0, sw: 0, legs: 0};
+    for(var i=0; i<HSW.length; i++) if(s >= HSW[i]) st.sw = i + 1;
+    for(var j=0; j<HLEGS.length; j++){
+      var L = HLEGS[j];
+      if(s >= L.t1){ st.legs = j + 1; st.at = L.to; st.pos = spot(L.to); }
+      else if(s >= L.t0){ st.walk = j; st.u = ease((s - L.t0) / (L.t1 - L.t0)); st.pos = along(HPATH[j], st.u); st.legs = j; st.at = null; break; }
+      else break;
     }
-    ctx.stroke();
-    if(glow) ctx.restore();
+    st.fly = s >= 40.4 && s < 40.95 ? (s - 40.4) / 0.55 : -1;
+    st.taken = s >= 2 ? 1 : 0;
+    return st;
   }
-
-  function ground(){
-    ctx.fillStyle = '#16140f'; ctx.fillRect(0,0,W,H);
-    var g = ctx.createRadialGradient(CX, CY - S*0.2, S*0.2, CX, CY, S*4.2);
-    g.addColorStop(0, 'rgba(60,52,38,0.55)'); g.addColorStop(1, 'rgba(22,20,15,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(CX, CY, S*4.2, 0, 6.284); ctx.fill();
-    ctx.strokeStyle = 'rgba(58,52,40,0.5)'; ctx.lineWidth = 1;
-    for(var i=-4; i<=4; i++){
-      var a1 = iso(i, -4, 0), a2 = iso(i, 4, 0), b1 = iso(-4, i, 0), b2 = iso(4, i, 0);
-      ctx.beginPath(); ctx.moveTo(a1.x,a1.y); ctx.lineTo(a2.x,a2.y); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(b1.x,b1.y); ctx.lineTo(b2.x,b2.y); ctx.stroke();
+  function novaState(s){
+    var st = {run: -1, u: 0, done: 0, taken: 0, approvals: 0, rails: clamp((s - HARD) / 1.2, 0, 1), seen: 0};
+    for(var i=0; i<RUNS.length; i++){
+      var R = RUNS[i];
+      if(s >= R.s) st.taken = i + 1;
+      if(s >= R.e) st.done = i + 1;
+      if(s >= R.s + (R.e - R.s) * PH.ok[1]) st.approvals = i + 1;
+      if(s >= R.s && s < R.e){ st.run = i; st.u = (s - R.s) / (R.e - R.s); }
     }
+    st.seen = st.done;
+    return st;
   }
 
-  /* what one person can get through in a 450-minute day at this rate */
-  /* The headline stat lives in the DOM, not on the canvas: on the board it
-     collided with the top-left system label at tablet widths, and as text it
-     stays crisp and selectable. It eases up as the run settles. */
-  function readout(A, i, prog){
-    var n = A.beats.length, k = Math.min(1, ((i + prog) / n) / 0.4);
-    statV.textContent = String(Math.round(A.perDay * (1 - Math.pow(1 - k, 3))));
-  }
+  /* --- one board --- */
+  function board(vp, side, t, s){
+    camera(vp, side, t, s);
+    var nova = side === 'nova', accent = nova ? RED : WARM;
+    var H = nova ? null : handState(s), N = nova ? novaState(s) : null;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(vp.x, vp.y, vp.w, vp.h); ctx.clip();
 
-  function redraw(){ if(reduce || finished) showAll(); else render(0); }
+    var bg = ctx.createRadialGradient(C.vx, C.vy, 0, C.vx, C.vy, Math.max(vp.w, vp.h) * 0.75);
+    bg.addColorStop(0, nova ? '#241b15' : '#221e16'); bg.addColorStop(1, '#14120e');
+    ctx.fillStyle = bg; ctx.fillRect(vp.x, vp.y, vp.w, vp.h);
 
-  /* --- voiceover ---
-     Same three-state preference as the demo page: unset stays silent for the
-     scroll-triggered run, because browsers block unprompted audio anyway, and
-     turns on when someone asks for the run with Replay. An explicit off is
-     never overridden. Missing clips simply fail to play and the run is silent. */
-  var VO_KEY = 'nova-day-vo';
-  function voPref(){ try { return localStorage.getItem(VO_KEY); } catch(e){ return null; } }
-  function voSave(v){ try { localStorage.setItem(VO_KEY, v); } catch(e){} }
-  var voWanted = voPref() === 'on', voClips = {}, voCur = null;
-
-  function voClip(A, b){
-    var k = A.key + '/' + b.id;
-    if(!voClips[k]){
-      var a = new Audio('audio/day-' + A.key + '-' + b.id + '.mp3');
-      a.preload = 'none';
-      voClips[k] = a;
+    /* the table the work happens on */
+    var sh = P(0, -1.4, 0);
+    ctx.save(); ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.filter = 'blur(14px)';
+    ctx.beginPath(); ctx.ellipse(sh.x, sh.y, 4.4*sh.k, 4.4*sh.k*C.sp*0.55, 0, 0, 6.284); ctx.fill(); ctx.restore();
+    box(-3.7, 3.7, -0.34, 0, -3.5, 3.5, [40,36,28], 'rgba(96,86,66,0.9)');
+    ctx.strokeStyle = 'rgba(70,62,48,0.55)'; ctx.lineWidth = 1;
+    for(var g=-3; g<=3; g++){
+      var a1 = P(g,0.001,-3.5), a2 = P(g,0.001,3.5), b1 = P(-3.7,0.001,g), b2 = P(3.7,0.001,g);
+      ctx.beginPath(); ctx.moveTo(a1.x,a1.y); ctx.lineTo(a2.x,a2.y); ctx.moveTo(b1.x,b1.y); ctx.lineTo(b2.x,b2.y); ctx.stroke();
     }
-    return voClips[k];
-  }
-  function voStop(){
-    if(!voCur) return;
-    voCur.pause();
-    try { voCur.currentTime = 0; } catch(e){}
-    voCur = null;
-  }
-  function voStart(A, b){
-    voStop();
-    if(!voWanted || !b || !b.id) return;
-    var a = voClip(A, b);
-    voCur = a;
-    try { a.currentTime = 0; } catch(e){}
-    var pr = a.play();
-    if(pr && pr.catch) pr.catch(function(){ if(voCur === a) voCur = null; });
-  }
-  function voRemainingMs(){
-    if(!voCur || !voWanted || voCur.ended) return 0;
-    if(!isFinite(voCur.duration)) return 0;
-    return Math.max(0, (voCur.duration - voCur.currentTime) * 1000);
-  }
-  function voSyncBtn(){
-    if(!voBtn) return;
-    voBtn.textContent = voWanted ? '🔊 Sound on' : '🔇 Sound off';
-    voBtn.setAttribute('aria-pressed', voWanted ? 'true' : 'false');
-  }
 
-  /* --- state --- */
-  var act = 0, beat = 0, t0 = 0, playing = false, raf = 0, visible = false, finished = false;
+    /* the hub pad */
+    var hp = NODES.hub;
+    box(hp.x-0.8, hp.x+0.8, 0, 0.05, hp.z-0.55, hp.z+0.55, [52,45,34], nova ? 'rgba(224,86,63,0.55)' : 'rgba(232,220,192,0.45)');
 
-  function beatsOf(a){ return ACTS[a].beats; }
-  function legsFor(b, i){
-    if(b.fan) return b.fan.map(function(k, j){ return leg('hub', k, i + j); });
-    return [ leg(b.from, b.to, i) ];
-  }
-
-  function render(prog){
-    var A = ACTS[act], bs = A.beats, cur = bs[beat];
-    var accent = A.key === 'today' ? WARM : RED;
-    ground();
-
-    /* completed legs stay on the board: today they accumulate into a tangle */
-    for(var i=0; i<beat; i++){
-      var done = legsFor(bs[i], i);
-      for(var j=0; j<done.length; j++){
-        strokeLeg(done[j], 1, A.key === 'today' ? 'rgba(232,220,192,0.52)' : 'rgba(224,86,63,0.46)',
-                  A.hardened ? 3 : 2, 0);
+    /* the person's tracks: every trip stays on the floor */
+    if(!nova){
+      for(var i=0; i<HLEGS.length; i++){
+        if(i < H.legs) stroke(HPATH[i], 0, 1, 'rgba(232,220,192,0.5)', 2.6);
+        else if(i === H.walk) stroke(HPATH[i], 0, H.u, WARM, 2.6, 12);
       }
     }
 
     var active = {};
-    if(cur.fan){ cur.fan.forEach(function(k){ active[k] = 1; }); active.hub = 1; }
-    else { active[cur.from] = 1; active[cur.to] = 1; }
-
-    hubPad(accent);
-    SLABS.forEach(function(k){ slabBody(k, active[k] ? accent : null); });
-
-    var live = legsFor(cur, beat);
-    for(var m=0; m<live.length; m++){
-      strokeLeg(live[m], prog, accent, A.hardened ? 3 : 2, 14);
+    if(!nova){
+      if(H.walk >= 0){ active[HLEGS[H.walk].to] = 1; }
+      else if(H.at && H.at !== 'hub') active[H.at] = 1;
+    } else if(N.run >= 0){
+      var u = N.u;
+      if(inR(u, PH.inn)) active.inbox = 1;
+      if(inR(u, PH.fan)){ active.a = active.b = active.c = 1; }
+      if(inR(u, PH.write)){ active.c = active.inbox = 1; }
     }
+    var fixedCol = GREEN;
 
-    var hub = nodePt('hub'), approving = false;
-    if(A.actor === 'nova'){
-      novaGlyph(hub, (cur.from === 'hub' && cur.to === 'hub') ? (prog % 1) : 0);
-      var hp = nodePt('human');
-      approving = (cur.to === 'human');
-      if(approving){ ctx.save(); ctx.shadowColor = GREEN; ctx.shadowBlur = 20; }
-      personGlyph(hp, approving ? GREEN : '#b8b0a0', 1.25);
-      if(approving) ctx.restore();
+    /* solid things, far to near */
+    var items = [];
+    SYS.forEach(function(k){
+      var n = NODES[k];
+      items.push({d: P(n.x, 0.3, n.z).d, f: function(){
+        var on = active[k], col = nova && N.rails > 0 && on && N.run >= 0 && RUNS[N.run].hard ? fixedCol : accent;
+        box(n.x-HW, n.x+HW, 0, SH, n.z-HD, n.z+HD, on ? [78,66,50] : [60,54,43], on ? col : 'rgba(80,72,56,1)', on);
+        frontIcon(n.icon, n.x, SH/2, n.z+HD+0.001, 0.36, on ? '#f2e9d6' : '#8a8374');
+        if(k === 'inbox') stack(n.x, SH, n.z, QUEUE - (nova ? N.taken : H.taken));
+      }});
+    });
+    var o = NODES.out;
+    items.push({d: P(o.x, 0.1, o.z).d, f: function(){
+      box(o.x-0.48, o.x+0.48, 0, 0.12, o.z-0.36, o.z+0.36, [50,44,33], 'rgba(107,189,116,0.5)');
+      stack(o.x, 0.12, o.z, nova ? N.done : H.done);
+    }});
+    if(nova){
+      var tm = NODES.team;
+      items.push({d: P(tm.x, 0.4, tm.z).d, f: function(){
+        box(tm.x-0.5, tm.x+0.5, 0, 0.05, tm.z-0.4, tm.z+0.4, [52,45,34]);
+        var ok = N.run >= 0 && inR(N.u, PH.ok);
+        person(tm.x, tm.z, ok ? GREEN : '#b8b0a0', 0, ok ? 20 : 0);
+      }});
     } else {
-      /* today the person is the token: they are the thing that moves */
-      var pos = live[0] ? at(live[0], prog) : hub;
-      if(cur.from === 'hub' && cur.to === 'hub'){
-        pos = hub;
-        ctx.strokeStyle = 'rgba(232,220,192,' + (0.55 * (1 - (prog % 1))) + ')';
-        ctx.lineWidth = 1.4;
-        ctx.beginPath(); ctx.arc(hub.x, hub.y, S*0.18 + (prog % 1) * S*0.5, 0, 6.284); ctx.stroke();
+      items.push({d: P(H.pos.x, 0.4, H.pos.z).d - 0.01, f: function(){
+        var bob = H.walk >= 0 ? Math.abs(Math.sin(H.u * 18)) * 0.05 : 0;
+        var head = person(H.pos.x, H.pos.z, WARM, bob, 16);
+        if(H.carry) sheet({x:H.pos.x, y:0.66 + bob + 0.34, z:H.pos.z}, 0.8, H.walk >= 0 ? Math.sin(H.u*18)*0.08 : 0);
+        /* working at a system: a slow ring, the minutes going */
+        if(H.walk < 0 && H.carry){
+          var ph = (t * 0.7) % 1, rr = 0.2 * P(H.pos.x, 0.9, H.pos.z).k;
+          ctx.strokeStyle = 'rgba(232,220,192,0.5)'; ctx.lineWidth = 1.6;
+          ctx.beginPath(); ctx.arc(head.x, head.y - rr*2.6, rr*0.6, -1.57, -1.57 + ph*6.284); ctx.stroke();
+        }
+      }});
+    }
+    items.sort(function(p, q){ return q.d - p.d; });
+    items.forEach(function(it){ it.f(); });
+
+    /* Nova's paths through the air */
+    var orbS = null;
+    if(nova){
+      var R = N.run >= 0 ? RUNS[N.run] : null, uu = N.u;
+      /* ghosts of runs already done: the same path, not a tangle */
+      if(N.done > 0 && N.rails < 1){
+        var ga = 0.2 * (1 - N.rails);
+        FAN.forEach(function(p){ stroke(p, 0, 1, 'rgba(224,86,63,' + ga + ')', 1.6); });
       }
-      ctx.save(); ctx.shadowColor = WARM; ctx.shadowBlur = 18;
-      personGlyph(pos, WARM, 1.25);
-      ctx.restore();
+      /* the written path: fixed rails that stay */
+      if(N.rails > 0){
+        var ra = 0.55 * N.rails;
+        FAN.concat([NWR, NRE, NIN]).forEach(function(p){ stroke(p, 0, 1, 'rgba(107,189,116,' + ra + ')', 2.4); });
+        stroke(NOK, 0, 1, 'rgba(107,189,116,' + (ra*0.6) + ')', 1.6);
+      }
+      if(R){
+        var col = R.hard ? GREEN : RED;
+        if(inR(uu, PH.inn)){ var v = ease(span(uu, PH.inn)); stroke(NIN, Math.max(0, v - 0.45), v, col, 2.6, 14); }
+        if(inR(uu, PH.fan)){
+          var fu = span(uu, PH.fan), draw = ease(fu / 0.35);
+          FAN.forEach(function(p, i){
+            stroke(p, 0, draw, col, 2.6, 14);
+            if(fu > 0.3){ for(var q=0; q<3; q++){ var pu = 1 - (((fu - 0.3) * 2.2 + q/3 + i*0.11) % 1); dot(along(p, pu), 0.055, '#ffd9cf', 10); } }
+          });
+        }
+        if(inR(uu, PH.ok)){ var ov = ease(span(uu, PH.ok) / 0.4); stroke(NOK, 0, ov, GREEN, 2.4, 14); }
+        if(inR(uu, PH.write)){ var wv = ease(span(uu, PH.write)); stroke(NWR, 0, wv, col, 2.6, 14); stroke(NRE, 0, wv, col, 2.6, 14); }
+      }
+      var think = R && inR(uu, PH.think) ? span(uu, PH.think) : 0;
+      var bobO = reduce ? 0 : Math.sin(t * 1.6) * 0.06;
+      orbS = orb({x:ORB.x, y:ORB.y + bobO, z:ORB.z}, R && inR(uu, PH.fan) ? (span(uu, PH.fan) * 2) % 1 : 0, think);
+      /* the invoice in hand */
+      if(R){
+        if(inR(uu, PH.inn)) sheet(along(NIN, ease(span(uu, PH.inn))), 0.8, 0.1);
+        else if(inR(uu, PH.out)) sheet(along(NOUT, ease(span(uu, PH.out))), 0.8, -0.1);
+        else sheet({x:ORB.x + 0.5, y:ORB.y + 0.25 + bobO, z:ORB.z}, 0.7, 0.14);
+      }
+    } else if(H.fly >= 0){
+      sheet(along(HOUT, ease(H.fly)), 0.8, 0.1);
     }
 
-    /* the diamond marks the one step that still reasons */
-    if(cur.tagK === 'model'){
-      var d = S*0.13, dy = hub.y - S*0.62;
-      ctx.fillStyle = AMBER;
-      ctx.beginPath(); ctx.moveTo(hub.x, dy-d); ctx.lineTo(hub.x+d, dy); ctx.lineTo(hub.x, dy+d); ctx.lineTo(hub.x-d, dy); ctx.closePath(); ctx.fill();
+    /* every word, drawn last so no line crosses it */
+    var fs = clamp(C.F / 60, 9, 12), fs2 = Math.max(8.5, fs - 1.6);
+    SYS.forEach(function(k){
+      var n = NODES[k], lp = P(n.x, SH, n.z - HD), on = active[k];
+      label(C.tight ? n.short : n.label, lp.x, lp.y - 10, fs, on ? '#f2e9d6' : '#a8a193');
+    });
+    var hl = P(hp.x, 0, hp.z + 0.62);
+    if(nova){
+      label('NOVA', hl.x, hl.y + fs + 4, fs, RED);
+      var tl = P(NODES.team.x, 0, NODES.team.z + 0.45), okNow = N.run >= 0 && inR(N.u, PH.ok);
+      label(okNow ? 'APPROVED' : 'YOUR TEAM', tl.x, tl.y + fs + 4, fs, okNow ? GREEN : '#a8a193');
+      if(orbS && N.run >= 0 && inR(N.u, PH.think)) label('model', orbS.x, orbS.y - orbS.k*0.36 - fs*2.4, fs2, AMBER, '500');
+    } else {
+      label('YOUR DESK', hl.x, hl.y + fs + 4, fs, '#a8a193');
+      if(!C.tight) label('Slack / Teams', hl.x, hl.y + fs*2 + 7, fs2, '#6b665c', '400');
+      if(H.sw > 0 && H.done === 0){
+        var hh = P(H.pos.x, 0.5, H.pos.z);
+        ctx.textAlign = 'left'; ctx.font = '500 ' + fs2 + 'px ' + MONO;
+        var sw = 'switch ' + H.sw + '/9', sx = hh.x + 0.26 * hh.k;
+        ctx.save(); ctx.lineJoin = 'round'; ctx.strokeStyle = '#16140f'; ctx.lineWidth = 5; ctx.strokeText(sw, sx, hh.y); ctx.restore();
+        ctx.fillStyle = WARM; ctx.fillText(sw, sx, hh.y);
+      }
     }
+    var ol = P(o.x, 0, o.z + 0.45), dn = nova ? N.done : H.done;
+    label('DONE · ' + dn, ol.x, ol.y + fs + 4, fs, dn ? GREEN : '#6b665c');
 
-    labelPass(A, active, approving);
+    /* which board is which */
+    ctx.textAlign = 'left';
+    ctx.font = '600 ' + Math.max(10, fs) + 'px ' + MONO;
+    ctx.fillStyle = accent;
+    ctx.fillText(nova ? 'WITH NOVA' : 'BY HAND', vp.x + 16, vp.y + 24);
+    ctx.font = '400 ' + fs2 + 'px ' + MONO; ctx.fillStyle = '#6b665c';
+    if(!C.tight) ctx.fillText(nova ? 'Nova carries it, a person approves' : 'one person carries it', vp.x + 16, vp.y + 24 + fs2 + 6);
+
+    if(nova) recipeCard(vp, N, s);
+    ctx.restore();
   }
 
-  /* every word on the board, drawn last */
-  function labelPass(A, active, approving){
-    var accent = A.key === 'today' ? WARM : RED;
-    SLABS.forEach(function(k){ slabLabel(k, active[k] ? accent : null); });
-    hubLabel(A.actor === 'nova' ? 'NOVA' : 'YOUR TEAM', accent);
-    if(A.actor === 'nova'){
-      var hp = nodePt('human');
-      ctx.textAlign = 'center';
-      ctx.font = '600 ' + Math.max(11.5, S*0.105) + 'px "JetBrains Mono", ui-monospace, monospace';
-      ctx.fillStyle = approving ? GREEN : '#a8a193';
-      ctext(approving ? 'APPROVED' : 'YOUR TEAM', hp.x, hp.y - S*0.52);
+  /* the path Nova wrote down, legible to anyone */
+  function recipeCard(vp, N, s){
+    var a = ease((s - HARD + 0.3) / 1.4);
+    if(a <= 0) return;
+    var cur = -1, R = N.run >= 0 ? RUNS[N.run] : null;
+    if(R && R.hard){
+      var u = N.u;
+      cur = inR(u, PH.fan) ? Math.min(2, Math.floor(span(u, PH.fan) * 3)) : inR(u, PH.think) ? 3 : inR(u, PH.ok) ? 4 : (inR(u, PH.write) || inR(u, PH.out)) ? 5 : -1;
     }
+    var tight = vp.w < 440, fs = tight ? 9.5 : 10.5, row = tight ? 14 : 17;
+    var w = tight ? 180 : 262, h = tight ? 44 : 34 + STEPS.length * row;
+    var x = vp.x + vp.w - w - 14, y = vp.y + 14 + (1 - a) * 12;
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.fillStyle = 'rgba(18,16,12,0.92)'; ctx.strokeStyle = 'rgba(107,189,116,0.55)'; ctx.lineWidth = 1;
+    ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x, y, w, h, 7); else ctx.rect(x, y, w, h);
+    ctx.fill(); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.font = '600 ' + fs + 'px ' + MONO; ctx.fillStyle = GREEN;
+    ctx.fillText('recipe · invoice.exceptions · v3', x + 10, y + 17, w - 20);
+    if(tight){
+      ctx.font = '400 ' + fs + 'px ' + MONO; ctx.fillStyle = '#a8a193';
+      ctx.fillText('4 fixed · 1 model · 1 approval', x + 10, y + 33, w - 20);
+    } else {
+      for(var i=0; i<STEPS.length; i++){
+        var yy = y + 36 + i * row, on = i === cur, kind = STEPS[i][1];
+        var kc = kind === 'model' ? AMBER : kind === 'human' ? RED : GREEN;
+        if(on){ ctx.fillStyle = 'rgba(232,220,192,0.08)'; ctx.fillRect(x + 4, yy - row + 5, w - 8, row); }
+        ctx.font = '400 ' + fs + 'px ' + MONO;
+        ctx.fillStyle = on ? '#f2e9d6' : '#8d877a';
+        ctx.fillText((i+1) + '  ' + STEPS[i][0], x + 10, yy);
+        ctx.textAlign = 'right'; ctx.fillStyle = kc; ctx.fillText(kind, x + w - 10, yy); ctx.textAlign = 'left';
+      }
+    }
+    ctx.restore();
   }
 
-  function paint(){
-    var A = ACTS[act], cur = A.beats[beat];
-    statC.textContent = A.cost;
-    statEl.className = 'dy-stat' + (A.actor === 'nova' ? ' nova' : '');
-    narrEl.innerHTML = cur.text;
-    clockEl.textContent = cur.clock;
-    tagEl.textContent = cur.tag;
-    tagEl.className = 'dy-tag' + (cur.tagK ? ' ' + cur.tagK : '');
+  /* --- frame --- */
+  var W = 0, Hh = 0, dpr = 1, stacked = false;
+  function resize(){
+    W = Math.round(cv.clientWidth);
+    stacked = W < 620;
+    cv.style.height = (stacked ? Math.round(clamp(W * 1.45, 520, 700)) : Math.round(clamp(W * 0.5, 420, 520))) + 'px';
+    Hh = Math.round(cv.getBoundingClientRect().height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = Hh * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  var T = 0, running = false, visible = false, raf = 0, last = 0, userPaused = false, capI = -1;
+  function draw(){
+    var t = Math.min(T, END), s = simAt(t);
+    var vA, vB;
+    if(stacked){ vA = {x:0, y:0, w:W, h:Hh/2}; vB = {x:0, y:Hh/2, w:W, h:Hh/2}; }
+    else { vA = {x:0, y:0, w:W/2, h:Hh}; vB = {x:W/2, y:0, w:W/2, h:Hh}; }
+    board(vA, 'hand', T, s);
+    board(vB, 'nova', T, s);
+    ctx.fillStyle = '#2b261d';
+    if(stacked) ctx.fillRect(0, Hh/2 - 0.5, W, 1); else ctx.fillRect(W/2 - 0.5, 0, 1, Hh);
+    /* the loop fades through the ground colour */
+    if(T > LOOP - 1.2){ ctx.fillStyle = 'rgba(22,20,15,' + clamp((T - (LOOP - 1.2)) / 1, 0, 1) + ')'; ctx.fillRect(0, 0, W, Hh); }
+    else if(T < 0.8 && !reduce){ ctx.fillStyle = 'rgba(22,20,15,' + (1 - T/0.8) + ')'; ctx.fillRect(0, 0, W, Hh); }
+    ui(t, s);
+  }
+
+  function ui(t, s){
+    var ci = 0;
+    for(var i=0; i<CAPS.length; i++) if(t >= CAPS[i][0]) ci = i;
+    if(ci !== capI){ capI = ci; narrEl.innerHTML = CAPS[ci][1]; }
+    var m = Math.floor(s + 1e-6);
+    clockEl.textContent = '09:' + (m < 10 ? '0' : '') + m;
+    var pc = (clamp(t / END, 0, 1) * 100).toFixed(2) + '%';
+    progEl.style.width = pc; knobEl.style.left = pc;
+    scrubEl.setAttribute('aria-valuenow', m); scrubEl.setAttribute('aria-valuetext', clockEl.textContent);
+    var H = handState(s), N = novaState(s);
+    handV.textContent = H.done;
+    handC.textContent = H.done ? '9 switches, 39 min' : H.sw + (H.sw === 1 ? ' switch' : ' switches') + ' so far';
+    novaV.textContent = N.done;
+    novaC.textContent = N.approvals + (N.approvals === 1 ? ' approval' : ' approvals') + ' by a person';
+    chaps.forEach(function(c, j){
+      var a = CHAPS[j], b = CHAPS[j+1], f = clamp((t - a) / (b - a), 0, 1);
+      c.classList.toggle('on', t >= a && (t < b || j === chaps.length - 1));
+      c.classList.toggle('done', f >= 1 && j < chaps.length - 1);
+      var bar = c.querySelector('i'); if(bar) bar.style.width = (f * 100).toFixed(1) + '%';
+    });
   }
 
   function frame(ts){
-    if(!playing) return;
-    if(!t0) t0 = ts;
-    var bs = beatsOf(act), cur = bs[beat], el = ts - t0;
-    var p = Math.min(el / drawOf(cur), 1);
-    render(p);
-    var span = 1 / bs.length, held = Math.min(el / durOf(cur), 1);
-    readout(ACTS[act], beat, held);
-    progEl.style.width = ((beat * span + span * held) * 100).toFixed(1) + '%';
-    /* never cut a sentence off: a clip still speaking extends its own beat */
-    if(held >= 1 && voRemainingMs() <= 0){
-      if(beat < bs.length - 1){ beat++; t0 = ts; paint(); voStart(ACTS[act], bs[beat]); }
-      else { playing = false; finished = true; return; }
-    }
+    if(!running) return;
+    var dt = last ? Math.min(0.1, (ts - last) / 1000) : 0; last = ts;
+    if(!dragging) T += dt;
+    if(T >= LOOP) T = 0;
+    draw();
     raf = requestAnimationFrame(frame);
   }
+  function start(){ if(running || reduce || userPaused) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
+  function stop(){ running = false; cancelAnimationFrame(raf); }
+  function syncPause(){ pauseEl.textContent = userPaused ? '▶ Play' : '❚❚ Pause'; pauseEl.setAttribute('aria-pressed', userPaused ? 'true' : 'false'); }
 
-  function play(){
-    cancelAnimationFrame(raf);
-    voStop();
-    beat = 0; t0 = 0; finished = false; paint();
-    if(reduce){ showAll(); return; }
-    voStart(ACTS[act], beatsOf(act)[0]);
-    playing = true; raf = requestAnimationFrame(frame);
+  replayEl.addEventListener('click', function(){ T = 0; userPaused = false; syncPause(); if(reduce){ T = END; draw(); } else { stop(); start(); } });
+  pauseEl.addEventListener('click', function(){ userPaused = !userPaused; syncPause(); if(userPaused) stop(); else if(visible) start(); });
+  window.addEventListener('resize', function(){ resize(); draw(); });
+
+  /* --- seeking: the bar and the chapters both move the one clock --- */
+  var dragging = false;
+  function hhmm(t){ var m = Math.floor(simAt(t) + 1e-6); return '09:' + (m < 10 ? '0' : '') + m; }
+  function seek(t){
+    T = clamp(t, 0, END);
+    last = 0;
+    draw();
   }
-
-  /* reduced motion: the finished board, no movement */
-  function showAll(){
-    var A = ACTS[act], bs = A.beats;
-    var accent = A.key === 'today' ? WARM : RED, all = {};
-    ground();
-    hubPad(accent);
-    SLABS.forEach(function(k){ all[k] = 1; slabBody(k, accent); });
-    for(var i=0; i<bs.length; i++){
-      var ls = legsFor(bs[i], i);
-      for(var j=0; j<ls.length; j++){
-        strokeLeg(ls[j], 1, A.key === 'today' ? 'rgba(232,220,192,0.55)' : 'rgba(224,86,63,0.55)', A.hardened ? 3 : 2, 0);
-      }
-    }
-    var hub = nodePt('hub');
-    if(A.actor === 'nova'){ novaGlyph(hub, 0); personGlyph(nodePt('human'), GREEN, 1.25); }
-    else personGlyph(hub, WARM, 1.25);
-    labelPass(A, all, A.actor === 'nova');
-    readout(A, bs.length - 1, 1);
-    beat = bs.length - 1; paint();
-    progEl.style.width = '100%';
+  function tAt(e){
+    var r = scrubEl.getBoundingClientRect();
+    return clamp((e.clientX - r.left) / r.width, 0, 1) * END;
   }
-
-  function setAct(i){
-    act = i;
-    tabs.forEach(function(t, j){ t.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
-    cv.setAttribute('aria-label', ACTS[i].beats.map(function(b){ return b.text.replace(/<[^>]+>/g, ''); }).join(' '));
-    play();
+  function tipAt(t){
+    tipEl.textContent = hhmm(t);
+    var r = scrubEl.getBoundingClientRect(), half = tipEl.offsetWidth / 2, x = t / END * r.width;
+    tipEl.style.left = clamp(x, half, r.width - half) + 'px';
   }
-
-  tabs.forEach(function(t){
-    t.addEventListener('click', function(){ setAct(parseInt(t.getAttribute('data-act'), 10)); });
+  scrubEl.addEventListener('pointerdown', function(e){
+    dragging = true; scrubEl.classList.add('drag');
+    try { scrubEl.setPointerCapture(e.pointerId); } catch(err){}
+    var t = tAt(e); tipAt(t); seek(t);
+    e.preventDefault(); scrubEl.focus({preventScroll: true});
   });
-  /* Replay is an unambiguous "show me this" gesture, so it satisfies the
-     autoplay policy and turns narration on for anyone who has not opted out. */
-  replayEl.addEventListener('click', function(){
-    if(voPref() === null){ voWanted = true; voSave('on'); voSyncBtn(); }
-    play();
+  scrubEl.addEventListener('pointermove', function(e){
+    var t = tAt(e); tipAt(t);
+    if(dragging) seek(t);
   });
-  voBtn.addEventListener('click', function(){
-    voWanted = !voWanted;
-    voSave(voWanted ? 'on' : 'off');
-    voSyncBtn();
-    if(voWanted) voStart(ACTS[act], beatsOf(act)[beat]); else voStop();
+  function endDrag(){ if(!dragging) return; dragging = false; scrubEl.classList.remove('drag'); last = 0; }
+  scrubEl.addEventListener('pointerup', endDrag);
+  scrubEl.addEventListener('pointercancel', endDrag);
+  scrubEl.addEventListener('keydown', function(e){
+    var t = Math.min(T, END), j = 0, k = e.key;
+    for(var i=0; i<CHAPS.length - 1; i++) if(t >= CHAPS[i] - 0.01) j = i;
+    if(k === 'ArrowRight' || k === 'ArrowUp') seek(t + 2.5);
+    else if(k === 'ArrowLeft' || k === 'ArrowDown') seek(t - 2.5);
+    else if(k === 'PageDown') seek(CHAPS[Math.min(j + 1, CHAPS.length - 1)]);
+    else if(k === 'PageUp') seek(t - CHAPS[j] > 1.5 ? CHAPS[j] : CHAPS[Math.max(0, j - 1)]);
+    else if(k === 'Home') seek(0);
+    else if(k === 'End') seek(END);
+    else if(k === ' ' || k === 'k'){ pauseEl.click(); }
+    else return;
+    e.preventDefault();
   });
-  voSyncBtn();
-
-  window.addEventListener('resize', function(){
-    resize();
-    if(!playing){ (reduce || finished) ? showAll() : render(0); }
+  chaps.forEach(function(c, j){
+    c.addEventListener('click', function(){ seek(CHAPS[j]); });
   });
 
-  resize(); paint();
-  if(reduce){ showAll(); }
-  else {
-    render(0);
-    if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          if(e.isIntersecting && !visible){ visible = true; play(); }
-          else if(!e.isIntersecting){ visible = false; playing = false; cancelAnimationFrame(raf); voStop(); }
-        });
-      }, {threshold: 0.35}).observe(cv);
-    } else { play(); }
-  }
+  cv.setAttribute('aria-label', CAPS.map(function(c){ return c[1].replace(/<[^>]+>/g, ''); }).join(' '));
+  resize(); syncPause();
+  if(reduce){ T = END; pauseEl.hidden = true; draw(); return; }
+  draw();
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        visible = e.isIntersecting;
+        if(visible) start(); else stop();
+      });
+    }, {threshold: 0.3}).observe(cv);
+  } else { visible = true; start(); }
 })();
 </script>
 </body>
