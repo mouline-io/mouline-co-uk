@@ -486,7 +486,7 @@ footer .meta a{color:var(--ink-soft)}
         <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
       </div>
       <div class="ship-note">
-        <b>Stood up in about a week.</b> Nova runs in a dedicated, fully isolated cloud environment — the infrastructure is ready in about a week, and Nova starts working the moment your first system is connected.
+        Nova runs in a dedicated, fully isolated cloud environment — the infrastructure is ready in about a week, and Nova starts working the moment your first system is connected.
         <div class="meta"><span>· 1-week stand-up</span><span>· fully isolated</span><span>· human-gated writes</span></div>
       </div>
     </div>
@@ -1882,7 +1882,7 @@ footer .meta a{color:var(--ink-soft)}
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  var T = 0, running = false, visible = false, raf = 0, last = 0, userPaused = false, capI = -1;
+  var T = 0, running = false, visible = false, raf = 0, last = 0, userPaused = !!reduce, capI = -1;
   function draw(){
     var t = Math.min(T, END), s = simAt(t);
     var vA, vB;
@@ -1928,12 +1928,19 @@ footer .meta a{color:var(--ink-soft)}
     draw();
     raf = requestAnimationFrame(frame);
   }
-  function start(){ if(running || reduce || userPaused) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
+  /* Reduced motion only stops autoplay: it starts paused on the finished
+     board, and Play, Replay or a chapter still run the film on request. */
+  function start(){ if(running || userPaused) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
   function stop(){ running = false; cancelAnimationFrame(raf); }
   function syncPause(){ pauseEl.textContent = userPaused ? '▶ Play' : '❚❚ Pause'; pauseEl.setAttribute('aria-pressed', userPaused ? 'true' : 'false'); }
 
-  replayEl.addEventListener('click', function(){ T = 0; userPaused = false; syncPause(); if(reduce){ T = END; draw(); } else { stop(); start(); } });
-  pauseEl.addEventListener('click', function(){ userPaused = !userPaused; syncPause(); if(userPaused) stop(); else if(visible) start(); });
+  replayEl.addEventListener('click', function(){ T = 0; userPaused = false; syncPause(); stop(); start(); });
+  pauseEl.addEventListener('click', function(){
+    userPaused = !userPaused; syncPause();
+    if(userPaused){ stop(); return; }
+    if(T >= END) T = 0;
+    start();
+  });
   window.addEventListener('resize', function(){ resize(); draw(); });
 
   /* --- seeking: the bar and the chapters both move the one clock --- */
@@ -1980,12 +1987,12 @@ footer .meta a{color:var(--ink-soft)}
     e.preventDefault();
   });
   chaps.forEach(function(c, j){
-    c.addEventListener('click', function(){ seek(CHAPS[j]); });
+    c.addEventListener('click', function(){ seek(CHAPS[j]); userPaused = false; syncPause(); start(); });
   });
 
   cv.setAttribute('aria-label', CAPS.map(function(c){ return c[1].replace(/<[^>]+>/g, ''); }).join(' '));
   resize(); syncPause();
-  if(reduce){ T = END; pauseEl.hidden = true; draw(); return; }
+  if(reduce) T = END;
   draw();
   if('IntersectionObserver' in window){
     new IntersectionObserver(function(es){
