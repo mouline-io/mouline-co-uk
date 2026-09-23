@@ -107,7 +107,6 @@ nav.links a.hideable{display:none}
 
 /* ---------- Slack replay ---------- */
 .figure{margin:0}
-.figure figcaption{font-size:12.5px;color:var(--ink-faint);margin-top:12px;display:flex;justify-content:space-between;gap:12px;font-style:italic;font-family:var(--serif)}
 .slack{
   --s-text:#1d1c1d;--s-2:#616061;--s-bd:rgba(29,28,29,.13);--s-hover:#f8f8f8;--s-link:#1264a3;--s-green:#007a5a;
   font-family:'Lato','Slack-Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
@@ -144,6 +143,14 @@ nav.links a.hideable{display:none}
 .body-txt code{font-family:var(--mono);font-size:12px;background:rgba(29,28,29,.04);border:1px solid var(--s-bd);padding:1px 4px;border-radius:3px;color:#e01e5a}
 .alert{border-left:3px solid var(--red);background:var(--red-bg);padding:8px 11px;border-radius:0 6px 6px 0;font-size:14.5px}
 .alert .lvl{font-weight:800;color:var(--red);letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
+.alert.info{border-left-color:var(--s-link);background:#eef4fa}
+.alert.info .lvl{color:var(--s-link)}
+.alert.info .idot{background:var(--s-link);box-shadow:0 0 0 3px #d6e6f3}
+.slack-bar .ch,.slack-bar .sla,.nowrap,.gate code,.scope-pill,.resolved .badge{white-space:nowrap}
+.slack-bar .ch{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.resolved{flex-wrap:wrap}
+@media(max-width:420px){.slack-bar .sla .count{display:none}}
+@media(max-width:380px){.slack-bar .sla .unit{display:none}}
 .idot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 3px var(--red-bg)}
 .steps{margin-top:7px;border:1px solid var(--s-bd);border-radius:8px;overflow:hidden}
 .step{display:flex;align-items:center;gap:9px;padding:8px 11px;font-size:13.5px;border-top:1px solid var(--s-bd);background:#fff}
@@ -174,9 +181,6 @@ nav.links a.hideable{display:none}
 .approve:hover{background:#148567}
 .resolved{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--s-green);font-weight:700;padding:4px 0}
 .resolved .badge{background:#e8f3ec;color:var(--s-green);font-family:var(--mono);font-size:10.5px;padding:2px 7px;border-radius:4px;border:1px solid #a9d3bd}
-.replay{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink-soft)}
-.replay button{font-family:var(--sans);font-size:12.5px;color:var(--ink);background:transparent;border:1px solid var(--rule-strong);padding:6px 13px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.replay button:hover{border-color:var(--ink);background:var(--card)}
 
 /* ---------- Section scaffolding ---------- */
 section{padding:78px 0;border-bottom:1px solid var(--rule)}
@@ -491,43 +495,43 @@ footer .meta a{color:var(--ink-soft)}
         </div>
         <div class="slack-bar">
           <span class="star" aria-hidden="true">☆</span>
-          <span class="ch"><span class="hash">#</span>incidents</span>
-          <span class="sla"><span class="dot-live"></span> SLA <b id="sla-clock">00:00</b> / 30:00</span>
+          <span class="ch"><span class="hash">#</span>accounts-payable</span>
+          <span class="sla"><span class="dot-live"></span> <b id="sla-clock">00:00</b><span class="unit"> elapsed</span><span class="count"> · 3 invoices</span></span>
         </div>
         <div class="thread" id="thread">
           <div class="msg" data-step="0">
-            <div class="av bot">▲</div>
+            <div class="av bot">✉</div>
             <div>
-              <div class="who"><span class="name">alertbot</span><span class="tag">APP</span><span class="ts">9:02 AM</span></div>
-              <div class="body-txt"><div class="alert"><span class="lvl"><span class="idot"></span> INCIDENT</span> — <b>Acme</b> pipeline: nightly ingest failed, downstream dashboard reading zeros since 09:00.</div></div>
+              <div class="who"><span class="name">AP inbox</span><span class="tag">APP</span><span class="ts">7:58 AM</span></div>
+              <div class="body-txt"><div class="alert info"><span class="lvl"><span class="idot"></span> NEW</span> 3 invoices in the AP inbox: Northwind Traders, Acme Office Supply, Brightline Logistics.</div></div>
             </div>
           </div>
 
           <div class="msg" data-step="1">
             <div class="av nova">N</div>
             <div>
-              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:02 AM</span></div>
-              <div class="body-txt">On it. Running the proven recipe. <code>recipe: pipeline.triage · v3</code></div>
+              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">7:58 AM</span></div>
+              <div class="body-txt">On it. Running the proven recipe. <code>recipe: invoice.exceptions · v3</code></div>
             </div>
           </div>
 
           <div class="msg" data-step="2">
             <div class="av nova">N</div>
             <div>
-              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:03 AM</span></div>
+              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">7:59 AM</span></div>
               <div class="body-txt">
-                The digging, done in minutes. Every step visible:
+                The matching, done in minutes. Every step visible:
                 <div class="steps" id="steps">
-                  <div class="step" data-s="a"><span class="mark"></span><span class="lbl">Scope — which source &amp; pipeline stage</span><span class="kind model">◆ model</span></div>
-                  <div class="step" data-s="b"><span class="mark"></span><span class="lbl">Read context — 4 systems, in parallel</span><span class="kind">fixed</span></div>
-                  <div class="step" data-s="c"><span class="mark"></span><span class="lbl">Classify — expected gap or real bug?</span><span class="kind model">◆ model</span></div>
-                  <div class="step" data-s="d"><span class="mark"></span><span class="lbl">Find root cause &amp; propose the fix</span><span class="kind model">◆ model</span></div>
+                  <div class="step" data-s="a"><span class="mark"></span><span class="lbl">Read each invoice: vendor, PO number, lines</span><span class="kind model">◆ model</span></div>
+                  <div class="step" data-s="b"><span class="mark"></span><span class="lbl">Three-way match against the PO and goods receipt</span><span class="kind">fixed</span></div>
+                  <div class="step" data-s="c"><span class="mark"></span><span class="lbl">Check each price against the signed rate card</span><span class="kind">fixed</span></div>
+                  <div class="step" data-s="d"><span class="mark"></span><span class="lbl">Classify a mismatch: billing error or agreed change?</span><span class="kind model">◆ model</span></div>
                 </div>
                 <div class="chips" id="chips">
-                  <span class="chip" data-c="datadog">datadog·read</span>
-                  <span class="chip" data-c="logs">logs·read</span>
-                  <span class="chip" data-c="github">github·read</span>
-                  <span class="chip" data-c="jira">jira·read</span>
+                  <span class="chip" data-c="gmail">gmail·read</span>
+                  <span class="chip" data-c="netsuite">netsuite·read</span>
+                  <span class="chip" data-c="contracts">contracts·read</span>
+                  <span class="chip" data-c="slack">slack·post</span>
                 </div>
               </div>
             </div>
@@ -536,12 +540,12 @@ footer .meta a{color:var(--ink-soft)}
           <div class="msg" data-step="3">
             <div class="av nova">N</div>
             <div>
-              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:14 AM</span></div>
+              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:03 AM</span></div>
               <div class="body-txt">
                 <div class="rca">
-                  <h4>Root cause — upstream contract change</h4>
-                  <p>A provider renamed the <code>revenue</code> field in yesterday's release. The mapping fell through and the metric zeroed out. No runbook covered it.</p>
-                  <div class="meta"><span>confidence 0.91</span><span>upstream change · 09:01</span><span>12m elapsed</span></div>
+                  <h4>1 exception: Northwind <span class="nowrap">INV-10422</span> bills over contract</h4>
+                  <p>Line 2 bills 800 filters at $21.00. The signed rate is $18.00 (MSA, Appendix B §4.2), and no rate change is on file. That is $2,400 over. Acme and Brightline match PO, receipt and contract.</p>
+                  <div class="meta"><span>classified: billing error</span><span>2 clean · $7,100 ready</span><span>5m elapsed</span></div>
                 </div>
               </div>
             </div>
@@ -550,30 +554,28 @@ footer .meta a{color:var(--ink-soft)}
           <div class="msg" data-step="4">
             <div class="av nova">N</div>
             <div>
-              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">9:15 AM</span></div>
+              <div class="who"><span class="name">Nova</span><span class="tag">APP</span><span class="ts">8:04 AM</span></div>
               <div class="body-txt">
-                Fix ready as a <b>draft PR</b>. Merging is yours.
+                Note to Northwind <b>drafted</b>, clause quoted. Sending is yours.
                 <div class="gate" id="gate">
                   <span class="lock"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a6e15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
-                  <span class="gtxt"><b>github</b> · draft PR <code>#392</code> — restore revenue mapping. <span class="scope-pill w">write · draft only</span></span>
-                  <button class="approve" id="approveBtn">Approve &amp; merge</button>
+                  <span class="gtxt"><b>netsuite + gmail</b> · hold <code>INV-10422</code>, queue 2 bills for payment, send the note to Northwind. <span class="scope-pill w">write · on approval</span></span>
+                  <button class="approve" id="approveBtn" disabled>Approve all &amp; send</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="msg" data-step="5">
-            <div class="av human">A</div>
+            <div class="av human">D</div>
             <div>
-              <div class="who"><span class="name">Ari (on-call)</span><span class="ts">9:16 AM</span></div>
-              <div class="body-txt">Confirmed the mapping. Merging. <span style="color:var(--green)">✓</span></div>
-              <div class="resolved">Resolved <span class="badge">14m · within SLA</span> <span class="badge">recipe v3</span></div>
+              <div class="who"><span class="name">Dana (AP lead)</span><span class="ts">8:05 AM</span></div>
+              <div class="body-txt">Checked the clause. Sending. <span style="color:var(--green)">✓</span></div>
+              <div class="resolved">Inbox cleared <span class="badge">7m · $2,400 caught</span> <span class="badge">recipe v3</span></div>
             </div>
           </div>
         </div>
       </div>
-      <figcaption><span>A production incident, replayed step by step. The same loop runs on invoices, reconciliations and approvals.</span></figcaption>
-      <div class="replay"><button id="replayBtn">↺ Replay the incident</button> <span id="replayState"></span></div>
     </figure>
   </div>
 </section>
@@ -903,14 +905,12 @@ footer .meta a{color:var(--ink-soft)}
   },{threshold:.18});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 
-  /* ---- Slack incident replay ---- */
+  /* ---- Slack accounts-payable replay ---- */
   var thread = document.getElementById('thread');
   var msgs = Array.prototype.slice.call(thread.querySelectorAll('.msg'));
   var steps = Array.prototype.slice.call(document.querySelectorAll('#steps .step'));
   var chips = Array.prototype.slice.call(document.querySelectorAll('#chips .chip'));
   var slaClock = document.getElementById('sla-clock');
-  var replayBtn = document.getElementById('replayBtn');
-  var replayState = document.getElementById('replayState');
   var approveBtn = document.getElementById('approveBtn');
   var timers = [];
   var clockTimer = null;
@@ -925,13 +925,12 @@ footer .meta a{color:var(--ink-soft)}
     steps.forEach(function(s){s.classList.remove('run','done');});
     chips.forEach(function(c){c.classList.remove('on');});
     slaClock.textContent='00:00';
-    replayState.textContent='';
-    if(approveBtn) approveBtn.disabled=false, approveBtn.textContent='Approve & merge';
+    if(approveBtn) approveBtn.disabled=true, approveBtn.textContent='Approve all & send';
   }
   function at(ms,fn){ timers.push(setTimeout(fn,ms)); }
 
   function runClock(){
-    var start=Date.now(), shown=0, target=14*60;
+    var start=Date.now(), shown=0, target=7*60;
     clockTimer=setInterval(function(){
       var p=Math.min(1,(Date.now()-start)/8000);
       shown=Math.floor(p*target);
@@ -948,8 +947,8 @@ footer .meta a{color:var(--ink-soft)}
       msgs.forEach(function(m){m.classList.add('in');});
       steps.forEach(function(s){s.classList.add('done');});
       chips.forEach(function(c){c.classList.add('on');});
-      slaClock.textContent='14:00';
-      if(approveBtn){approveBtn.disabled=true;approveBtn.textContent='Merged ✓';}
+      slaClock.textContent='07:00';
+      if(approveBtn){approveBtn.disabled=true;approveBtn.textContent='Approved ✓';}
       return;
     }
     runClock();
@@ -958,19 +957,19 @@ footer .meta a{color:var(--ink-soft)}
     at(2100, function(){ msgs[2].classList.add('in'); });
     at(2500, function(){ steps[0].classList.add('run'); });
     at(3300, function(){ steps[0].classList.remove('run'); steps[0].classList.add('done'); steps[1].classList.add('run'); });
-    at(3500, function(){ chips.forEach(function(c,i){ setTimeout(function(){c.classList.add('on');}, i*180);}); });
+    chips.forEach(function(c,i){ at(3500 + i*180, function(){ c.classList.add('on'); }); });
     at(4600, function(){ steps[1].classList.remove('run'); steps[1].classList.add('done'); steps[2].classList.add('run'); });
     at(5500, function(){ steps[2].classList.remove('run'); steps[2].classList.add('done'); steps[3].classList.add('run'); });
     at(6500, function(){ steps[3].classList.remove('run'); steps[3].classList.add('done'); });
     at(6900, function(){ msgs[3].classList.add('in'); thread.scrollTo({top:thread.scrollHeight,behavior:'smooth'}); });
-    at(8000, function(){ msgs[4].classList.add('in'); thread.scrollTo({top:thread.scrollHeight,behavior:'smooth'}); });
-    at(8400, function(){ replayState.textContent='A human reviews the draft PR…'; });
+    at(8000, function(){ msgs[4].classList.add('in'); if(approveBtn) approveBtn.disabled=false; thread.scrollTo({top:thread.scrollHeight,behavior:'smooth'}); });
     at(10600, function(){ if(!msgs[5].classList.contains('in')){ completeApproval(); } });
   }
 
   function completeApproval(){
-    if(approveBtn){ approveBtn.disabled=true; approveBtn.textContent='Merged ✓'; }
-    replayState.textContent='';
+    clearAll();
+    slaClock.textContent='07:00';
+    if(approveBtn){ approveBtn.disabled=true; approveBtn.textContent='Approved ✓'; }
     msgs[5].classList.add('in');
     thread.scrollTo({top:thread.scrollHeight,behavior:'smooth'});
   }
@@ -978,7 +977,6 @@ footer .meta a{color:var(--ink-soft)}
   if(approveBtn){
     approveBtn.addEventListener('click',completeApproval);
   }
-  replayBtn.addEventListener('click',play);
 
   var played=false;
   var demoIO=new IntersectionObserver(function(entries){
