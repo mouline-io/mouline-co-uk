@@ -372,22 +372,6 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .fd-svg .amt{fill:var(--ink);font-weight:700;font-family:var(--mono)}
 @media(prefers-reduced-motion:reduce){.fs-row.on .fs-prog.run{animation:none}}
 
-/* pillars */
-.pillars{display:grid;gap:0;grid-template-columns:1fr}
-@media(min-width:860px){.pillars{grid-template-columns:repeat(3,1fr)}}
-.pillar{padding:8px 0 18px;border-top:2px solid var(--ink)}
-.pillar+.pillar{margin-top:20px}
-@media(min-width:860px){
-  .pillar{padding:4px 34px 0 0;margin-top:0}
-  .pillar+.pillar{padding:4px 0 0 34px;border-left:1px solid var(--rule);margin-top:0}
-}
-.pillar .pk{font-family:var(--mono);font-size:12px;color:var(--red);margin:14px 0 0}
-.pillar h3{font-size:23px;margin:8px 0 12px}
-.pillar p{font-size:15px;color:var(--ink-soft);margin:0 0 14px}
-.pillar ul{margin:0;padding:0;list-style:none}
-.pillar li{font-size:14px;color:var(--ink-soft);padding:6px 0 6px 20px;position:relative;border-top:1px solid var(--rule)}
-.pillar li::before{content:"→";position:absolute;left:0;color:var(--red)}
-
 /* deploy steps */
 .deploy{display:grid;gap:18px;grid-template-columns:1fr}
 @media(min-width:760px){.deploy{grid-template-columns:repeat(3,1fr)}}
@@ -727,41 +711,10 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- WHY WE BUILT IT THIS WAY -->
-<section id="why">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-num">04</span><h2>Why we built it this way</h2></div>
-    <div class="thesis" style="margin-bottom:48px">
-      <blockquote class="pullquote">Most AI agents sell <em>more autonomy</em>. Nova is the opposite bet: an Agent that does <em>less</em> on its own over time, because what it learns becomes a fixed, inspectable, rigid flow.</blockquote>
-      <div class="thesis-body">
-        <p><b>Self-improvement that increases predictability, not autonomy.</b> That is the whole product. The market's bet is more autonomy over time — the agent decides more on its own, and you trust more and see less. Nova's bet is more predictability: each repeat hardens into a rigid, versioned recipe you can read.</p>
-        <p>A human still approves every change that touches a customer, money, or production — and you never configure Nova or pick which workflow to automate. Your team just uses it, and it codifies what they actually do.</p>
-      </div>
-    </div>
-    <div class="pillars">
-      <div class="pillar reveal">
-        <div class="pk">PILLAR 01</div><h3>Does less over time</h3>
-        <p>What the Agent learns becomes a fixed, inspectable, rigid flow — and a human still approves every change that touches production or your data.</p>
-        <ul><li>The proven path hardens into a rigid, versioned recipe</li><li>Self-improvement that increases predictability</li></ul>
-      </div>
-      <div class="pillar reveal">
-        <div class="pk">PILLAR 02</div><h3>It lives in the channel</h3>
-        <p>Slack, MS Teams, Jira, GitHub, GitLab. Every action is observable in-channel, by default.</p>
-        <ul><li>AI use stops being a private tab on a laptop</li><li>Using the Agent becomes a team sport</li></ul>
-      </div>
-      <div class="pillar reveal">
-        <div class="pk">PILLAR 03</div><h3>Scoped to the user</h3>
-        <p>The Agent acts on tools and data but never holds the access tokens.</p>
-        <ul><li>Permissions are granular and bound to the requesting user</li><li>It can never surface more than that user could already see</li><li>Every prompt passes guardrails before it reaches a model</li></ul>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- THE PLATFORM NOVA RUNS ON -->
 <section id="platform">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">05</span><h2>Nova runs on Mouline Platform</h2></div>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Nova runs on Mouline Platform</h2></div>
     <p class="lede" style="margin-bottom:36px">A control plane that sits in your own network, and every call Nova makes passes through it. That is what makes Nova compliant, secure and cost-effective, and <b>every Nova deployment includes it at no extra cost</b>.</p>
     <div class="plat reveal">
       <div class="plat-rail" id="platRail" role="tablist" aria-label="What the platform gives Nova">
@@ -795,7 +748,7 @@ footer .meta a{color:var(--ink-soft)}
       </div>
     </div>
     <div class="cta-row" style="margin-top:30px">
-      <a class="btn" href="https://platform.mouline.co.uk/" target="_blank" rel="noopener">See Mouline Platform</a>
+      <a class="btn" href="https://platform.mouline.co.uk/#console" target="_blank" rel="noopener">See Mouline Platform</a>
     </div>
     <p class="deploy-foot">The same plane fronts the coding agents your engineers already run: Claude Code, Codex, Opencode. One checkpoint covers every agent in your network, Nova included. It is also sold on its own, to teams who want the checkpoint without the agent.</p>
   </div>
@@ -804,7 +757,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE DEPLOY -->
 <section id="deploy">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">06</span><h2>How we deploy</h2></div>
+    <div class="sec-head"><span class="sec-num">05</span><h2>How we deploy</h2></div>
     <p class="lede" style="margin-bottom:36px">Three steps — the infrastructure is ready in about a week, mostly on us.</p>
     <div class="deploy">
       <div class="dstep"><div class="dn">1</div><h3>Integrations</h3><p>You name the stack — your dev, ops, field, finance and data tools. We map it.</p></div>
@@ -852,7 +805,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- HOW WE ENGAGE -->
 <section id="engage">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">07</span><h2>How we engage</h2></div>
+    <div class="sec-head"><span class="sec-num">06</span><h2>How we engage</h2></div>
     <p class="lede" style="margin-bottom:36px">We ship it, install it <b>with</b> your team, and keep it hardening. A hybrid model, built so you see value before you pay to keep it.</p>
     <div class="engage">
       <div class="plan reveal">
@@ -878,7 +831,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO THIS IS FOR -->
 <section id="who">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">08</span><h2>Who it's for</h2></div>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Who it's for</h2></div>
     <div class="icp">
       <div class="icp-fit">
         <h3>Nova is for you if…</h3>
@@ -904,7 +857,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO BUILDS IT -->
 <section id="team">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">09</span><h2>Who builds it</h2></div>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Who builds it</h2></div>
     <p class="team-note">We're the two founders — UK/Canada-based technical leaders with deep experience in AI, platform engineering, and SRE. We have designed and operated enterprise AI systems at <b>Deutsche Bank, Behavox, SAP, Mail.Ru, and Lightspeed</b> — production environments consuming billions of LLM tokens a month and orchestrating hundreds of independent agents across customer support, incident management, and the SDLC.</p>
     <div class="founders">
       <div class="founder">
