@@ -26,6 +26,10 @@ shared with an AI provider or used to train anyone's models.
 - [Live demo: invoice.exceptions v3](https://mouline.co.uk/demo-invoice-exceptions.html):
   An interactive walkthrough of one recipe running across Gmail, NetSuite, a
   contract store and Slack, catching an invoice $2,400 over the contracted rate.
+- [Mouline Platform](https://platform.mouline.co.uk/): The self-hosted control plane
+  Nova runs on: audit console, credential broker, prompt guardians, model routing
+  and spend metering. Sold on its own to front any agent, and included at no extra
+  cost with every Nova deployment.
 
 ## Notes for summarisation
 

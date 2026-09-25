@@ -293,6 +293,48 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .case p{font-size:14.8px;color:var(--ink-soft);margin:0}
 .case .sys{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:14px;padding-top:11px;border-top:1px solid var(--rule)}
 
+/* ---------- §05: one console, four claims ----------
+   The browser chrome is borrowed from platform.mouline.co.uk so the frame and
+   the screenshot inside it read as one object on this warmer page. The claims
+   sit in a rail beside it rather than stacking under it, which keeps the whole
+   section to roughly one screen. */
+.plat{display:grid;gap:24px;grid-template-columns:1fr;align-items:start;margin-bottom:4px}
+@media(min-width:900px){.plat{grid-template-columns:272px 1fr;gap:36px}}
+.plat-rail{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;scroll-snap-type:x proximity}
+.plat-rail::-webkit-scrollbar{display:none}
+/* the rail is shorter than the console, so centre it against the frame
+   rather than letting it hang from the top with dead space beneath */
+@media(min-width:900px){.plat-rail{flex-direction:column;gap:0;overflow:visible;padding:0;align-self:center}}
+.pr{flex:0 0 auto;scroll-snap-align:start;appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;
+  background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:10px 14px;transition:color .2s,border-color .2s}
+.pr[aria-selected="true"]{border-color:var(--rule-strong)}
+@media(min-width:900px){
+  .pr{background:none;border:0;border-top:1px solid var(--rule);border-radius:0;padding:15px 0 15px 17px;position:relative}
+  .pr:first-child{border-top:0}
+  .pr::before{content:"";position:absolute;left:0;top:-1px;bottom:0;width:2px;background:transparent;transition:background .2s}
+  .pr[aria-selected="true"]::before{background:var(--red)}
+}
+.pr .ck{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);transition:color .2s}
+.pr[aria-selected="true"] .ck{color:var(--red)}
+.pr .t{display:block;font-family:var(--serif);font-size:17.5px;line-height:1.18;margin-top:6px;color:var(--ink-faint);transition:color .2s}
+.pr:hover .t,.pr[aria-selected="true"] .t{color:var(--ink)}
+.pr:focus-visible{outline:2px solid var(--accent,var(--red));outline-offset:3px}
+.plat-stage{min-width:0}
+.frame{border:1px solid #0b0f17;border-radius:12px;overflow:hidden;background:#0b0f17;
+  box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 48px -28px rgba(40,30,10,.34)}
+.frame-bar{display:flex;align-items:center;height:34px;padding:0 13px;gap:7px;background:#121826;border-bottom:1px solid #1d2535}
+.frame-bar i{display:block;width:9px;height:9px;border-radius:50%;background:#2a3346}
+.frame-bar .url{margin-left:12px;font-family:var(--mono);font-size:11.5px;color:#7d8aa3;background:#0b0f17;
+  padding:3px 11px;border-radius:6px;flex:1;max-width:360px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.frame-shot{position:relative;aspect-ratio:2160/1350;background:#0b0f17}
+.frame-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;opacity:0;transition:opacity .28s ease}
+.frame-shot img.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.frame-shot img{transition:none}}
+.plat-cap{font-size:15.5px;line-height:1.55;color:var(--ink-soft);margin:15px 0 0;max-width:72ch}
+.plat-cap b{color:var(--ink);font-weight:600}
+/* hold the tallest caption's height so switching claims doesn't jog the page */
+@media(min-width:900px){.plat-cap{min-height:96px}}
+
 /* ---------- The work stage: selector + animated flow ---------- */
 .fdemo{display:grid;grid-template-columns:1fr;background:var(--card);border:1px solid var(--rule-strong);border-radius:12px;overflow:hidden;margin:0 0 44px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 48px -28px rgba(40,30,10,.3)}
 @media(min-width:920px){.fdemo{grid-template-columns:316px 1fr}}
@@ -716,18 +758,46 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ENTERPRISE-READY -->
-<section id="enterprise">
+<!-- THE PLATFORM NOVA RUNS ON -->
+<section id="platform">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">05</span><h2>Your data, your models, your controls</h2></div>
-    <p class="lede" style="margin-bottom:36px">Nova is built for teams that can't be casual about data, access, or spend — in plain terms:</p>
-    <div class="cases">
-      <div class="case reveal"><div class="ck">Privacy</div><h3>Your data stays yours — and never trains anyone's model</h3><p>Nova runs in a dedicated, fully isolated environment. Your data is never pooled with other customers, never shared with the AI provider, and never used to train anyone's models.</p></div>
-      <div class="case reveal"><div class="ck">Models</div><h3>Model-agnostic — you choose the brain</h3><p>Run Nova on OpenAI, Anthropic, or open-source models you host yourself, and keep the most sensitive work on a model that never leaves your environment. Switch providers without losing a day of accumulated context.</p></div>
-      <div class="case reveal"><div class="ck">Access</div><h3>Only what the person tasking it could do</h3><p>Nova works with that person's access — no more — and a human approves anything that touches a customer, money, or production. All access runs through a standalone broker: least privilege, deny by default, every call logged and reviewable.</p></div>
-      <div class="case reveal"><div class="ck">Spend</div><h3>Costs you can see and cap</h3><p>Every AI call is metered, so you see exactly what Nova spends and can set limits per team — no surprise bills.</p></div>
-      <div class="case reveal" style="grid-column:1/-1"><div class="ck">Controls</div><h3>The enterprise basics, covered</h3><p>Single sign-on, role-based access, and a full audit trail. Data residency agreed per deployment.</p></div>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Nova runs on Mouline Platform</h2></div>
+    <p class="lede" style="margin-bottom:36px">A control plane that sits in your own network, and every call Nova makes passes through it. That is what makes Nova compliant, secure and cost-effective, and <b>every Nova deployment includes it at no extra cost</b>.</p>
+    <div class="plat reveal">
+      <div class="plat-rail" id="platRail" role="tablist" aria-label="What the platform gives Nova">
+        <button class="pr" role="tab" id="pr-compliant" aria-selected="true" aria-controls="platPanel" data-k="compliant" data-url="plane.acme.internal/overview">
+          <span class="ck">Compliant</span><span class="t">Every call is answerable</span>
+        </button>
+        <button class="pr" role="tab" id="pr-secure" aria-selected="false" aria-controls="platPanel" tabindex="-1" data-k="secure" data-url="plane.acme.internal/broker">
+          <span class="ck">Secure</span><span class="t">Nova never holds a key</span>
+        </button>
+        <button class="pr" role="tab" id="pr-cost" aria-selected="false" aria-controls="platPanel" tabindex="-1" data-k="cost" data-url="plane.acme.internal/costs">
+          <span class="ck">Cost-effective</span><span class="t">Costs you can see and cap</span>
+        </button>
+        <button class="pr" role="tab" id="pr-models" aria-selected="false" aria-controls="platPanel" tabindex="-1" data-k="models" data-url="plane.acme.internal/routing">
+          <span class="ck">Your data, your models</span><span class="t">You pick the model</span>
+        </button>
+      </div>
+      <div class="plat-stage" id="platPanel" role="tabpanel" aria-labelledby="pr-compliant">
+        <div class="frame">
+          <div class="frame-bar"><i></i><i></i><i></i><span class="url" id="platUrl">plane.acme.internal/overview</span></div>
+          <div class="frame-shot" id="platShot">
+            <img data-k="compliant" class="on" src="img/overview.jpg" decoding="async" alt="Mouline Platform overview: sessions, turns, total spend, tokens, cache hit rate, guardian interventions, credentials vended, egress allowed and denied, spend over fourteen days, and spend by agent with nova and claude-code at the top.">
+            <img data-k="secure" data-src="img/broker.jpg" decoding="async" alt="Shadow Broker access policy for GitHub, Jira and NetSuite: the operations the broker will run on the agent's behalf next to the ones it denies, with repo delete, secret access and force push among the denied.">
+            <img data-k="cost" data-src="img/costs.jpg" decoding="async" alt="Costs: thirty-day spend, daily spend bars, and a per-model table of cost, turns, input and output tokens and cache reads across seven models.">
+            <img data-k="models" data-src="img/routing.jpg" decoding="async" alt="Routing: traffic share, latency, error rate and health per provider across Anthropic, Bedrock, Vertex and an on-premise vLLM, above the model selection rules that decide which model each call goes to.">
+          </div>
+        </div>
+        <p class="plat-cap" data-k="compliant"><b>One console, every agent.</b> What Nova did, for which person, against which system, with which data, and what it cost. Single sign-on, role-based access and a full audit trail come with it, and data residency is agreed per deployment.</p>
+        <p class="plat-cap" data-k="secure" hidden><b>The broker's live policy.</b> A credential broker mints a short-lived, least-privilege token for each call, scoped to the person who asked, so Nova can never reach past what they could already see. Egress control allows only known destinations, and prompt guardians read every prompt before a model does. Anything not explicitly allowed is refused.</p>
+        <p class="plat-cap" data-k="cost" hidden><b>Every call priced.</b> Each AI call is metered and charged to a team, and you set the limits, so there are no surprise bills. Fixed recipe steps go to a cheap model and the expensive ones are kept for work that needs them.</p>
+        <p class="plat-cap" data-k="models" hidden><b>Four providers, one of them yours.</b> Run Nova on OpenAI, Anthropic, or open-source models you host yourself, and keep the most sensitive work on a model that never leaves your environment. Your data is never pooled with another customer, never shared with an AI provider, and never used to train anyone's models.</p>
+      </div>
     </div>
+    <div class="cta-row" style="margin-top:30px">
+      <a class="btn" href="https://platform.mouline.co.uk/" target="_blank" rel="noopener">See Mouline Platform</a>
+    </div>
+    <p class="deploy-foot">The same plane fronts the coding agents your engineers already run: Claude Code, Codex, Opencode. One checkpoint covers every agent in your network, Nova included. It is also sold on its own, to teams who want the checkpoint without the agent.</p>
   </div>
 </section>
 
@@ -985,6 +1055,57 @@ footer .meta a{color:var(--ink-soft)}
   demoIO.observe(document.getElementById('slack'));
 })();
 </script>
+
+<script>
+/* ---- §05: pick a claim, the console shows it ---- */
+(function(){
+  var rail = document.getElementById('platRail');
+  var shot = document.getElementById('platShot');
+  if (!rail || !shot) return;
+  var btns = Array.prototype.slice.call(rail.querySelectorAll('.pr'));
+  var imgs = Array.prototype.slice.call(shot.querySelectorAll('img'));
+  var caps = Array.prototype.slice.call(document.querySelectorAll('.plat-cap'));
+  var url  = document.getElementById('platUrl');
+
+  function load(k){
+    imgs.forEach(function(im){
+      if (im.dataset.k === k && !im.getAttribute('src')) im.setAttribute('src', im.dataset.src);
+    });
+  }
+  function show(k, btn){
+    btns.forEach(function(b){
+      var on = b.dataset.k === k;
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    load(k);
+    imgs.forEach(function(im){ im.classList.toggle('on', im.dataset.k === k); });
+    caps.forEach(function(p){ p.hidden = p.dataset.k !== k; });
+    if (btn) { url.textContent = btn.dataset.url; document.getElementById('platPanel').setAttribute('aria-labelledby', btn.id); }
+    if (typeof gtag === 'function') gtag('event', 'platform_tour_select', { claim: k });
+  }
+
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      show(b.dataset.k, b);
+      // on narrow screens the rail scrolls sideways; keep the picked claim in view
+      if (b.scrollIntoView) b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+    b.addEventListener('mouseenter', function(){ load(b.dataset.k); });
+  });
+  rail.addEventListener('keydown', function(e){
+    var i = btns.indexOf(document.activeElement);
+    if (i < 0) return;
+    var d = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1
+          : (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    var n = btns[(i + d + btns.length) % btns.length];
+    n.focus();
+    show(n.dataset.k, n);
+  });
+})();
+</script>
 <!-- GA4 interaction events -->
 <script>
 (function(){
@@ -1007,6 +1128,11 @@ footer .meta a{color:var(--ink-soft)}
   var demoLocations = ['hero', 'how', 'closing'];
   all('a[href*="demo-invoice-exceptions"]').forEach(function(el, i){
     on(el, 'demo_link_click', { location: demoLocations[i] || 'other' });
+  });
+
+  // 4b. Platform cross-reference — the §05 CTA out to platform.mouline.co.uk
+  all('a[href*="platform.mouline.co.uk"]').forEach(function(el){
+    on(el, 'platform_link_click', { location: 'platform_section' });
   });
 
   // 5. Founder LinkedIn links, tagged by person
