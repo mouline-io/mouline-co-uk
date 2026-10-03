@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Mouline</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1c1e21; --muted: #57606a; --border: #d0d7de;
+    --code-bg: #f6f8fa; --quote-border: #d0d7de; --link: #0757ba;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161a; --fg: #e6e8eb; --muted: #9aa4af; --border: #333a42;
+      --code-bg: #1e2228; --quote-border: #3a424b; --link: #6cb1ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 3rem 1.25rem 6rem; max-width: 46rem;
+    background: var(--bg); color: var(--fg);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin: 2.2em 0 0.6em; text-wrap: balance; }
+  h1 { font-size: 2rem; margin-top: 0; }
+  h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+  h3 { font-size: 1.2rem; color: var(--muted); font-weight: 600; }
+  h4 { font-size: 1.05rem; }
+  a { color: var(--link); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  blockquote {
+    margin: 1rem 0; padding: 0.1rem 1.1rem; border-left: 4px solid var(--quote-border);
+    color: inherit; background: var(--code-bg); border-radius: 0 6px 6px 0;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em;
+         background: var(--code-bg); padding: 0.15em 0.35em; border-radius: 4px; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+        padding: 1rem; overflow-x: auto; }
+  pre code { background: none; padding: 0; font-size: 0.85em; line-height: 1.5; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; margin: 1rem 0;
+          font-variant-numeric: tabular-nums; }
+  th, td { border: 1px solid var(--border); padding: 0.45rem 0.75rem; text-align: left; vertical-align: top; }
+  th { background: var(--code-bg); }
+  ul, ol { padding-left: 1.6rem; }
+  li { margin: 0.25rem 0; }
+  em:last-child { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Privacy Policy</h1>
+<p><strong>Effective date:</strong> 3 October 2026</p>
+<p>This policy explains what personal data Mouline collects, why, and what you can do about it. It covers our website (mouline.co.uk), Nova — our AI agent for Slack — and its dashboard at control.mouline.co.uk, as we host them.</p>
+<h2>Who we are</h2>
+<p>Mouline is operated by <strong>[LEGAL NAME], a Delaware [corporation / LLC], [REGISTERED ADDRESS]</strong> (&quot;Mouline&quot;, &quot;we&quot;, &quot;us&quot;).</p>
+<p>Questions or requests: <strong><a href="mailto:privacy@mouline.co.uk">privacy@mouline.co.uk</a></strong>.</p>
+<p>If your organisation runs Nova or the Shadow Broker on its own infrastructure (self-hosted), your organisation operates that deployment and decides what happens to the data in it; this policy covers only what Mouline itself hosts.</p>
+<h2>Our role</h2>
+<ul>
+<li>For the <strong>content of your Slack workspace</strong> that Nova handles — messages, files, connected data sources — the organisation that installed Nova is the controller and we process that content on its behalf, to provide the service.</li>
+<li>For <strong>your account</strong> (signing in to the dashboard), <strong>website visitors</strong> and <strong>billing</strong>, we decide how the data is used and are the controller.</li>
+</ul>
+<h2>What we collect</h2>
+<p><strong>From Slack, when your workspace installs Nova</strong></p>
+<ul>
+<li>Workspace ID and name, the person who installed Nova, and the bot&#39;s access token (stored encrypted).</li>
+<li>Slack user IDs, names and email addresses of people who sign in to the dashboard or whom an admin allows to use Nova.</li>
+<li>Messages that mention Nova or are posted in channels and threads Nova takes part in, files shared there when Nova opens them, and Nova&#39;s replies.</li>
+</ul>
+<p><strong>While Nova works</strong></p>
+<ul>
+<li>Conversation records: the requests Nova receives, the steps it takes and its answers, so a thread can continue and admins can review it.</li>
+<li>Notes Nova saves to remember context between conversations (&quot;memories&quot;), feedback (👍/👎 and the reason given), and scheduled tasks admins set up.</li>
+<li>Audit records: which tools Nova used and when (not their full output), the internet addresses it contacted and whether the request was allowed, and usage and cost figures (counts of model tokens).</li>
+</ul>
+<p><strong>Credentials you give us</strong></p>
+<ul>
+<li>AI provider keys, OAuth tokens and data-source credentials, encrypted with Google Cloud Key Management Service. They are never shown back in the dashboard.</li>
+</ul>
+<p><strong>Google Drive, if you connect it</strong> — see &quot;Google user data&quot; below.</p>
+<p><strong>Website and contact</strong></p>
+<ul>
+<li>mouline.co.uk uses Google Analytics, which sets cookies and records pages viewed, approximate location, device and referrer. You can block it with your browser&#39;s settings or Google&#39;s opt-out add-on.</li>
+<li>When you book a call or email us, we receive your name, email address and what you write.</li>
+</ul>
+<p><strong>Payments</strong> — when paid plans are available, payments are handled by Stripe; we receive the billing contact and plan, never full card numbers.</p>
+<h2>How we use it</h2>
+<ul>
+<li>To run Nova: answer requests, act in the tools you connected, keep conversation context.</li>
+<li>To keep it safe: enforce the limits your admins set, detect abuse, investigate incidents.</li>
+<li>To operate the business: billing, support, and understanding usage in aggregate to improve the product.</li>
+</ul>
+<p>We do not sell personal data, do not use it for advertising, and do not use your workspace&#39;s content to train AI models.</p>
+<h2>AI processing</h2>
+<p>To answer a request, Nova sends the relevant conversation and data to its AI model provider, Anthropic (Claude). If your workspace uses its own Anthropic key, that processing happens under your Anthropic account. Anthropic does not train its models on data sent through its commercial API.</p>
+<h2>Google user data</h2>
+<p>Nova can connect to Google Drive in one of two ways, chosen by your workspace admin:</p>
+<ul>
+<li><strong>Only folders I pick</strong> — Google&#39;s per-file permission (<code>drive.file</code>). Nova can reach only the folders the admin picks in Google&#39;s own picker and the files Nova creates.</li>
+<li><strong>Whole Drive, limited to folders</strong> — Google&#39;s Drive permission (<code>drive</code>). Our broker enforces that Nova reaches only the folders the admin chooses and their subfolders, and nothing else in the Drive.</li>
+</ul>
+<p>Both also request your Google account&#39;s email address, to show who connected Drive.</p>
+<p>What we do with it:</p>
+<ul>
+<li>Nova reads, creates or updates Drive files <strong>only when a request in your workspace needs it</strong>, and only inside the allowed folders.</li>
+<li>File content Nova reads is passed to the AI model provider to complete that request, and may appear in Nova&#39;s reply and conversation record.</li>
+<li>The Google access token is stored encrypted in your workspace&#39;s broker. Disconnecting Drive in Settings deletes it; you can also revoke access at any time at myaccount.google.com/permissions.</li>
+<li>We do not sell Google user data, use it for advertising, or use it to train AI or machine-learning models, and people at Mouline do not read it unless you ask us to, it is needed for security, or the law requires it.</li>
+</ul>
+<p>Mouline&#39;s use and transfer of information received from Google APIs to any other app adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+<h2>Who else processes data</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>What for</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Google Cloud</td>
+<td>Hosting, databases, encryption keys</td>
+<td>United States (Iowa)</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td>AI model (Claude)</td>
+<td>United States</td>
+</tr>
+<tr>
+<td>Slack (Salesforce)</td>
+<td>Where Nova runs</td>
+<td>Per your Slack plan</td>
+</tr>
+<tr>
+<td>Cloudflare</td>
+<td>DNS and network protection</td>
+<td>Global</td>
+</tr>
+<tr>
+<td>Google Analytics</td>
+<td>Website statistics</td>
+<td>United States</td>
+</tr>
+<tr>
+<td>Stripe</td>
+<td>Payments, once paid plans launch</td>
+<td>United States</td>
+</tr>
+<tr>
+<td>Voyage AI</td>
+<td>Text embeddings for memory search, where enabled</td>
+<td>United States</td>
+</tr>
+</tbody></table>
+<p>Each is bound by a data processing agreement or equivalent terms.</p>
+<h2>International transfers</h2>
+<p>Our service runs in the United States. When we transfer personal data from the UK or the European Economic Area, we rely on the safeguards the law provides, such as the European Commission&#39;s Standard Contractual Clauses and the UK International Data Transfer Addendum.</p>
+<h2>How long we keep it</h2>
+<ul>
+<li><strong>Workspace data</strong> — conversations, memories, settings, audit records and stored credentials — is kept while Nova is installed, and <strong>deleted within 30 days</strong> after the workspace uninstalls Nova or asks us to delete its data.</li>
+<li><strong>Google Drive access</strong> is deleted as soon as Drive is disconnected or Nova is uninstalled.</li>
+<li><strong>Billing records</strong> are kept as long as tax and accounting law requires.</li>
+<li><strong>Website analytics</strong> follow Google Analytics&#39; retention setting (14 months).</li>
+</ul>
+<h2>Security</h2>
+<p>Data is encrypted in transit (TLS) and credentials at rest with Google Cloud KMS. Each workspace gets its own database and its own isolated runtime; Nova&#39;s internet access goes through a filtering proxy under each workspace&#39;s rules; and access to production is limited to the people who operate it.</p>
+<h2>Your rights</h2>
+<p>Depending on where you live (for example under the UK or EU GDPR, or California law), you can ask to access, correct, delete or export your personal data, object to or restrict how we use it, and withdraw consent. Email <strong><a href="mailto:privacy@mouline.co.uk">privacy@mouline.co.uk</a></strong>; we answer within 30 days. For content in your Slack workspace, we may refer you to your workspace&#39;s admin, who controls it, and help them respond. You can also complain to your data protection authority.</p>
+<h2>Children</h2>
+<p>Nova is a workplace tool and is not meant for anyone under 16.</p>
+<h2>Changes</h2>
+<p>If we change this policy we will update the date above, and tell workspace admins about significant changes before they take effect.</p>
+<h2>Contact</h2>
+<p><strong><a href="mailto:privacy@mouline.co.uk">privacy@mouline.co.uk</a></strong> — [LEGAL NAME], [REGISTERED ADDRESS].</p>
+</body>
+</html>
