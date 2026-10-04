@@ -394,14 +394,25 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 
 /* engage / pricing */
 .engage{display:grid;gap:18px;grid-template-columns:1fr}
-@media(min-width:760px){.engage{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1000px){.engage{grid-template-columns:repeat(3,1fr)}}
 .plan{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:26px 28px 28px}
 .plan .price{font-family:var(--serif);font-size:clamp(40px,5vw,54px);line-height:1;font-weight:600;letter-spacing:-0.03em;margin:0 0 2px}
 .plan .price small{font-family:var(--sans);font-size:15px;font-weight:400;color:var(--ink-faint);letter-spacing:0}
 .plan h3{font-size:21px;margin:10px 0 9px}
 .plan p{font-size:14.8px;color:var(--ink-soft);margin:0}
 .plan p em{font-style:italic}
+.plan .cta-row{margin-top:22px}
+.plan p b{color:var(--ink);font-weight:600}
+@media(min-width:760px){.engage{grid-template-columns:1.55fr 1fr}}
+.priced h3{margin-top:0}
+.timeline{list-style:none;margin:22px 0 22px;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
+.timeline li{border-top:4px solid var(--ink);padding-top:16px}
+.timeline li.try{border-color:var(--green);padding-right:16px}
+.timeline li.pay{border-image:linear-gradient(90deg,var(--ink) 55%,transparent) 1;padding-left:16px;box-shadow:inset 1px 0 0 var(--rule)}
+.timeline .price{margin:0}
+.timeline li.try .price{color:var(--green)}
+.timeline.flat{grid-template-columns:1fr}
+.timeline.flat li.pay{border-image:none;padding-left:0;box-shadow:none}
+.timeline p{font-size:14px;color:var(--ink-soft);margin:6px 0 0}
 
 /* ICP / who this is for */
 .icp{display:grid;gap:30px;grid-template-columns:1fr}
@@ -495,7 +506,7 @@ footer .meta a{color:var(--ink-soft)}
       <a class="hideable" href="#how">How it works</a>
       <a class="hideable" href="#deploy">Deploy</a>
       <a class="hideable" href="#engage">Pricing</a>
-      <a class="btn" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a call</a>
+      <a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
     </nav>
   </div>
 </header>
@@ -509,7 +520,7 @@ footer .meta a{color:var(--ink-soft)}
       <h1>Your best people spend their days on work they've done a hundred times.<br><em>Nova takes it off their hands.</em></h1>
       <p class="dek"><b>Nova is an AI agent that does the work — not just advises on it.</b> It puts the most capable AI models to work inside the workflows your team already runs, does the job alongside your people under their review, and gets more capable and more predictable the more it does it.</p>
       <div class="cta-row">
-        <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
+        <a class="btn big" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
         <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
       </div>
     </div>
@@ -806,25 +817,26 @@ footer .meta a{color:var(--ink-soft)}
 <section id="engage">
   <div class="wrap">
     <div class="sec-head"><span class="sec-num">06</span><h2>How we engage</h2></div>
-    <p class="lede" style="margin-bottom:36px">We ship it, install it <b>with</b> your team, and keep it hardening. A hybrid model, built so you see value before you pay to keep it.</p>
+    <p class="lede" style="margin-bottom:36px">Nova is a hosted service. Add it to Slack yourself and pay by card, or talk to us about Enterprise. You bring your own Anthropic key and pay Anthropic for usage directly.</p>
     <div class="engage">
-      <div class="plan reveal">
-        <div class="price">$1,000<small> / month</small></div>
-        <h3>Standard</h3>
-        <p>The full platform for one team: Nova runs your workflows inside the tools you already use and keeps your recipes hardening as your team works with it.</p>
-      </div>
-      <div class="plan reveal">
-        <div class="price">$5,000<small> / month</small></div>
+      <div class="plan priced reveal">
         <h3>Business</h3>
-        <p>Everything in Standard, plus product support: bug fixes, new integrations as your stack changes, and help standing up new use cases as the engine expands across your recurring work.</p>
+        <ol class="timeline" aria-label="Business pricing over time">
+          <li class="try"><div class="price">$0</div><p>for a 7-day free trial</p></li>
+          <li class="pay"><div class="price">$10</div><p>per channel, per month after that</p></li>
+        </ol>
+        <p><b>No card to start.</b> Up to 3 channels and 10 users while you try it. After the trial, users are unlimited and the bill follows the channels Nova is enabled in, from one channel up.</p>
+        <div class="cta-row"><a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a></div>
       </div>
-      <div class="plan reveal">
-        <div class="price">Custom</div>
+      <div class="plan priced reveal">
         <h3>Enterprise</h3>
-        <p>Multiple teams, larger footprints, security review and procurement on your terms. <a href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Call us</a> and we will shape the deployment around your environment.</p>
+        <ol class="timeline flat" aria-label="Enterprise pricing">
+          <li class="pay"><div class="price">$1,000</div><p>per month, for unlimited channels and users</p></li>
+        </ol>
+        <p>Set up with you by our team. Write to us or book a call.</p>
+        <div class="cta-row"><a class="btn" href="mailto:founders@mouline.work">founders@mouline.work</a><a class="btn ghost" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a call</a></div>
       </div>
     </div>
-    <p class="deploy-foot"><b>No value, no fee.</b> Every plan starts with a one-time $1,000 implementation: a short, hands-on project run <b>with your team</b> that deploys Nova into a dedicated, fully isolated environment, wires up integrations, and stands up your first workflow. If it doesn't prove real value during the engagement, you opt out and the monthly fee never kicks in.</p>
   </div>
 </section>
 
@@ -898,9 +910,9 @@ footer .meta a{color:var(--ink-soft)}
 <section class="final" id="next-steps">
   <div class="wrap">
     <h2>Point Nova at the work your team repeats.</h2>
-    <p>Nova deploys in about a week. The first step is a short call to map your stack and confirm access. From there, the agent is working on real cases within days.</p>
+    <p>Add Nova to your Slack workspace, bring your own Anthropic key, and enable it in a channel. It starts working on real cases the same day.</p>
     <div class="cta-row">
-      <a class="btn big" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a 20-min call</a>
+      <a class="btn big" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
       <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
     </div>
     <p class="fine">Built by engineers who've run hundreds of production agents. A person approves anything consequential.</p>
@@ -913,7 +925,7 @@ footer .meta a{color:var(--ink-soft)}
     <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline</div>
     <div class="meta">
       Nova — an AI agent that does your team's repetitive work.<br>
-      Artsiom Mezin &amp; Nikita Beletskii · <a href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">book a call</a> · <a href="privacy.html">Privacy</a>
+      Artsiom Mezin &amp; Nikita Beletskii · <a href="https://control.mouline.co.uk/install">add Nova to Slack</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a>
     </div>
   </div>
 </footer>
@@ -1071,10 +1083,18 @@ footer .meta a{color:var(--ink-soft)}
   }
   function all(selector){ return Array.prototype.slice.call(document.querySelectorAll(selector)); }
 
-  // 1. Book a call — every CTA pointing at the booking link, tagged by location (document order)
-  var bookLocations = ['nav', 'hero', 'closing', 'footer'];
-  all('a[href*="calendar.app.google"]').forEach(function(el, i){
-    on(el, 'book_call_click', { location: bookLocations[i] || 'other' });
+  // 1. Add to Slack — every CTA pointing at the install page, tagged by location (document order)
+  var installLocations = ['nav', 'hero', 'pricing', 'closing', 'footer'];
+  all('a[href*="control.mouline.co.uk/install"]').forEach(function(el, i){
+    on(el, 'install_click', { location: installLocations[i] || 'other' });
+  });
+
+  // 1b. Enterprise contact — the pricing card's email and booking links
+  all('a[href*="calendar.app.google"]').forEach(function(el){
+    on(el, 'book_call_click', { location: 'pricing' });
+  });
+  all('a[href^="mailto:founders@"]').forEach(function(el){
+    on(el, 'email_click', { location: 'pricing' });
   });
 
   // 4. Demo CTAs — every link to the live demo page, tagged by location (document order)
