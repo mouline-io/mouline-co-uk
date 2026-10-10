@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-26MXN99LBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-26MXN99LBQ');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get started with Nova — Mouline</title>
+<meta name="description" content="Set up Nova in Slack: install, add your Anthropic key, enable a channel, and how the free trial, plans and billing work.">
+<link rel="canonical" href="https://mouline.co.uk/get-started.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mouline">
+<meta property="og:locale" content="en_GB">
+<meta property="og:url" content="https://mouline.co.uk/get-started.html">
+<meta property="og:title" content="Get started with Nova">
+<meta property="og:description" content="Set up Nova in Slack: install, add your Anthropic key, enable a channel, and how the free trial, plans and billing work.">
+<meta property="og:image" content="https://mouline.co.uk/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<link rel="apple-touch-icon" href="/logo-512.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f6f2e9'/%3E%3Ccircle cx='20' cy='20' r='15.5' fill='none' stroke='%231c1a16' stroke-width='2'/%3E%3Cpath d='M8.4 9.6 Q24 16 31.2 31.4' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 16.8 Q19 22 28.4 34' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3Cpath d='M8.4 30.4 Q24 24 31.2 8.6' fill='none' stroke='%231c1a16' stroke-width='1.7'/%3E%3Cpath d='M5.2 23.2 Q19 18 28.4 6' fill='none' stroke='%23bb3a2b' stroke-width='1.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f2e9;
+  --paper-2:#efe9da;
+  --card:#fffdf7;
+  --ink:#1c1a16;
+  --ink-soft:#534e44;
+  --ink-faint:#8d877a;
+  --rule:#ddd5c2;
+  --rule-strong:#cfc6af;
+  --red:#bb3a2b;
+  --serif:'Fraunces','Iowan Old Style',Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --maxw:1140px;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-0.012em;margin:0}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.brand{font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:-0.02em;display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand .mark{width:26px;height:26px;flex:none;display:block}
+
+/* ---------- Page ---------- */
+main.doc{max-width:72ch;margin:0 auto;padding:64px 20px 80px}
+.doc h1{font-size:clamp(32px,6vw,44px);line-height:1.12}
+.doc .updated{font-size:14px;color:var(--ink-faint);margin:12px 0 36px}
+.doc h2{font-size:23px;line-height:1.25;margin:40px 0 10px}
+.doc p,.doc ul{margin:0 0 14px}
+.doc ul{padding-left:22px}
+.doc li{margin-bottom:6px}
+.doc a{color:var(--red)}
+
+footer{padding:46px 0;background:var(--paper-2)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+footer .brand{font-size:21px}
+footer .brand .mark{width:22px;height:22px}
+footer .meta{font-size:13px;color:var(--ink-faint);text-align:right;line-height:1.6}
+footer .meta a{color:var(--ink-soft)}
+
+/* ---------- Guide ---------- */
+.top{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:16px;padding-bottom:16px}
+.btn{display:inline-flex;align-items:center;font-size:14.5px;font-weight:500;padding:10px 18px;border-radius:6px;background:var(--ink);color:var(--paper);border:1px solid var(--ink);text-decoration:none;white-space:nowrap}
+.btn:hover{background:#000}
+.doc .btn{color:var(--paper)}
+.doc .lead{font-size:19px;color:var(--ink-soft);margin:12px 0 28px}
+.doc nav.toc{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:0 0 8px;font-size:15px}
+.doc nav.toc ol{margin:0;padding-left:20px}
+.doc nav.toc li{margin:3px 0}
+.doc h2 .n{font-family:var(--mono);font-size:13px;color:var(--red);margin-right:10px;vertical-align:3px}
+.doc h3{font-size:18px;margin:24px 0 8px}
+.doc code{font-family:var(--mono);font-size:13.5px;background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;padding:1px 5px}
+.doc .msg{background:var(--card);border-left:3px solid var(--rule-strong);padding:10px 14px;margin:0 0 14px;font-size:15px;color:var(--ink-soft)}
+.doc table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:15px}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:9px 10px;border-top:1px solid var(--rule)}
+.doc th{font-weight:600;color:var(--ink);background:var(--paper-2)}
+.doc details{border-top:1px solid var(--rule);padding:12px 0}
+.doc details:last-of-type{border-bottom:1px solid var(--rule)}
+.doc summary{cursor:pointer;font-weight:600}
+.doc details p{margin:10px 0 0}
+figure.shot{margin:4px 0 22px}
+figure.shot a{display:block;border:1px solid var(--rule-strong);border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(28,26,22,.06),0 8px 24px -12px rgba(28,26,22,.18)}
+figure.shot img{display:block;width:100%;height:auto}
+figure.shot figcaption{font-size:13.5px;color:var(--ink-faint);margin-top:8px}
+.shots{display:grid;gap:14px;grid-template-columns:1fr;margin:4px 0 22px}
+@media(min-width:620px){.shots{grid-template-columns:1fr 1fr}}
+.shots figure.shot{margin:0}
+@media(max-width:520px){.top .btn{padding:8px 12px;font-size:13.5px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline</a>
+    <a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
+  </div>
+</header>
+
+<main class="doc">
+  <h1>Get started with Nova</h1>
+  <p class="lead">Nova is an AI agent that works in your Slack workspace. You set her up yourself, from Slack and a browser, and the first week is free.</p>
+
+  <nav class="toc" aria-label="On this page">
+    <ol>
+      <li><a href="#before">Before you start</a></li>
+      <li><a href="#install">Add Nova to Slack</a></li>
+      <li><a href="#key">Add your Anthropic key</a></li>
+      <li><a href="#channel">Bring Nova into a channel</a></li>
+      <li><a href="#people">Add your team</a></li>
+      <li><a href="#first">Give her real work</a></li>
+      <li><a href="#trial">Your free trial</a></li>
+      <li><a href="#pay">Plans and paying</a></li>
+      <li><a href="#cancel">Changing or cancelling</a></li>
+      <li><a href="#messages">If Nova won't answer</a></li>
+      <li><a href="#faq">Questions</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="before"><span class="n">01</span>Before you start</h2>
+  <ul>
+    <li>A Slack workspace where you can install apps. If you aren't a workspace admin, ask one to do step 2.</li>
+    <li>An Anthropic API key. Create one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. Nova runs on it, and Anthropic bills you for that usage directly.</li>
+    <li>No card. You only need one when you choose a plan.</li>
+  </ul>
+
+  <h2 id="install"><span class="n">02</span>Add Nova to Slack</h2>
+  <p>Open <a href="https://control.mouline.co.uk/install">control.mouline.co.uk/install</a>, click <b>Add to Slack</b> and approve the permissions Slack shows you. Whoever completes the install becomes the workspace's first Nova admin. Enterprise Grid org-wide installs aren't supported; install into one workspace.</p>
+  <div class="shots">
+  <figure class="shot"><a href="guide/install.jpg"><img src="guide/install.jpg" width="600" height="420" loading="lazy" alt="The install page: Add Nova to your Slack workspace, with an Add to Slack button."></a><figcaption>The install page. Click <b>Add to Slack</b> (1) and approve in Slack.</figcaption></figure>
+  <figure class="shot"><a href="guide/install-done.jpg"><img src="guide/install-done.jpg" width="600" height="480" loading="lazy" alt="After installing: Nova is installed in Acme, with the two steps left and a Sign in and finish setup button."></a><figcaption>Back from Slack. <b>Sign in and finish setup</b> (1) takes you to the next step.</figcaption></figure>
+  </div>
+
+  <h2 id="key"><span class="n">03</span>Add your Anthropic key</h2>
+  <p>Sign in with Slack at <a href="https://control.mouline.co.uk/login?return=%2Fsettings">control.mouline.co.uk</a>. This is Nova's dashboard, and it shows only your workspace. Open <b>Settings</b>, paste your key under <b>Anthropic API key</b> and save.</p>
+  <p>Until a key is saved, Nova answers every mention with a link to Settings and does no work.</p>
+  <figure class="shot"><a href="guide/settings-key.jpg"><img src="guide/settings-key.jpg" width="912" height="830" loading="lazy" alt="Nova's dashboard, Settings page: a Finish setup notice, and the Anthropic API key field being filled in under LLM credentials."></a><figcaption>Open <b>Settings</b> (1), paste your key into <b>Anthropic API key</b> (2) and click <b>Save settings</b> (3). The orange notice goes away once the key is saved.</figcaption></figure>
+
+  <h2 id="channel"><span class="n">04</span>Bring Nova into a channel</h2>
+  <p>In the Slack channel where you want Nova to work:</p>
+  <ol>
+    <li>Invite her: <code>/invite @Nova</code></li>
+    <li>Enable her there: <code>/nova channel add</code> (Nova admins only)</li>
+  </ol>
+  <figure class="shot"><a href="guide/slack-channel.jpg"><img src="guide/slack-channel.jpg" width="790" height="515" loading="lazy" alt="A Slack channel: the admin runs /invite @Nova and /nova channel add, Nova confirms the channel was added, the admin adds Ben with /nova user add, and Ben mentions @Nova with a task."></a><figcaption>In Slack: invite Nova (1), enable the channel (2), add a teammate (3), and they can mention her with a task (4). Nova's confirmations are only visible to you.</figcaption></figure>
+  <p>By default Nova answers when someone mentions her. To have her pick up every new message in a channel, such as a support or requests channel, run <code>/nova channel auto on</code> there. <code>/nova channel auto off</code> switches back.</p>
+
+  <h2 id="people"><span class="n">05</span>Add your team</h2>
+  <p>Nova only answers people you've allowed. Add someone with <code>/nova user add @name</code> in Slack, or on the dashboard's <b>Access</b> page. During the trial up to 10 people can use Nova, admins included. On Business, there's no limit.</p>
+  <figure class="shot"><a href="guide/access.jpg"><img src="guide/access.jpg" width="1280" height="690" loading="lazy" alt="The dashboard's Access page: two channels, one answering mentions and one every message, and three people, one admin and two operators."></a><figcaption><b>Access</b> (1) lists the channels Nova works in (2) and the people she answers (3). You can add and remove both here too.</figcaption></figure>
+
+  <h2 id="first"><span class="n">06</span>Give her real work</h2>
+  <p>Mention <code>@Nova</code> in a thread and ask for a task your team does every week. Each Slack thread is one ongoing conversation, so reply in the same thread to follow up or correct her. A person reviews anything consequential before it happens.</p>
+  <p>The dashboard shows what Nova did in each conversation and what it cost, and lets admins manage access, egress rules, scheduled jobs and settings.</p>
+
+  <h2 id="trial"><span class="n">07</span>Your free trial</h2>
+  <p>Every new workspace gets a <b>7-day free trial</b>. It starts the first time Nova answers someone, not when you install, so setup doesn't use it up.</p>
+  <ul>
+    <li>Up to <b>3 channels</b> and <b>10 people</b> during the trial. Going over is refused with a message naming the limit; removing one frees a slot.</li>
+    <li>The dashboard shows the trial's end date, and Nova sends admins a reminder in Slack. Nobody else gets them.</li>
+    <li>Removing and reinstalling Nova keeps the trial where it was.</li>
+  </ul>
+  <h3>Earn more days</h3>
+  <p>Trying more of Nova extends the trial, by up to 30 extra working days (Monday to Friday) in total. Each counts once:</p>
+  <table>
+    <tr><th>Do this</th><th>Earn</th></tr>
+    <tr><td>Save a Shadow Broker connection in Settings</td><td>+3 working days</td></tr>
+    <tr><td>Add your first egress allow rule on the dashboard</td><td>+3 working days</td></tr>
+    <tr><td>Have your first scheduled job run successfully</td><td>+3 working days</td></tr>
+    <tr><td>Each new person who gets an answer from Nova</td><td>+2 working days</td></tr>
+  </table>
+  <p>The first person's answer starts the trial, so it doesn't earn days. Days earned before the trial starts still count.</p>
+  <h3>When the trial ends</h3>
+  <p>If you haven't chosen a plan, Nova pauses for everyone in the workspace. The Slack install and your data are kept for 30 days, and admins can still sign in to the dashboard. Choosing Business brings her back straight away. If you need more time, write to <a href="mailto:founders@mouline.work">founders@mouline.work</a>.</p>
+
+  <h2 id="pay"><span class="n">08</span>Plans and paying</h2>
+  <table>
+    <tr><th>Plan</th><th>Price</th><th>What you get</th></tr>
+    <tr><td>Free trial</td><td>$0 for 7 days</td><td>3 channels, 10 people, plus any days you earn</td></tr>
+    <tr><td>Business</td><td>$10 per channel per month</td><td>1 to 99 channels, chosen when you pay; unlimited people</td></tr>
+    <tr><td>Enterprise</td><td>$1,000 per month</td><td>Unlimited channels and people, deployed in your network with our team. <a href="mailto:founders@mouline.work">Write to us</a></td></tr>
+  </table>
+  <p>Prices are in US dollars. Anthropic bills you separately for the usage on your key.</p>
+  <h3>To pay for Business</h3>
+  <ol>
+    <li>Sign in to the dashboard and open <b>Settings</b>. Admins also see a <b>Choose Business</b> button on the trial banner.</li>
+    <li>Click <b>Choose Business</b>. Stripe Checkout opens.</li>
+    <li>Pick how many channels Nova can be in, agree to the <a href="terms.html">Terms</a>, and pay by card.</li>
+  </ol>
+  <figure class="shot"><a href="guide/settings-trial.jpg"><img src="guide/settings-trial.jpg" width="1040" height="290" loading="lazy" alt="Settings during the trial: a banner with the trial end date and a Choose Business button, and the Plan and billing card showing Trial with a Choose Business button."></a><figcaption><b>Choose Business</b> (1) is on the trial banner and on the <b>Plan and billing</b> card in Settings. Either one opens Stripe Checkout.</figcaption></figure>
+  <p>You can pay at any time during the trial. The first month is charged at once, the trial ends, and the trial limits lift straight away. Settings then shows your plan and number of channels.</p>
+
+  <h2 id="cancel"><span class="n">09</span>Changing or cancelling</h2>
+  <p>In Settings, <b>Manage billing</b> opens Stripe's billing portal. There you can:</p>
+  <ul>
+    <li><b>Add channels.</b> Takes effect at once, charged pro rata for the rest of the month.</li>
+    <li><b>Remove channels.</b> Takes effect at your next renewal.</li>
+    <li><b>Update your card</b> and download invoices.</li>
+    <li><b>Cancel.</b> Nova keeps working until the end of the month you paid for.</li>
+  </ul>
+  <figure class="shot"><a href="guide/settings-business.jpg"><img src="guide/settings-business.jpg" width="1040" height="290" loading="lazy" alt="Settings on the Business plan: the Plan and billing card shows Business, 5 channels, with a Manage billing button."></a><figcaption>Once you pay, <b>Plan and billing</b> shows your plan and number of channels. <b>Manage billing</b> (1) opens Stripe.</figcaption></figure>
+  <p>We don't refund part months; see the <a href="refund.html">refund policy</a>. If a payment fails, Nova pauses and comes back as soon as the payment goes through.</p>
+
+  <h2 id="messages"><span class="n">10</span>If Nova won't answer</h2>
+  <p>Nova always says why. The message tells you what to do:</p>
+  <table>
+    <tr><th>Nova says</th><th>What to do</th></tr>
+    <tr><td>A link to Settings, with no answer</td><td>An admin hasn't saved the Anthropic key yet. <a href="#key">Add it</a>.</td></tr>
+    <tr><td>Nova isn't enabled in this channel yet</td><td>A Nova admin runs <code>/nova channel add</code> in that channel.</td></tr>
+    <tr><td>You're not on Nova's allowlist</td><td>A Nova admin runs <code>/nova user add @you</code>.</td></tr>
+    <tr><td>A trial limit was reached</td><td>Remove a channel or person, or <a href="#pay">choose Business</a> to lift the limits.</td></tr>
+    <tr><td>Trial has ended</td><td>An admin <a href="#pay">chooses Business</a> in Settings.</td></tr>
+    <tr><td>Nova is paused because this workspace's subscription isn't active</td><td>An admin updates the card under <b>Manage billing</b>.</td></tr>
+  </table>
+
+  <h2 id="faq"><span class="n">11</span>Questions</h2>
+  <details>
+    <summary>What does Nova cost in total?</summary>
+    <p>Your plan, plus what Anthropic charges for the usage on your own key. Mouline doesn't mark it up.</p>
+  </details>
+  <details>
+    <summary>What counts as a channel?</summary>
+    <p>Each Slack channel where Nova is enabled with <code>/nova channel add</code>, including channels set to auto-reply. On Business you pay for the number of channels you pick, however many you've enabled so far.</p>
+  </details>
+  <details>
+    <summary>Who can change settings and billing?</summary>
+    <p>Nova admins. The person who installs is the first; add more on the dashboard's Access page or with <code>/nova user add @name admin</code>.</p>
+  </details>
+  <details>
+    <summary>Where does my data live?</summary>
+    <p>On Business, Mouline hosts Nova for you, and each workspace gets its own database and its own Nova. On Enterprise, Nova runs in your own network. See the <a href="privacy.html">Privacy Policy</a>.</p>
+  </details>
+  <details>
+    <summary>How do I remove Nova?</summary>
+    <p>Cancel under <b>Manage billing</b> if you pay, then remove the app from Slack. After you cancel, we keep your data for 30 days so you can come back, then delete it.</p>
+  </details>
+  <p style="margin-top:24px">Anything else: <a href="mailto:founders@mouline.work">founders@mouline.work</a>.</p>
+
+  <p style="margin-top:32px"><a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="./"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline</a>
+    <div class="meta">
+      Nova — an AI agent that does your team's repetitive work.<br>
+      Artsiom Mezin &amp; Nikita Beletskii · <a href="https://control.mouline.co.uk/install">add Nova to Slack</a> · <a href="get-started.html">Setup guide</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

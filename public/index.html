@@ -391,6 +391,12 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .intg .i .sc{font-family:var(--mono);font-size:10px;color:var(--ink-faint);display:block;margin-top:3px}
 .deploy-foot{margin-top:24px;font-size:16px;color:var(--ink-soft);max-width:60ch}
 .deploy-foot b{color:var(--ink)}
+/* get started: four self-serve steps */
+@media(min-width:760px){.deploy.four{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.deploy.four{grid-template-columns:repeat(4,1fr)}}
+.dstep code{font-family:var(--mono);font-size:12.5px;background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;padding:1px 5px;white-space:nowrap;color:var(--ink)}
+.dstep p a{color:var(--ink)}
+.hero-note{margin:16px 0 0;font-size:14px;color:var(--ink-faint)}
 
 /* engage / pricing */
 .engage{display:grid;gap:18px;grid-template-columns:1fr}
@@ -413,6 +419,14 @@ section{padding:78px 0;border-bottom:1px solid var(--rule)}
 .timeline.flat{grid-template-columns:1fr}
 .timeline.flat li.pay{border-image:none;padding-left:0;box-shadow:none}
 .timeline p{font-size:14px;color:var(--ink-soft);margin:6px 0 0}
+.plan ul.facts{list-style:none;margin:14px 0 0;padding:0}
+.plan ul.facts li{font-size:14.5px;color:var(--ink-soft);padding:6px 0 6px 22px;position:relative}
+.plan ul.facts li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.billing{display:grid;gap:18px;grid-template-columns:1fr;margin-top:30px;padding-top:26px;border-top:1px solid var(--rule)}
+@media(min-width:760px){.billing{grid-template-columns:repeat(3,1fr)}}
+.billing h3{font-size:18px;margin:0 0 6px}
+.billing p{font-size:14.5px;color:var(--ink-soft);margin:0}
+.billing p a{color:var(--ink)}
 
 /* ICP / who this is for */
 .icp{display:grid;gap:30px;grid-template-columns:1fr}
@@ -504,7 +518,7 @@ footer .meta a{color:var(--ink-soft)}
     <nav class="links">
       <a class="hideable" href="#what">What it does</a>
       <a class="hideable" href="#how">How it works</a>
-      <a class="hideable" href="#deploy">Deploy</a>
+      <a class="hideable" href="#start">Get started</a>
       <a class="hideable" href="#engage">Pricing</a>
       <a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
     </nav>
@@ -523,6 +537,7 @@ footer .meta a{color:var(--ink-soft)}
         <a class="btn big" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
         <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
       </div>
+      <p class="hero-note">7-day free trial, no card needed. Then $10 per channel a month. <a href="#start">How to get started</a></p>
     </div>
 
     <figure class="figure" id="demo">
@@ -765,11 +780,65 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- HOW WE DEPLOY -->
+<!-- GET STARTED -->
+<section id="start">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Get started</h2></div>
+    <p class="lede" style="margin-bottom:36px">Four steps, all of them yours to do, from Slack and a browser. <b>No card, no call, no approval from us.</b></p>
+    <div class="deploy four">
+      <div class="dstep"><div class="dn">1</div><h3>Add Nova to Slack</h3><p>Click <a href="https://control.mouline.co.uk/install">Add Nova to Slack</a> and approve. A Slack workspace admin needs to do this. Whoever installs becomes Nova's first admin.</p></div>
+      <div class="dstep"><div class="dn">2</div><h3>Add your Anthropic key</h3><p>Sign in with Slack at <a href="https://control.mouline.co.uk/login?return=%2Fsettings">control.mouline.co.uk</a> and paste an Anthropic API key in Settings. You pay Anthropic for usage directly.</p></div>
+      <div class="dstep"><div class="dn">3</div><h3>Bring Nova into a channel</h3><p>Invite <code>@Nova</code> to a channel and run <code>/nova channel add</code> there. Add teammates with <code>/nova user add @name</code>.</p></div>
+      <div class="dstep"><div class="dn">4</div><h3>Give her real work</h3><p>Mention <code>@Nova</code> in a thread and ask for a task your team repeats. Your 7-day free trial starts with her first answer.</p></div>
+    </div>
+    <div class="cta-row" style="margin-top:30px">
+      <a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
+      <a class="btn ghost" href="get-started.html">Read the setup guide</a>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS AND PRICING -->
+<section id="engage">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Plans and pricing</h2></div>
+    <p class="lede" style="margin-bottom:36px">Start on a free trial, then pay by card per channel, or talk to us about Enterprise. On Business you bring your own Anthropic key and pay Anthropic for usage directly.</p>
+    <div class="engage">
+      <div class="plan priced reveal">
+        <h3>Business</h3>
+        <ol class="timeline" aria-label="Business pricing over time">
+          <li class="try"><div class="price">$0</div><p>for a 7-day free trial</p></li>
+          <li class="pay"><div class="price">$10</div><p>per channel, per month after that</p></li>
+        </ol>
+        <ul class="facts">
+          <li><b>No card to start.</b> The trial covers up to 3 channels and 10 people, and starts with Nova's first answer.</li>
+          <li>Earn up to 30 extra working days by trying Nova's features.</li>
+          <li>Pick 1 to 99 channels when you pay. People are unlimited.</li>
+        </ul>
+        <div class="cta-row"><a class="btn" href="https://control.mouline.co.uk/install">Start the free trial</a></div>
+      </div>
+      <div class="plan priced reveal">
+        <h3>Enterprise</h3>
+        <ol class="timeline flat" aria-label="Enterprise pricing">
+          <li class="pay"><div class="price">$1,000</div><p>per month, for unlimited channels and users</p></li>
+        </ol>
+        <p>Deployed in your own network and set up with you by our team. <a href="#deploy">How it works</a>. Write to us or book a call.</p>
+        <div class="cta-row"><a class="btn" href="mailto:founders@mouline.work">founders@mouline.work</a><a class="btn ghost" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a call</a></div>
+      </div>
+    </div>
+    <div class="billing">
+      <div><h3>Paying</h3><p>In Nova's dashboard, open Settings and click <b>Choose Business</b>. Stripe Checkout takes your card and the number of channels. The first month is charged at once and ends the trial.</p></div>
+      <div><h3>Changing or cancelling</h3><p><b>Manage billing</b> in Settings opens Stripe, where you change channels, card and invoices, or cancel. Nova runs to the end of the month you paid for. <a href="refund.html">Refund policy</a>.</p></div>
+      <div><h3>When the trial ends</h3><p>If you haven't chosen a plan, Nova pauses. Your install and data are kept for 30 days, and choosing Business brings her back. <a href="get-started.html#trial">How the trial works</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE DEPLOY ENTERPRISE -->
 <section id="deploy">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">05</span><h2>How we deploy</h2></div>
-    <p class="lede" style="margin-bottom:36px">Three steps — the infrastructure is ready in about a week, mostly on us.</p>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Enterprise, in your network</h2></div>
+    <p class="lede" style="margin-bottom:36px">On Enterprise, we deploy Nova and Mouline Platform into your own environment. Three steps, and the infrastructure is ready in about a week, mostly on us.</p>
     <div class="deploy">
       <div class="dstep"><div class="dn">1</div><h3>Integrations</h3><p>You name the stack — your dev, ops, field, finance and data tools. We map it.</p></div>
       <div class="dstep"><div class="dn">2</div><h3>Access</h3><p>Each system gets the access its work needs: read-only where Nova only looks, read/write where she's expected to act — and even then she acts by proposal, a pull request or a draft for a person to approve.</p></div>
@@ -813,37 +882,11 @@ footer .meta a{color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- HOW WE ENGAGE -->
-<section id="engage">
-  <div class="wrap">
-    <div class="sec-head"><span class="sec-num">06</span><h2>How we engage</h2></div>
-    <p class="lede" style="margin-bottom:36px">Nova is a hosted service. Add it to Slack yourself and pay by card, or talk to us about Enterprise. You bring your own Anthropic key and pay Anthropic for usage directly.</p>
-    <div class="engage">
-      <div class="plan priced reveal">
-        <h3>Business</h3>
-        <ol class="timeline" aria-label="Business pricing over time">
-          <li class="try"><div class="price">$0</div><p>for a 7-day free trial</p></li>
-          <li class="pay"><div class="price">$10</div><p>per channel, per month after that</p></li>
-        </ol>
-        <p><b>No card to start.</b> Up to 3 channels and 10 users while you try it. After the trial, users are unlimited and the bill follows the channels Nova is enabled in, from one channel up.</p>
-        <div class="cta-row"><a class="btn" href="https://control.mouline.co.uk/install">Add Nova to Slack</a></div>
-      </div>
-      <div class="plan priced reveal">
-        <h3>Enterprise</h3>
-        <ol class="timeline flat" aria-label="Enterprise pricing">
-          <li class="pay"><div class="price">$1,000</div><p>per month, for unlimited channels and users</p></li>
-        </ol>
-        <p>Set up with you by our team. Write to us or book a call.</p>
-        <div class="cta-row"><a class="btn" href="mailto:founders@mouline.work">founders@mouline.work</a><a class="btn ghost" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener">Book a call</a></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- WHO THIS IS FOR -->
 <section id="who">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">07</span><h2>Who it's for</h2></div>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Who it's for</h2></div>
     <div class="icp">
       <div class="icp-fit">
         <h3>Nova is for you if…</h3>
@@ -869,7 +912,7 @@ footer .meta a{color:var(--ink-soft)}
 <!-- WHO BUILDS IT -->
 <section id="team">
   <div class="wrap">
-    <div class="sec-head"><span class="sec-num">08</span><h2>Who builds it</h2></div>
+    <div class="sec-head"><span class="sec-num">09</span><h2>Who builds it</h2></div>
     <p class="team-note">We're the two founders — UK/Canada-based technical leaders with deep experience in AI, platform engineering, and SRE. We have designed and operated enterprise AI systems at <b>Deutsche Bank, Behavox, SAP, Mail.Ru, and Lightspeed</b> — production environments consuming billions of LLM tokens a month and orchestrating hundreds of independent agents across customer support, incident management, and the SDLC.</p>
     <div class="founders">
       <div class="founder">
@@ -910,10 +953,10 @@ footer .meta a{color:var(--ink-soft)}
 <section class="final" id="next-steps">
   <div class="wrap">
     <h2>Point Nova at the work your team repeats.</h2>
-    <p>Add Nova to your Slack workspace, bring your own Anthropic key, and enable it in a channel. It starts working on real cases the same day.</p>
+    <p>Add Nova to your Slack workspace, bring your own Anthropic key, and enable her in a channel. She starts on real work the same day, and your 7-day free trial starts with her first answer.</p>
     <div class="cta-row">
       <a class="btn big" href="https://control.mouline.co.uk/install">Add Nova to Slack</a>
-      <a class="btn ghost big" href="demo-invoice-exceptions.html">▶ Watch a 1-min demo</a>
+      <a class="btn ghost big" href="get-started.html">Read the setup guide</a>
     </div>
     <p class="fine">Built by engineers who've run hundreds of production agents. A person approves anything consequential.</p>
   </div>
@@ -925,7 +968,7 @@ footer .meta a{color:var(--ink-soft)}
     <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15.5" fill="#fffdf7" stroke="#1c1a16" stroke-width="2"/><g fill="none" stroke-linecap="round" stroke-width="1.6"><path d="M8.4 9.6 Q24 16 31.2 31.4" stroke="#1c1a16"/><path d="M5.2 16.8 Q19 22 28.4 34" stroke="#bb3a2b"/><path d="M13.6 6 Q29 13 34.6 24.6" stroke="#1c1a16"/><path d="M8.4 30.4 Q24 24 31.2 8.6" stroke="#1c1a16"/><path d="M5.2 23.2 Q19 18 28.4 6" stroke="#bb3a2b"/><path d="M13.6 34 Q29 27 34.6 15.4" stroke="#1c1a16"/></g></svg>Mouline</div>
     <div class="meta">
       Nova — an AI agent that does your team's repetitive work.<br>
-      Artsiom Mezin &amp; Nikita Beletskii · <a href="https://control.mouline.co.uk/install">add Nova to Slack</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a>
+      Artsiom Mezin &amp; Nikita Beletskii · <a href="https://control.mouline.co.uk/install">add Nova to Slack</a> · <a href="get-started.html">Setup guide</a> · <a href="https://control.mouline.co.uk/">Sign in</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a>
     </div>
   </div>
 </footer>
