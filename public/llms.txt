@@ -24,7 +24,8 @@ shared with an AI provider or used to train anyone's models.
 - [Mouline: Nova](https://mouline.co.uk/): What Nova does, how it learns a team's
   work, how it is deployed, and how Mouline engages.
 - [Get started with Nova](https://mouline.co.uk/get-started.html): The setup
-  guide: add Nova to Slack, add an Anthropic key, enable a channel, and how the
+  guide: add Nova to Slack, add an Anthropic key, enable a channel, connect
+  Google Drive and choose which channels may use which shared drives, and how the
   7-day free trial, the Business plan ($10 per channel per month) and billing work.
 - [Live demo: invoice.exceptions v3](https://mouline.co.uk/demo-invoice-exceptions.html):
   An interactive walkthrough of one recipe running across Gmail, NetSuite, a

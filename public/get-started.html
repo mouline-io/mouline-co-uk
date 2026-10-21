@@ -96,6 +96,7 @@ figure.shot figcaption{font-size:13.5px;color:var(--ink-faint);margin-top:8px}
 .shots{display:grid;gap:14px;grid-template-columns:1fr;margin:4px 0 22px}
 @media(min-width:620px){.shots{grid-template-columns:1fr 1fr}}
 .shots figure.shot{margin:0}
+figure.shot.narrow{max-width:380px}
 @media(max-width:520px){.top .btn{padding:8px 12px;font-size:13.5px}}
 
 
@@ -189,6 +190,7 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
       <li><a href="#channel">Bring Nova into a channel</a></li>
       <li><a href="#people">Add your team</a></li>
       <li><a href="#first">Give her real work</a></li>
+      <li><a href="#drive">Connect Google Drive</a></li>
       <li><a href="#trial">Your free trial</a></li>
       <li><a href="#pay">Plans and paying</a></li>
       <li><a href="#cancel">Changing or cancelling</a></li>
@@ -207,14 +209,14 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
   <h2 id="install"><span class="n">02</span>Add Nova to Slack</h2>
   <p>Open <a href="https://control.mouline.co.uk/install">control.mouline.co.uk/install</a>, click <b>Add to Slack</b> and approve the permissions Slack shows you. Whoever completes the install becomes the workspace's first Nova admin. Enterprise Grid org-wide installs aren't supported; install into one workspace.</p>
   <div class="shots">
-  <figure class="shot"><a href="guide/install.jpg"><img src="guide/install.jpg" width="600" height="420" loading="lazy" alt="The install page: Add Nova to your Slack workspace, with an Add to Slack button."></a><figcaption>The install page. Click <b>Add to Slack</b> (1) and approve in Slack.</figcaption></figure>
-  <figure class="shot"><a href="guide/install-done.jpg"><img src="guide/install-done.jpg" width="600" height="480" loading="lazy" alt="After installing: Nova is installed in Acme, with the two steps left and a Sign in and finish setup button."></a><figcaption>Back from Slack. <b>Sign in and finish setup</b> (1) takes you to the next step.</figcaption></figure>
+  <figure class="shot"><a href="guide/install.jpg"><img src="guide/install.jpg" width="488" height="402" loading="lazy" alt="The install page: Add Nova to your Slack workspace, with an Add to Slack button."></a><figcaption>The install page. Click <b>Add to Slack</b> (1) and approve in Slack.</figcaption></figure>
+  <figure class="shot"><a href="guide/install-done.jpg"><img src="guide/install-done.jpg" width="488" height="586" loading="lazy" alt="After installing: Nova is installed in Acme, with the three steps left and a Sign in and finish setup button."></a><figcaption>Back from Slack. <b>Sign in and finish setup</b> (1) takes you to the next step.</figcaption></figure>
   </div>
 
   <h2 id="key"><span class="n">03</span>Add your Anthropic key</h2>
   <p>Sign in with Slack at <a href="https://control.mouline.co.uk/login?return=%2Fsettings">control.mouline.co.uk</a>. This is Nova's dashboard, and it shows only your workspace. Open <b>Settings</b>, paste your key under <b>Anthropic API key</b> and save.</p>
   <p>Until a key is saved, Nova answers every mention with a link to Settings and does no work.</p>
-  <figure class="shot"><a href="guide/settings-key.jpg"><img src="guide/settings-key.jpg" width="912" height="830" loading="lazy" alt="Nova's dashboard, Settings page: a Finish setup notice, and the Anthropic API key field being filled in under LLM credentials."></a><figcaption>Open <b>Settings</b> (1), paste your key into <b>Anthropic API key</b> (2) and click <b>Save settings</b> (3). The orange notice goes away once the key is saved.</figcaption></figure>
+  <figure class="shot"><a href="guide/settings-key.jpg"><img src="guide/settings-key.jpg" width="920" height="830" loading="lazy" alt="Nova's dashboard, Settings page: a Finish setup notice, and the Anthropic API key field being filled in under LLM credentials."></a><figcaption>Open <b>Settings</b> (1), paste your key into <b>Anthropic API key</b> (2) and click <b>Save settings</b> (3). The orange notice goes away once the key is saved.</figcaption></figure>
 
   <h2 id="channel"><span class="n">04</span>Bring Nova into a channel</h2>
   <p>In the Slack channel where you want Nova to work:</p>
@@ -227,13 +229,57 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
 
   <h2 id="people"><span class="n">05</span>Add your team</h2>
   <p>Nova only answers people you've allowed. Add someone with <code>/nova user add @name</code> in Slack, or on the dashboard's <b>Access</b> page. During the trial up to 10 people can use Nova, admins included. On Business, there's no limit.</p>
-  <figure class="shot"><a href="guide/access.jpg"><img src="guide/access.jpg" width="1280" height="690" loading="lazy" alt="The dashboard's Access page: two channels, one answering mentions and one every message, and three people, one admin and two operators."></a><figcaption><b>Access</b> (1) lists the channels Nova works in (2) and the people she answers (3). You can add and remove both here too.</figcaption></figure>
+  <figure class="shot"><a href="guide/access.jpg"><img src="guide/access.jpg" width="1280" height="745" loading="lazy" alt="The dashboard's Access page: three channels, two answering mentions and one every message, and three people, one admin and two operators."></a><figcaption><b>Access</b> (1) lists the channels Nova works in (2) and the people she answers (3). You can add and remove both here too.</figcaption></figure>
 
   <h2 id="first"><span class="n">06</span>Give her real work</h2>
   <p>Mention <code>@Nova</code> in a thread and ask for a task your team does every week. Each Slack thread is one ongoing conversation, so reply in the same thread to follow up or correct her. A person reviews anything consequential before it happens.</p>
-  <p>The dashboard shows what Nova did in each conversation and what it cost, and lets admins manage access, egress rules, scheduled jobs and settings.</p>
+  <p>The dashboard shows what Nova did in each conversation and what it cost, and lets admins manage access, integrations, egress rules, scheduled jobs and settings.</p>
 
-  <h2 id="trial"><span class="n">07</span>Your free trial</h2>
+  <h2 id="drive"><span class="n">07</span>Connect Google Drive</h2>
+  <p>Optional, and worth a few trial days. With Drive connected, Nova finds, reads and edits your Docs, Sheets and Slides, creates and copies files, organises folders, and shares files with people in your company. In Sheets she changes only the cells she means to, appends rows, adds tabs and formats them, without rewriting the rest. You decide, channel by channel, which shared drives she may use.</p>
+
+  <h3>Turn on the Shadow Broker</h3>
+  <p>Nova reaches Drive through a Shadow Broker, which holds the Google credentials so Nova never sees them. In <b>Settings</b>, under <b>Shadow Broker</b>, choose <b>Run by Mouline</b> and save. Mouline then runs a broker for your workspace alone. There's nothing to install and no key to copy.</p>
+  <figure class="shot"><a href="guide/broker.jpg"><img src="guide/broker.jpg" width="680" height="330" loading="lazy" alt="Settings, Shadow Broker section: the Broker list set to Run by Mouline, and the Save settings button."></a><figcaption>Choose <b>Run by Mouline</b> (1) and click <b>Save settings</b> (2).</figcaption></figure>
+
+  <h3>Connect your Google account</h3>
+  <p>Open <b>Integrations</b> and click <b>Connect Google Drive</b>. Google asks you to sign in and approve access; Nova then acts as that Google account, so she sees what it sees. You come back to the Google Drive page, where Nova can use all of Drive in every channel until you narrow it.</p>
+  <figure class="shot"><a href="guide/drive-connect.jpg"><img src="guide/drive-connect.jpg" width="1280" height="560" loading="lazy" alt="The Integrations page before connecting: a Google Drive card marked Not connected, with a Connect Google Drive button."></a><figcaption>Open <b>Integrations</b> (1) and click <b>Connect Google Drive</b> (2).</figcaption></figure>
+  <figure class="shot"><a href="guide/drive-connected.jpg"><img src="guide/drive-connected.jpg" width="930" height="350" loading="lazy" alt="Back from Google: Google Drive is connected, Working, and Nova can use All of Drive everywhere, with a Choose where button."></a><figcaption>Back from Google. <b>Choose where</b> (1) sets what Nova may use everywhere.</figcaption></figure>
+  <p>If you'd rather hand over a few folders only, open <a href="https://control.mouline.co.uk/integrations/google-drive">the Google Drive page</a> before connecting and click <b>Pick folders instead</b>. Nova then reaches just the folders you pick in Google's picker and the files she creates, everywhere. Channel rules need the whole-Drive connection.</p>
+
+  <h3>Choose where Nova can use Drive</h3>
+  <p>Drive access is set by rules, each written as a sentence on the Google Drive page:</p>
+  <ul>
+    <li><b>Everywhere</b> applies to every channel without a rule of its own: <b>All of Drive</b>, <b>Only some shared drives</b>, or <b>Nowhere</b>.</li>
+    <li>A <b>channel rule</b> covers one or more channels. Click <b>+ Add a rule for specific channels</b>, add the channels, and choose all of Drive or some shared drives. You can add a note for Nova too, such as where budgets live.</li>
+  </ul>
+  <p>The most specific rule wins: a channel's own rule <b>replaces</b> Everywhere there, so a channel can get less than Everywhere or more. If two rules name the same channel, Nova gets everything either one allows, and the page marks a rule that adds nothing as <b>Changes nothing</b>. Before you save, the rule shows what Nova will reach after saving.</p>
+  <p>For example, with Everywhere set to Only Company and a #finance rule for Finance and Company, Nova in #finance can use both drives and nothing else.</p>
+  <figure class="shot narrow"><a href="guide/drive-rule.jpg"><img src="guide/drive-rule.jpg" width="480" height="720" loading="lazy" alt="New channel rule: In #requests Nova can use Google Drive: Only some shared drives, with Sales ticked. After saving: In #requests Nova can reach Only Sales; this replaces Everywhere (Only Company)."></a><figcaption>A new rule: pick the channel (1), choose <b>Only some shared drives</b> and tick them (2), and check <b>After saving</b> (3) before you click <b>Save rule</b>.</figcaption></figure>
+
+  <h3>See who can reach what</h3>
+  <p>The Integrations page lists every channel with what Nova can reach there. Grey means the channel gets it from Everywhere; black means its own rule decides. Click a channel to see why, or click its Drive cell to change its rule.</p>
+  <figure class="shot"><a href="guide/drive-reach.jpg"><img src="guide/drive-reach.jpg" width="1050" height="610" loading="lazy" alt="Who can reach what: Everywhere gets Only Company; #engineering All of Drive, #finance Only Finance and Company, and #requests Only Sales, each replacing Everywhere."></a><figcaption>Everywhere is held to the Company drive (1). #engineering's own rule gives it more: all of Drive (2). The #requests rule from above gives it less: only Sales, not Company (3).</figcaption></figure>
+
+  <h3>Check it's working</h3>
+  <p>Drive has one status on both pages. <b>Working</b> means Nova can use it. <b>Needs attention</b> and <b>Not working</b> come with a banner saying what's wrong and, where the dashboard can fix it, a button. The <b>Health</b> list on the Google Drive page shows each check:</p>
+  <table>
+    <tr><th>Check</th><th>If it fails</th></tr>
+    <tr><td>Nova has loaded the connection</td><td>Nova picks changes up within a minute. If it stays, write to us. Meanwhile Nova tells people Drive is temporarily unavailable.</td></tr>
+    <tr><td>Network access to Google</td><td>Your egress policy doesn't allow all four Google hosts Drive needs. Click <b>Allow Google hosts</b>, or remove the deny rule under <b>Open network policy</b>.</td></tr>
+    <tr><td>Used in at least one channel</td><td>No rule gives Nova Drive anywhere. Click <b>Add a rule</b>, or set Everywhere.</td></tr>
+  </table>
+  <figure class="shot"><a href="guide/drive-health.jpg"><img src="guide/drive-health.jpg" width="930" height="748" loading="lazy" alt="Google Drive marked Needs attention: two Google hosts are not allowed. A banner offers Allow Google hosts, and the Health list shows which hosts are missing."></a><figcaption>Here two Google hosts aren't allowed. <b>Allow Google hosts</b> (1) fixes it; <b>Health</b> (2) shows each check, and <b>Details</b> lists the hosts.</figcaption></figure>
+
+  <h3>Sharing, reconnecting and disconnecting</h3>
+  <ul>
+    <li>Nova shares files only with people in your own Google Workspace domain, and refuses anyone outside it.</li>
+    <li><b>Reconnect</b> on the Google Drive page signs in to Google again, for example to use another account.</li>
+    <li><b>Disconnect</b> stops Nova using Drive in every channel at once. Your rules are kept. If Everywhere was set to Nowhere, it comes back as All of Drive when you reconnect, so set it again afterwards.</li>
+  </ul>
+
+  <h2 id="trial"><span class="n">08</span>Your free trial</h2>
   <p>Every new workspace gets a <b>7-day free trial</b>. It starts the first time Nova answers someone, not when you install, so setup doesn't use it up.</p>
   <ul>
     <li>Up to <b>3 channels</b> and <b>10 people</b> during the trial. Going over is refused with a message naming the limit; removing one frees a slot.</li>
@@ -244,16 +290,18 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
   <p>Trying more of Nova extends the trial, by up to 30 extra working days (Monday to Friday) in total. Each counts once:</p>
   <table>
     <tr><th>Do this</th><th>Earn</th></tr>
-    <tr><td>Save a Shadow Broker connection in Settings</td><td>+3 working days</td></tr>
+    <tr><td>Save a Shadow Broker connection in Settings, such as <a href="#drive">Run by Mouline</a></td><td>+3 working days</td></tr>
     <tr><td>Add your first egress allow rule on the dashboard</td><td>+3 working days</td></tr>
     <tr><td>Have your first scheduled job run successfully</td><td>+3 working days</td></tr>
+    <tr><td><a href="#drive">Connect Google Drive</a> in Integrations</td><td>+3 working days</td></tr>
+    <tr><td>Have Nova edit a Google Sheet for the first time</td><td>+2 working days</td></tr>
     <tr><td>Each new person who gets an answer from Nova</td><td>+2 working days</td></tr>
   </table>
   <p>The first person's answer starts the trial, so it doesn't earn days. Days earned before the trial starts still count.</p>
   <h3>When the trial ends</h3>
   <p>If you haven't chosen a plan, Nova pauses for everyone in the workspace. The Slack install and your data are kept for 30 days, and admins can still sign in to the dashboard. Choosing Business brings her back straight away. If you need more time, write to <a href="mailto:founders@mouline.work">founders@mouline.work</a>.</p>
 
-  <h2 id="pay"><span class="n">08</span>Plans and paying</h2>
+  <h2 id="pay"><span class="n">09</span>Plans and paying</h2>
   <table>
     <tr><th>Plan</th><th>Price</th><th>What you get</th></tr>
     <tr><td>Free trial</td><td>$0 for 7 days</td><td>3 channels, 10 people, plus any days you earn</td></tr>
@@ -267,10 +315,10 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
     <li>Click <b>Choose Business</b>. Stripe Checkout opens.</li>
     <li>Pick how many channels Nova can be in, agree to the <a href="terms.html">Terms</a>, and pay by card.</li>
   </ol>
-  <figure class="shot"><a href="guide/settings-trial.jpg"><img src="guide/settings-trial.jpg" width="1040" height="290" loading="lazy" alt="Settings during the trial: a banner with the trial end date and a Choose Business button, and the Plan and billing card showing Trial with a Choose Business button."></a><figcaption><b>Choose Business</b> (1) is on the trial banner and on the <b>Plan and billing</b> card in Settings. Either one opens Stripe Checkout.</figcaption></figure>
+  <figure class="shot"><a href="guide/settings-trial.jpg"><img src="guide/settings-trial.jpg" width="1050" height="365" loading="lazy" alt="Settings during the trial: a banner with the trial end date and a Choose Business button, and the Plan and billing card showing Trial with a Choose Business button."></a><figcaption><b>Choose Business</b> (1) is on the trial banner and on the <b>Plan and billing</b> card in Settings. Either one opens Stripe Checkout.</figcaption></figure>
   <p>You can pay at any time during the trial. The first month is charged at once, the trial ends, and the trial limits lift straight away. Settings then shows your plan and number of channels.</p>
 
-  <h2 id="cancel"><span class="n">09</span>Changing or cancelling</h2>
+  <h2 id="cancel"><span class="n">10</span>Changing or cancelling</h2>
   <p>In Settings, <b>Manage billing</b> opens Stripe's billing portal. There you can:</p>
   <ul>
     <li><b>Add channels.</b> Takes effect at once, charged pro rata for the rest of the month.</li>
@@ -278,10 +326,10 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
     <li><b>Update your card</b> and download invoices.</li>
     <li><b>Cancel.</b> Nova keeps working until the end of the month you paid for.</li>
   </ul>
-  <figure class="shot"><a href="guide/settings-business.jpg"><img src="guide/settings-business.jpg" width="1040" height="290" loading="lazy" alt="Settings on the Business plan: the Plan and billing card shows Business, 5 channels, with a Manage billing button."></a><figcaption>Once you pay, <b>Plan and billing</b> shows your plan and number of channels. <b>Manage billing</b> (1) opens Stripe.</figcaption></figure>
+  <figure class="shot"><a href="guide/settings-business.jpg"><img src="guide/settings-business.jpg" width="1050" height="330" loading="lazy" alt="Settings on the Business plan: the Plan and billing card shows Business, 5 channels, with a Manage billing button."></a><figcaption>Once you pay, <b>Plan and billing</b> shows your plan and number of channels. <b>Manage billing</b> (1) opens Stripe.</figcaption></figure>
   <p>We don't refund part months; see the <a href="refund.html">refund policy</a>. If a payment fails, Nova pauses and comes back as soon as the payment goes through.</p>
 
-  <h2 id="messages"><span class="n">10</span>If Nova won't answer</h2>
+  <h2 id="messages"><span class="n">11</span>If Nova won't answer</h2>
   <p>Nova always says why. The message tells you what to do:</p>
   <table>
     <tr><th>Nova says</th><th>What to do</th></tr>
@@ -291,9 +339,11 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
     <tr><td>A trial limit was reached</td><td>Remove a channel or person, or <a href="#pay">choose Business</a> to lift the limits.</td></tr>
     <tr><td>Trial has ended</td><td>An admin <a href="#pay">chooses Business</a> in Settings.</td></tr>
     <tr><td>Nova is paused because this workspace's subscription isn't active</td><td>An admin updates the card under <b>Manage billing</b>.</td></tr>
+    <tr><td>Drive is connected but temporarily unavailable</td><td>Open <b>Integrations</b> → <b>Google Drive</b> and follow the banner. See <a href="#drive">Check it's working</a>.</td></tr>
+    <tr><td>Nova says she has no Drive in this channel</td><td>No rule gives her Drive there. An admin adds a <a href="#drive">channel rule</a> or sets Everywhere.</td></tr>
   </table>
 
-  <h2 id="faq"><span class="n">11</span>Questions</h2>
+  <h2 id="faq"><span class="n">12</span>Questions</h2>
   <details>
     <summary>What does Nova cost in total?</summary>
     <p>Your plan, plus what Anthropic charges for the usage on your own key. Mouline doesn't mark it up.</p>
@@ -309,6 +359,10 @@ footer.sitefoot{padding:56px 0 40px;background:var(--paper-2);border-top:1px sol
   <details>
     <summary>Where does my data live?</summary>
     <p>On Business, Mouline hosts Nova for you, and each workspace gets its own database and its own Nova. On Enterprise, Nova runs in your own network. See the <a href="privacy.html">Privacy Policy</a>.</p>
+  </details>
+  <details>
+    <summary>Can Nova see all of our Google Drive?</summary>
+    <p>Only what the Google account you connected can see, narrowed by your rules: Everywhere, and any channel's own rule. The Google credentials stay in your Shadow Broker, and Nova never holds them. She shares files only inside your company's Google domain.</p>
   </details>
   <details>
     <summary>How do I remove Nova?</summary>
