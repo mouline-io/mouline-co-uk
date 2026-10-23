@@ -87,7 +87,6 @@ a{color:inherit}
 /* words that belong to the scene sit in the page, pinned to points in 3D every frame */
 .labels{position:absolute;inset:0;z-index:3;pointer-events:none}
 .lbl{position:absolute;left:0;top:0;font:500 12.5px/1 var(--sans);color:rgba(246,242,233,.7);white-space:nowrap;will-change:transform;transition:opacity .5s}
-.lbl.faint{color:rgba(246,242,233,.45)}
 .novatag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;will-change:transform;transition:opacity .5s;opacity:0}
 .novatag img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 2px #e8694f,0 10px 24px -8px rgba(0,0,0,.8)}
 .novatag span{font:600 12.5px/1 var(--sans);color:#f0a08e}
@@ -476,21 +475,37 @@ function block(side, inlay, name) {
 const HUB = block(-1, 0xff7a59, 'HubSpot');
 const SF  = block( 1, 0x00a1e0, 'Salesforce');
 
-/* ================= the tools around them: pucks on the table ================= */
-const puckGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.082, 40);
-const puckMat = new THREE.MeshStandardMaterial({ color: 0x453e38, roughness: 0.8, metalness: 0 });
-const SATS = ['ZoomInfo', 'Gong', 'Outreach', '6sense', 'Tableau'].map((n) => {
-  const m = new THREE.Mesh(puckGeo, puckMat); m.castShadow = m.receiveShadow = true; world.add(m);
-  const el = document.createElement('div'); el.className = 'lbl faint'; el.textContent = n; $('#labels').appendChild(el);
-  return { m, el };
+/* ================= the tools around them: enamel tokens standing in little stands, each printed with its logo ================= */
+/* the same eight as the stack section; [file, whether the logo is a full-square icon] */
+const TOOLS = [['zoominfo', 1], ['gong', 1], ['salesloft', 1], ['6sense', 0], ['clay', 0], ['outreach', 0], ['snowflake', 0], ['tableau', 0]];
+const T = { zoominfo: 0, gong: 1, salesloft: 2, sixsense: 3, clay: 4, outreach: 5, snowflake: 6, tableau: 7 };
+/* a token stands on edge so its face turns to the camera: lying flat, the logos foreshorten to slivers */
+const PUCK_R = BW * 0.085, COIN_T = 0.06, STAND_H = 0.06, COIN_Y = STAND_H + PUCK_R - 0.03;
+const coinGeo = new THREE.CylinderGeometry(PUCK_R, PUCK_R, COIN_T, 48); coinGeo.rotateX(Math.PI / 2);
+const standGeo = new RoundedBoxGeometry(PUCK_R * 1.3, STAND_H, 0.22, 2, 0.015);
+const logoGeo = new THREE.PlaneGeometry(PUCK_R * 1.4, PUCK_R * 1.4);
+const SATS = TOOLS.map(([file, bleed]) => {
+  const m = new THREE.Group(); world.add(m);
+  const stand = new THREE.Mesh(standGeo, blockMat); stand.position.y = STAND_H / 2; stand.castShadow = stand.receiveShadow = true; m.add(stand);
+  const coin = new THREE.Mesh(coinGeo, blockMat); coin.position.y = COIN_Y; coin.castShadow = coin.receiveShadow = true; m.add(coin);
+  /* the logo, faithful, lit by the key like printed enamel; square icons get rounded corners */
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  const img = new Image();
+  img.onload = () => {
+    const s = bleed ? 236 : 256, o = (256 - s) / 2;
+    if (bleed) { x.beginPath(); x.roundRect(o, o, s, s, s * 0.22); x.clip(); }
+    x.drawImage(img, o, o, s, s); t.needsUpdate = true;
+  };
+  img.src = `img/tools/${file}.png`;
+  const logo = new THREE.Mesh(logoGeo, new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.6, depthWrite: false, fog: false, envMapIntensity: 1.6 }));
+  logo.position.z = COIN_T / 2 + 0.0003; logo.receiveShadow = true; coin.add(logo);
+  return { m, coin, logo, base: new THREE.Vector3(), press: -1, glint: 0, cable: null };
 });
-/* desktop: a loose arc behind the blocks. Phone: a row behind, mapped back through the world's turn */
-const SAT_DESK = [[-5.2, -3.4], [-2.7, -4.6], [0, -4.2], [2.7, -4.6], [5.2, -3.4]];
-const SAT_PHONE = [[-2.3, -4.2], [-1.15, -4.9], [0, -4.3], [1.15, -4.9], [2.3, -4.2]];
-/* Nova reads each tool: one thin coral thread per puck, only once Nova is there */
-const readGeo = new THREE.BufferGeometry(); readGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(SATS.length * 6), 3));
-const readLines = new THREE.LineSegments(readGeo, new THREE.LineBasicMaterial({ color: 0xe8694f, transparent: true, opacity: 0 }));
-world.add(readLines);
+/* desktop: an arc behind the blocks, inside their outer edges plus one puck.
+   Phone: four down each side of the blocks, in the open table */
+const SAT_DESK = [[-4.3, -3.2], [-3.1, -3.9], [-1.85, -4.35], [-0.62, -4.55], [0.62, -4.55], [1.85, -4.35], [3.1, -3.9], [4.3, -3.2]];
+const SAT_PHONE = [[-1.9, -1.45], [-0.5, -1.45], [0.9, -1.45], [2.2, -1.45], [-3.2, 1.6], [-1.85, 1.6], [0.9, 1.6], [2.7, 1.6]];
 
 /* labels pinned to the scene: the old sync, and Nova's portrait over the bar */
 const syncEl = document.createElement('div'); syncEl.className = 'lbl'; syncEl.textContent = 'your sync'; $('#labels').appendChild(syncEl);
@@ -509,6 +524,56 @@ const NOVA_TAG = new THREE.Vector3(0, 1.15, -0.4);
 /* a save nudges the bar, the way a real catch would */
 let kick = 0;
 function pulse() { kick = 1; }
+
+/* ================= cables: Nova is wired into every tool ================= */
+/* thin coral cables in the bar's own material, from the end of the bar down the slot and across the table to each tool.
+   They run out from the bar as it arrives; each one carries a pulse when Nova works in that tool */
+const CABLE_R = BW * 0.004;
+const cables = new THREE.Group(); world.add(cables);
+function layCables() {
+  cables.clear();
+  SATS.forEach((s, i) => {
+    const [x, z] = (portrait ? SAT_PHONE : SAT_DESK)[i];
+    s.base.set(x, FLOOR, z);
+    const sg = Math.sign(z) || -1, endZ = sg * (BD - 0.2) / 2, out = sg * (BD / 2 + 0.14);
+    const toward = new THREE.Vector3(x, 0, z - out).normalize();
+    const D = new THREE.Vector3(x - toward.x * 0.14, FLOOR + CABLE_R, z - toward.z * 0.14);
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, TOP - BAR_H / 2, endZ),
+      new THREE.Vector3(0, TOP - BAR_H, sg * (BD / 2 + 0.03)),
+      new THREE.Vector3(0, FLOOR + CABLE_R, out),
+      new THREE.Vector3(D.x * 0.5, FLOOR + CABLE_R, lerp(out, D.z, 0.6)),
+      D], false, 'centripetal', 0.5);
+    const geo = new THREE.TubeGeometry(curve, 64, CABLE_R, 6, false);
+    const m = new THREE.Mesh(geo, bar.material); m.castShadow = true; cables.add(m);
+    s.cable = { m, curve, len: geo.index.count };
+  });
+}
+/* the pulse: a short brighter slug that runs along a cable to the tool and back */
+const slugMat = new THREE.MeshPhysicalMaterial({ color: 0xffd0bf, metalness: 0.2, roughness: 0.15, clearcoat: 1, envMapIntensity: 2, fog: false });
+const slugGeo = new THREE.CapsuleGeometry(CABLE_R * 2.8, 0.2, 4, 10); slugGeo.rotateX(Math.PI / 2);
+const slugs = Array.from({ length: 6 }, () => {
+  const m = new THREE.Mesh(slugGeo, slugMat); m.visible = false; world.add(m);
+  return { m, i: 0, t: -1 };
+});
+/* Nova consults a tool: 'hub', 'sf' and 'both' pulse the CRM inlays, anything else is a tool index */
+let consultCool = 0;
+function consult(to, force) {
+  if (!force && (consultCool > 0 || st.novaIn < 0.9)) return;
+  if (!force) consultCool = 0.3;
+  if (to === 'hub' || to === 'both') flash(HUB, 0xe8694f, 0.5);
+  if (to === 'sf' || to === 'both') flash(SF, 0xe8694f, 0.5);
+  if (typeof to !== 'number') return;
+  const sl = slugs.find(x => x.t < 0); if (!sl) return;
+  sl.i = to; sl.t = 0;
+}
+/* which tool a fix needs, by what broke */
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const ROUTE = {
+  'picklist mismatch': ['sf'], 'missing Lead Source': [T.zoominfo, T.clay], 'duplicate record': [T.snowflake],
+  'owner inactive': [T.salesloft, T.outreach], 'API timeout': ['both'], 'no consent': [T.sixsense],
+};
+const fixFor = () => pick(ROUTE[pick(ERRS)]);
 
 /* ================= leads: glossy beads ================= */
 const N = 260, R = 0.085;
@@ -590,7 +655,8 @@ $('#approve').addEventListener('click', () => {
   /* the three duplicates roll into one, which goes on to Salesforce */
   const [keep, ...dups] = st.held;
   dups.forEach(l => { l.s = MERGE; l.mergeTo = keep; l.t = 0; });
-  if (keep) setTimeout(() => { keep.fixed = true; eject(keep); }, 650);
+  consult(T.gong, true);
+  if (keep) setTimeout(() => { keep.fixed = true; eject(keep); consult(T.tableau, true); }, 650);
   st.held = [];
   pulse();
   trackEvt('approve_click');
@@ -616,13 +682,13 @@ document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click
     // a renamed field: the next wave all fails at the gap, Nova catches every one
     st.forceFail = 22; st.spawnEvery = 0.07 * (st.slow || 1);
     flash(HUB, 0xff5a4a);
-    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); toast(FIX.field); pulse(); }, 1700);
+    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); toast(FIX.field); pulse(); consult('both', true); }, 1700);
     done(3600);
   } else if (kind === 'release') {
     // the form goes quiet: nothing leaves HubSpot, then Nova replays the stuck submissions
     st.paused = 2.1; flash(HUB, 0xff5a4a, 2.1);
     setTimeout(() => {
-      beamTo(HUB);
+      consult(T.outreach, true); setTimeout(() => consult('hub', true), 500);
       for (let i = 0; i < 9; i++) setTimeout(() => { const l = spawn(-1.9 - Math.random() * .4, (Math.random() - .5) * 1.2); if (l) { l.sc = 1; l.fixed = true; } }, i * 90);
       toast(FIX.release);
     }, 2100);
@@ -637,20 +703,14 @@ document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click
       l.kind = n % 6 === 0 ? 'hold' : n % 5 === 0 ? 'merge' : 'go'; n++;
     }, i * 45);
     setTimeout(() => toast(FIX.webinar), 1900);
+    [T.zoominfo, T.clay, T.sixsense].forEach((t, i) => setTimeout(() => consult(t, true), 1500 + i * 450));
     done(4600);
   }
 }));
 
-/* a block's inlay flashes when something breaks on it; Nova reaches it with a thread */
+/* a block's inlay flashes when something breaks on it, and when Nova works in it */
 const flashes = [];
 function flash(blk, color, dur = 1.2) { flashes.push({ blk, color: new THREE.Color(color), t: 0, dur }); }
-const reach = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
-  new THREE.LineBasicMaterial({ color: 0xe8694f, transparent: true, opacity: 0 }));
-world.add(reach); let beamT = 0;
-function beamTo(blk) {
-  reach.geometry.setFromPoints([NOVA_AT.clone(), blk.g.position.clone().setY(TOP + 0.01)]);
-  beamT = 1; flash(blk, 0xe8694f, 0.8);
-}
 
 /* ================= motion of a lead ================= */
 const SF_END = GAP + BW - 0.3;
@@ -728,7 +788,7 @@ function stepLead(l, dt) {
       if (l.t > 0.6) l.tgt.copy(C.lead);
       if (l.t >= 1) {
         if (l.hold && st.approve === 1 && st.held.length < 3) { l.s = HELD; l.t = 0; l.tgt.copy(C.lead); st.held.push(l); if (st.held.length === 3) st.heldDone = true; }
-        else { l.fixed = true; pulse(); eject(l); }
+        else { l.fixed = true; pulse(); consult(fixFor()); eject(l); }
       }
       break;
     }
@@ -743,7 +803,7 @@ function stepLead(l, dt) {
       /* out of the pile and up onto the bar */
       l.t += dt / l.d; const t = smooth(0, 1, l.t);
       l.p.lerpVectors(l.from, l.to, t); l.p.y += Math.sin(t * Math.PI) * 0.25;
-      if (l.t >= 1) { l.fixed = true; pulse(); eject(l); }
+      if (l.t >= 1) { l.fixed = true; pulse(); consult(fixFor()); eject(l); }
       break;
     }
     case HOLDHUB: {
@@ -786,6 +846,9 @@ function resize() {
     if (portrait) { b.d.rotation.y = 1.32; b.d.position.set(BW / 2 - 0.42, TOP + 0.002, BD / 2 - 0.78); }
     else { b.d.rotation.y = 0; b.d.position.set(-BW / 2 + 0.12 + BW * 0.2, TOP + 0.002, BD / 2 - 0.36); }
   });
+  /* the tools and their cables move with the layout; logos turn back with the world so they stay upright */
+  layCables();
+  SATS.forEach(s => { s.m.position.copy(s.base); s.m.rotation.y = portrait ? 1.32 : Math.atan2(-s.base.x, 13 - s.base.z); });
   camera.updateProjectionMatrix();
   measureHeads();
 }
@@ -897,16 +960,31 @@ function frame(now) {
     t.el.style.transform = `translate(${clamp((v.x * .5 + .5) * W + 12, 12, W - t.w - 12)}px, ${(-v.y * .5 + .5) * H - 10}px)`;
   }
 
-  /* the tools lie on the table; Nova reads them once it is in place */
-  const pos = readGeo.attributes.position.array, threads = smooth(0.4, 0.5, p), r = world.rotation.y;
-  SATS.forEach((s, i) => {
-    const [X, Z] = (portrait ? SAT_PHONE : SAT_DESK)[i];
-    /* the phone layout is given as the camera sees it, so map it back through the world's turn */
-    s.m.position.set(portrait ? X * Math.cos(r) - Z * Math.sin(r) : X, FLOOR + 0.041, portrait ? X * Math.sin(r) + Z * Math.cos(r) : Z);
-    pos.set([NOVA_AT.x, TOP + BAR_H / 2, 0, s.m.position.x, FLOOR + 0.06, s.m.position.z], i * 6);
-  });
-  readGeo.attributes.position.needsUpdate = true;
-  readLines.material.opacity = 0.5 * threads;
+  /* the tools lie on the table; Nova works in them once it is in place */
+  /* the cables run out from the bar as it settles; the stack sits idle until then */
+  const wired = smooth(0.75, 1, nIn);
+  for (const s of SATS) s.cable.m.geometry.setDrawRange(0, Math.floor(s.cable.len * wired / 6) * 6);
+  consultCool -= dt;
+  for (const sl of slugs) if (sl.t >= 0) {
+    /* out along the cable, press the tool, back to the bar */
+    const s = SATS[sl.i], was = sl.t; sl.t += dt / 0.5;
+    if (was < 1 && sl.t >= 1) { s.press = 0; s.glint = 1; }
+    const u = sl.t < 1 ? smooth(0, 1, sl.t) : 1 - smooth(1.25, 2.25, sl.t);
+    s.cable.curve.getPointAt(clamp(u, 0, 0.98), sl.m.position);
+    sl.m.lookAt(s.cable.curve.getPointAt(clamp(u + 0.02, 0, 1)).applyMatrix4(world.matrixWorld));
+    sl.m.visible = wired > 0.99 && (sl.t < 1 || sl.t > 1.25);
+    if (sl.t >= 2.25 || wired < 0.99) { sl.t = -1; sl.m.visible = false; }
+  }
+  for (const s of SATS) {
+    /* a press: 120ms down into the table, 240ms back, like a key */
+    let d = 0;
+    if (s.press >= 0) { s.press += dt; d = s.press < 0.12 ? s.press / 0.12 : 1 - (s.press - 0.12) / 0.24; if (s.press > 0.36) { s.press = -1; d = 0; } }
+    s.coin.position.y = COIN_Y - d * 0.02;
+    /* leaned back toward the camera: a little on desktop, more on a phone, where the camera looks down */
+    s.coin.rotation.x = -(portrait ? 0.5 : 0.22) - d * 0.2;
+    /* and the key light catches the printed logo for a moment */
+    s.glint = Math.max(0, s.glint - dt * 5); s.logo.material.envMapIntensity = 1.6 + s.glint * 2.5;
+  }
 
   /* inlay flashes: the vendor line turns red and pulses while something is broken */
   [HUB, SF].forEach(b => { b.line.material.emissive.lerp(b.base, dt * 3); b.line.material.emissiveIntensity = lerp(b.line.material.emissiveIntensity, 0.35, dt * 3); });
@@ -915,7 +993,6 @@ function frame(now) {
     f.blk.line.material.emissive.copy(f.color); f.blk.line.material.emissiveIntensity = 0.6 + 0.9 * Math.abs(Math.sin(f.t * 7));
     if (f.t > f.dur) flashes.splice(i, 1);
   }
-  beamT = Math.max(0, beamT - dt * 1.2); reach.material.opacity = beamT * 0.8;
 
   /* camera: low over the table like a product shot, a slow push toward the slot, parallax on top */
   tilt.x = lerp(tilt.x, reduced ? 0 : tilt.tx, dt * 2.5); tilt.y = lerp(tilt.y, reduced ? 0 : tilt.ty, dt * 2.5);
@@ -928,7 +1005,7 @@ function frame(now) {
     /* on taller phones the tools climb into the headline: slide the picture down just enough to clear it */
     camera.lookAt(look); camera.updateMatrixWorld();
     let top = H;
-    for (const s of SATS) { v.set(s.m.position.x, FLOOR + 0.35, s.m.position.z).applyMatrix4(world.matrixWorld).project(camera); top = Math.min(top, (-v.y * .5 + .5) * H - viewOff); }
+    for (const s of SATS) { v.set(s.m.position.x, FLOOR + COIN_Y + PUCK_R, s.m.position.z).applyMatrix4(world.matrixWorld).project(camera); top = Math.min(top, (-v.y * .5 + .5) * H - viewOff); }
     const head = heads[beatNow] || 0;
     viewOff = lerp(viewOff, clamp(head + 14 - top, 0, H * 0.14), Math.min(1, dt * 4));
   } else {
@@ -940,10 +1017,9 @@ function frame(now) {
   camera.lookAt(look);
   if (viewOff > 0.5) camera.setViewOffset(W, H, 0, -viewOff, W, H); else camera.clearViewOffset();
 
-  /* words pinned to the scene: tool names on their pucks, the old sync over the slot, Nova over the bar */
+  /* words pinned to the scene: the old sync over the slot, Nova over the bar */
   camera.updateMatrixWorld();
   const toScreen = (x, y, z) => { v.set(x, y, z).applyMatrix4(world.matrixWorld).project(camera); return [(v.x * .5 + .5) * W, (-v.y * .5 + .5) * H]; };
-  SATS.forEach(s => { const [x, y] = toScreen(s.m.position.x, FLOOR + 0.06, s.m.position.z); s.el.style.transform = `translate(${x}px, ${y - 22}px) translateX(-50%)`; });
   if (portrait) { const [x, y] = toScreen(0, TOP, BD / 2); syncEl.style.transform = `translate(${x - 10}px, ${y}px) translate(-100%, -50%)`; }
   else { const [x, y] = toScreen(0, FLOOR + 0.05, BD / 2 + 0.25); syncEl.style.transform = `translate(${x}px, ${y + 10}px) translateX(-50%)`; }
   syncEl.style.opacity = 1 - nIn;
