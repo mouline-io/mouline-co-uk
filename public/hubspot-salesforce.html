@@ -79,9 +79,18 @@ a{color:inherit}
 #story{position:relative;height:560vh}
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
-/* vignette keeps the type readable over the glow */
-.stage::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(120% 80% at 50% 55%,transparent 45%,rgba(8,7,5,.75) 100%),linear-gradient(rgba(8,7,5,.55),transparent 34%)}
+/* a photographic finish: film grain and a lens vignette, both in CSS so they cost the GPU nothing */
+.grain{position:absolute;inset:0;pointer-events:none;z-index:2;background:url(img/grain.png);opacity:.05;mix-blend-mode:overlay}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 90% at 50% 55%,transparent 50%,rgba(0,0,0,.35) 100%),linear-gradient(rgba(16,14,10,.6),transparent 30%)}
+
+/* words that belong to the scene sit in the page, pinned to points in 3D every frame */
+.labels{position:absolute;inset:0;z-index:3;pointer-events:none}
+.lbl{position:absolute;left:0;top:0;font:500 12.5px/1 var(--sans);color:rgba(246,242,233,.7);white-space:nowrap;will-change:transform;transition:opacity .5s}
+.lbl.faint{color:rgba(246,242,233,.45)}
+.novatag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;will-change:transform;transition:opacity .5s;opacity:0}
+.novatag img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 2px #e8694f,0 10px 24px -8px rgba(0,0,0,.8)}
+.novatag span{font:600 12.5px/1 var(--sans);color:#f0a08e}
 
 .beats{position:absolute;z-index:5;left:clamp(16px,5vw,72px);right:clamp(16px,5vw,72px);top:clamp(78px,13vh,130px);pointer-events:none}
 .beat{position:absolute;left:0;top:0;max-width:15ch;margin:0;font-family:var(--serif);font-weight:600;
@@ -93,9 +102,9 @@ a{color:inherit}
 
 /* counter: one number, one word */
 .hud{position:absolute;z-index:6;right:clamp(16px,5vw,72px);bottom:clamp(110px,16vh,150px);text-align:right;pointer-events:none;transition:opacity .4s}
-.hud .n{display:block;font-family:var(--mono);font-weight:500;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.04em;color:var(--red);font-variant-numeric:tabular-nums;transition:color .5s}
-.hud .k{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:6px}
-.hud.zero .n{color:var(--green)}
+.hud .n{display:block;font-family:var(--sans);font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.04em;color:var(--red);font-variant-numeric:tabular-nums;transition:color .5s}
+.hud .k{display:block;font-family:var(--sans);font-size:13px;letter-spacing:.02em;color:var(--faint);margin-top:6px}
+.hud.zero .n{color:#7fae8c}
 @media(max-width:700px){.hud{right:16px;bottom:150px}.hud .n{font-size:44px}}
 
 .illus{position:absolute;z-index:6;left:clamp(16px,5vw,72px);bottom:18px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);pointer-events:none}
@@ -116,7 +125,7 @@ a{color:inherit}
 
 /* error tags ride the falling leads (positioned from 3D every frame) */
 .tags{position:absolute;inset:0;z-index:3;pointer-events:none}
-.tag{position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;color:var(--red);white-space:nowrap;padding:2px 7px;border-radius:4px;
+.tag{position:absolute;left:0;top:0;font:500 12px/1.3 var(--sans);color:#ff8a7a;white-space:nowrap;padding:2px 7px;border-radius:4px;
   background:rgba(40,10,8,.7);border:1px solid rgba(255,90,74,.35);opacity:0;transition:opacity .25s;will-change:transform}
 .tag.on{opacity:1}
 
@@ -215,7 +224,7 @@ a{color:inherit}
 @keyframes pingstill{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.cue::after,.approve:not(:disabled){animation:none}.ping{animation:pingstill 4.5s ease forwards}}
 </style>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
 </head>
 <body>
 
@@ -228,6 +237,8 @@ a{color:inherit}
 <section id="story" aria-label="Leads fall between HubSpot and Salesforce. Nova catches them.">
   <div class="stage">
     <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="labels" id="labels" aria-hidden="true"><div class="novatag" id="novatag"><img src="img/nova-avatar.jpg" alt=""><span>Nova</span></div></div>
     <div class="tags" id="tags" aria-hidden="true"></div>
     <div class="pings" id="pings" aria-hidden="true"></div>
 
@@ -374,6 +385,8 @@ a{color:inherit}
 
 <script type="module">
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const root = document.documentElement;
 if (root.classList.contains('nogl')) throw new Error('no webgl');
@@ -383,6 +396,7 @@ const $ = (s) => document.querySelector(s);
 const canvas = $('#gl'), story = $('#story'), stage = $('.stage');
 
 /* ================= renderer, scene, camera ================= */
+/* the look: a photograph of a tabletop model. One warm key light, real shadows, matte blocks, glossy beads, coral as the only accent */
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 const coarse = matchMedia('(pointer: coarse)').matches;
 renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.5 : 2));
@@ -391,155 +405,142 @@ let slowFor = 0, degraded = false;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+const INK = 0x100e0a;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x100e0a);
-scene.fog = new THREE.Fog(0x100e0a, 14, 40);
+scene.background = new THREE.Color(INK);
+/* the table fades into the page, so the camera never finds its edge */
+scene.fog = new THREE.FogExp2(INK, 0.055);
+/* soft reflections for the beads and the bar, built once, no download */
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
 
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 120);
-/* everything lives in one group: on a portrait screen it turns 90° so the leads flow toward the reader */
+const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 120);
+/* everything lives in one group: on a portrait screen it turns so the leads flow toward the reader */
 const world = new THREE.Group(); scene.add(world);
 
-world.add(new THREE.HemisphereLight(0xfff1dc, 0x1a1208, 0.55));
-const key = new THREE.DirectionalLight(0xffe6c4, 1.4);
-key.position.set(-4, 9, 7); world.add(key);
-const hubLight = new THREE.PointLight(0xff7a59, 14, 9, 1.6); hubLight.position.set(-2.8, 1.4, 1.2); world.add(hubLight);
-const sfLight  = new THREE.PointLight(0x1798c1, 14, 9, 1.6); sfLight.position.set(2.8, 1.4, 1.2); world.add(sfLight);
-const abyss    = new THREE.PointLight(0xff3b2a, 0, 14, 1.4); abyss.position.set(0, -5, 0); world.add(abyss);
-const novaLight= new THREE.PointLight(0xe0563f, 0, 7, 1.5); world.add(novaLight);
-const abyssGlow = (() => {
-  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
-  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,70,50,.9)'); g.addColorStop(.4, 'rgba(255,50,30,.25)'); g.addColorStop(1, 'rgba(255,40,20,0)');
-  x.fillStyle = g; x.fillRect(0, 0, 256, 256);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
-  sp.position.set(0, -5.5, -0.5); sp.scale.set(7, 7, 1); world.add(sp); return sp;
-})();
+/* the key: a large soft light from upper left, pooled on the table like a softbox */
+const key = new THREE.SpotLight(0xffe6c8, 1320, 0, 0.5, 0.9, 2);
+key.position.set(-4.5, 10, 5.5); key.target.position.set(0, -0.6, -0.2);
+key.castShadow = true;
+key.shadow.mapSize.set(coarse ? 1024 : 2048, coarse ? 1024 : 2048);
+key.shadow.camera.near = 6; key.shadow.camera.far = 24;
+key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
+world.add(key, key.target);
+world.add(new THREE.HemisphereLight(0x4b4a55, 0x2a2622, 0.5));
+/* a faint cool rim from behind, so the block edges separate from the dark */
+const rim = new THREE.DirectionalLight(0xbfd0ff, 0.35); rim.position.set(3, 4, -8); world.add(rim);
 
 /* ================= helpers ================= */
-function label(text, { color = '#f6f2e9', size = 64, weight = 700, font = 'Lato, sans-serif', h = 0.42 } = {}) {
-  const c = document.createElement('canvas'), x = c.getContext('2d');
-  x.font = `${weight} ${size}px ${font}`;
-  const w = Math.ceil(x.measureText(text).width) + size * 0.6;
-  c.width = w; c.height = Math.ceil(size * 1.5);
-  x.font = `${weight} ${size}px ${font}`; x.fillStyle = color; x.textBaseline = 'middle';
-  x.fillText(text, size * 0.3, c.height / 2);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
-  s.scale.set(h * c.width / c.height, h, 1);
-  return s;
-}
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
-
-/* ================= the two islands ================= */
-function island(x, color, name) {
-  const g = new THREE.Group(); g.position.x = x;
-  const top = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.42, 2.6),
-    new THREE.MeshStandardMaterial({ color: 0x2b261e, roughness: 0.75, metalness: 0.15 }));
-  top.position.y = -0.21; g.add(top);
-  const rim = new THREE.LineSegments(new THREE.EdgesGeometry(top.geometry),
-    new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 }));
-  rim.position.copy(top.position); g.add(rim);
-  // the floating rock under it
-  const rock = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.12, 2.6, 4, 1),
-    new THREE.MeshStandardMaterial({ color: 0x1d1913, roughness: 0.95, flatShading: true }));
-  rock.rotation.y = Math.PI / 4; rock.scale.set(1.75, 1, 1.28); rock.position.y = -1.72; g.add(rock);
-  // a soft brand glow on the surface
-  const glowTex = (() => {
-    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
-    const gr = x.createRadialGradient(64, 64, 4, 64, 64, 64); gr.addColorStop(0, 'rgba(255,255,255,.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
-    x.fillStyle = gr; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
-  })();
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 2.4),
-    new THREE.MeshBasicMaterial({ map: glowTex, color, transparent: true, opacity: 0.22, depthWrite: false, blending: THREE.AdditiveBlending }));
-  glow.rotation.x = -Math.PI / 2; glow.position.y = 0.005; g.add(glow);
-  const l = label(name, { size: 72, weight: 900, h: 0.5 }); l.position.set(0, 0.95, 0); g.add(l);
-  world.add(g);
-  return { g, glow, rim, label: l };
+/* a word printed on a surface: rendered at 4x so it stays crisp, lit like the surface it sits on */
+function decal(text, w, { weight = 600, alpha = 0.55 } = {}) {
+  const c = document.createElement('canvas'), x = c.getContext('2d'), size = 160;
+  x.font = `${weight} ${size}px Lato, ${getComputedStyle(document.body).fontFamily}`;
+  c.width = Math.ceil(x.measureText(text).width + size * 0.2); c.height = Math.ceil(size * 1.3);
+  x.font = `${weight} ${size}px Lato, ${getComputedStyle(document.body).fontFamily}`;
+  x.fillStyle = `rgba(246,242,233,${alpha})`; x.textBaseline = 'middle'; x.fillText(text, size * 0.1, c.height / 2);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, w * c.height / c.width),
+    new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.9, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.receiveShadow = true;
+  return m;
 }
-const HUB = island(-2.8, 0xff7a59, 'HubSpot');
-const SF  = island( 2.8, 0x1798c1, 'Salesforce');
 
-/* the existing sync: a cracked bridge across the gap */
-const bridge = new THREE.Group(); world.add(bridge);
-const beamMat = new THREE.MeshBasicMaterial({ color: 0xf6f2e9, transparent: true, opacity: 0.55 });
-[[-1, -0.32], [0.38, 1]].forEach(([a, b]) => {
-  [-0.09, 0.09].forEach(z => {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(b - a, 0.03, 0.03), beamMat);
-    m.position.set((a + b) / 2, 0.02, z); bridge.add(m);
-  });
-});
-const syncLabel = label('your sync', { size: 44, weight: 500, font: 'JetBrains Mono, monospace', color: '#bdb5a3', h: 0.24 });
-syncLabel.position.set(0, -0.32, 1.25); world.add(syncLabel);
+/* ================= the table and the two blocks ================= */
+const BW = 3.2, BH = 0.5, BD = 2.4, GAP = 0.6;           // block width, height, depth; half the slot
+const TOP = 0, FLOOR = -BH;                                // block tops at 0, the table at -BH
+const table = new THREE.Mesh(new THREE.PlaneGeometry(80, 80),
+  new THREE.MeshStandardMaterial({ color: 0x201c18, roughness: 1, metalness: 0 }));
+table.rotation.x = -Math.PI / 2; table.position.y = FLOOR; table.receiveShadow = true; world.add(table);
 
-/* ================= the tools around them ================= */
-const SATS = ['ZoomInfo', 'Gong', 'Outreach', '6sense', 'Tableau'].map((n, i) => {
-  const g = new THREE.Group();
-  const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.22, 0),
-    new THREE.MeshStandardMaterial({ color: 0x3a3428, roughness: 0.5, metalness: 0.3, emissive: 0x000000 }));
-  g.add(m);
-  const l = label(n, { size: 46, weight: 500, font: 'JetBrains Mono, monospace', color: '#bdb5a3', h: 0.26 }); l.position.y = 0.42; g.add(l);
+const blockMat = new THREE.MeshStandardMaterial({ color: 0x3a3430, roughness: 0.8, metalness: 0 });
+const blockGeo = new RoundedBoxGeometry(BW, BH, BD, 4, 0.03);
+function block(side, inlay, name) {
+  const g = new THREE.Group(); g.position.x = side * (GAP + BW / 2);
+  const b = new THREE.Mesh(blockGeo, blockMat); b.position.y = TOP - BH / 2; b.castShadow = b.receiveShadow = true; g.add(b);
+  /* the only vendor colour: a thin inlay along the front edge of the top */
+  const line = new THREE.Mesh(new THREE.BoxGeometry(BW - 0.16, 0.004, 0.05),
+    new THREE.MeshStandardMaterial({ color: inlay, emissive: inlay, emissiveIntensity: 0.35, roughness: 0.5 }));
+  line.position.set(0, TOP + 0.001, BD / 2 - 0.1); g.add(line);
+  /* the name, printed small at the lower left of the top face */
+  const d = decal(name, BW * 0.4); d.rotation.order = 'YXZ'; g.add(d);
   world.add(g);
-  return { g, m, y: -0.1 + (i % 2) * 0.45, a: Math.PI * [1.06, 1.24, 1.40, 1.62, 1.86][i] };
+  return { g, line, base: new THREE.Color(inlay), d };
+}
+const HUB = block(-1, 0xff7a59, 'HubSpot');
+const SF  = block( 1, 0x00a1e0, 'Salesforce');
+
+/* ================= the tools around them: pucks on the table ================= */
+const puckGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.082, 40);
+const puckMat = new THREE.MeshStandardMaterial({ color: 0x453e38, roughness: 0.8, metalness: 0 });
+const SATS = ['ZoomInfo', 'Gong', 'Outreach', '6sense', 'Tableau'].map((n) => {
+  const m = new THREE.Mesh(puckGeo, puckMat); m.castShadow = m.receiveShadow = true; world.add(m);
+  const el = document.createElement('div'); el.className = 'lbl faint'; el.textContent = n; $('#labels').appendChild(el);
+  return { m, el };
 });
-/* reading lines from Nova to each tool, shown once Nova is in place */
+/* desktop: a loose arc behind the blocks. Phone: a row behind, mapped back through the world's turn */
+const SAT_DESK = [[-5.2, -3.4], [-2.7, -4.6], [0, -4.2], [2.7, -4.6], [5.2, -3.4]];
+const SAT_PHONE = [[-2.3, -4.2], [-1.15, -4.9], [0, -4.3], [1.15, -4.9], [2.3, -4.2]];
+/* Nova reads each tool: one thin coral thread per puck, only once Nova is there */
 const readGeo = new THREE.BufferGeometry(); readGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(SATS.length * 6), 3));
-const readLines = new THREE.LineSegments(readGeo, new THREE.LineBasicMaterial({ color: 0xffc7a8, transparent: true, opacity: 0 }));
+const readLines = new THREE.LineSegments(readGeo, new THREE.LineBasicMaterial({ color: 0xe8694f, transparent: true, opacity: 0 }));
 world.add(readLines);
 
-/* dust for depth */
-{
-  const n = 420, p = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) { p[i*3] = (Math.random() - .5) * 40; p[i*3+1] = Math.random() * 22 - 12; p[i*3+2] = (Math.random() - .5) * 26 - 4; }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
-  world.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x8d877a, size: 0.035, transparent: true, opacity: 0.55, depthWrite: false })));
-}
+/* labels pinned to the scene: the old sync, and Nova's portrait over the bar */
+const syncEl = document.createElement('div'); syncEl.className = 'lbl'; syncEl.textContent = 'your sync'; $('#labels').appendChild(syncEl);
+const novaTag = $('#novatag');
 
-/* ================= Nova ================= */
+/* ================= Nova: a coral bar that slides out across the slot ================= */
 const nova = new THREE.Group(); world.add(nova);
-const ring = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.045, 16, 96),
-  new THREE.MeshStandardMaterial({ color: 0xe0563f, emissive: 0xe0563f, emissiveIntensity: 2.2, roughness: 0.3 }));
-ring.rotation.x = Math.PI / 2; nova.add(ring);
-const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.012, 8, 96),
-  new THREE.MeshBasicMaterial({ color: 0xf6f2e9, transparent: true, opacity: 0.5 }));
-ring2.rotation.x = Math.PI / 2; nova.add(ring2);
-const faceTex = new THREE.TextureLoader().load('img/nova-avatar.jpg'); faceTex.colorSpace = THREE.SRGBColorSpace;
-const face = new THREE.Mesh(new THREE.CircleGeometry(0.34, 48), new THREE.MeshBasicMaterial({ map: faceTex, transparent: true }));
-face.position.y = 0.95; nova.add(face);
-const faceRim = new THREE.Mesh(new THREE.RingGeometry(0.34, 0.39, 48), new THREE.MeshBasicMaterial({ color: 0xe0563f }));
-faceRim.position.y = 0.95; nova.add(faceRim);
-const novaName = label('Nova', { size: 54, weight: 900, color: '#e0563f', h: 0.26 }); novaName.position.y = 1.5; nova.add(novaName);
-/* catch beam: a soft cone under the ring */
-const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 1.1, 6, 40, 1, true),
-  new THREE.MeshBasicMaterial({ color: 0xe0563f, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
-beam.position.y = -3;
-/* pulse ring for every save */
-const pulses = [];
-function pulse(color = 0x4fd18b, at = nova.position, scale = 2.4) {
-  const m = new THREE.Mesh(new THREE.RingGeometry(0.6, 0.66, 64), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false }));
-  m.rotation.x = -Math.PI / 2; m.position.copy(at); m.position.y += 0.03; world.add(m);
-  pulses.push({ m, t: 0, scale });
-}
+const BAR_W = GAP * 2 + 0.16, BAR_H = 0.05;
+/* anodised: a clearcoat over coloured metal, and a rounded edge that draws a highlight line toward the camera */
+const bar = new THREE.Mesh(new RoundedBoxGeometry(BAR_W, BAR_H, BD - 0.2, 4, BAR_H * 0.35),
+  new THREE.MeshPhysicalMaterial({ color: 0xc84d38, metalness: 0.55, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 1.4 }));
+bar.castShadow = bar.receiveShadow = true; nova.add(bar);
+/* where caught leads pause on the bar, and where the portrait hangs */
+const NOVA_AT = new THREE.Vector3(0, TOP + BAR_H / 2 + 0.085, 0);
+const NOVA_TAG = new THREE.Vector3(0, 1.15, -0.4);
+/* a save nudges the bar, the way a real catch would */
+let kick = 0;
+function pulse() { kick = 1; }
 
-/* ================= leads ================= */
-const N = 260;
-const leadGeo = new THREE.IcosahedronGeometry(0.085, 1);
-/* unlit, so a lost lead reads pure red and a fixed one pure green, whatever the lighting */
-const leadMat = new THREE.MeshBasicMaterial({ toneMapped: false });
+/* ================= leads: glossy beads ================= */
+const N = 260, R = 0.085;
+const leadGeo = new THREE.SphereGeometry(R, 16, 12);
+const leadMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.3 });
 const leads = new THREE.InstancedMesh(leadGeo, leadMat, N);
 leads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+leads.castShadow = true;
 world.add(leads);
-const C = { lead: new THREE.Color(0xf6f2e9), red: new THREE.Color(0xff5a4a), green: new THREE.Color(0x4fd18b), amber: new THREE.Color(0xf2b33d), hub: new THREE.Color(0xff9a7d) };
+/* four hues in the scene: charcoal, cream, the red of loss, coral. Sage marks a fixed lead, only once it is on Salesforce */
+const C = { lead: new THREE.Color(0xfbf6ea), red: new THREE.Color(0xbb3a2b), green: new THREE.Color(0x7fae8c), held: new THREE.Color(0x8a8378), hub: new THREE.Color(0xf6f2e9) };
+C.amber = C.lead;
 /* states */
-const OFF = 0, WALK = 1, CROSS = 2, ARRIVE = 3, FALL = 4, CAUGHT = 5, HELD = 6, RISE = 7, EJECT = 8, HOLDHUB = 9, DROP = 10, MERGE = 11;
-const L = Array.from({ length: N }, () => ({ s: OFF, p: new THREE.Vector3(), v: new THREE.Vector3(), from: new THREE.Vector3(), t: 0, d: 1, col: new THREE.Color(), tgt: new THREE.Color(), sc: 1, z: 0, tag: null, force: 0, spin: Math.random() * 6 }));
+const OFF = 0, WALK = 1, CROSS = 2, ARRIVE = 3, FALL = 4, CAUGHT = 5, HELD = 6, RISE = 7, EJECT = 8, HOLDHUB = 9, DROP = 10, MERGE = 11, PILE = 12;
+const L = Array.from({ length: N }, () => ({ s: OFF, p: new THREE.Vector3(), v: new THREE.Vector3(), from: new THREE.Vector3(), to: new THREE.Vector3(), t: 0, d: 1, col: new THREE.Color(), tgt: new THREE.Color(), sc: 1, z: 0, tag: null, force: 0, roll: 0, pop: 0 }));
 const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), E = new THREE.Euler();
 function free() { for (const l of L) if (l.s === OFF) return l; return null; }
-function spawn(x = -4.4 + Math.random() * 0.4, z = (Math.random() - .5) * 2.0) {
+const HUB_START = -(GAP + BW) + 0.25, EDGE = -GAP;      // where leads appear, and where HubSpot ends
+function spawn(x = HUB_START + Math.random() * 0.3, z = (Math.random() - .5) * (BD - 0.5)) {
   const l = free(); if (!l) return null;
-  l.s = WALK; l.p.set(x, 0.09, z); l.v.set(1.15 + Math.random() * 0.5, 0, 0); l.col.copy(C.hub); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z;
+  l.s = WALK; l.p.set(x, TOP + R, z); l.v.set(1.0 + Math.random() * 0.45, 0, 0); l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z;
   return l;
+}
+/* the pile in the slot: a few dozen beads at most, the counter keeps the rest */
+const PILE_MAX = 42;
+let pileN = 0;
+function pileSpot(i, out) {
+  /* against the slot's HubSpot wall, where a bead dropping off the edge lands, spread along the slot in two layers */
+  const along = 14, row = i % along, k = Math.floor(i / along);   // k: 0 and 1 on the floor, 2 on top
+  const j = Math.sin(i * 12.9898) * 0.5;
+  const x = -GAP + R + 0.01 + (k === 1 ? R * 2 : k === 2 ? R : 0) + j * 0.02;
+  return out.set(x, FLOOR + R + (k === 2 ? R * 1.6 : 0), (row - (along - 1) / 2) * R * 1.95 + (k === 2 ? R : 0) + j * 0.03);
 }
 
 /* ================= story state ================= */
@@ -564,7 +565,7 @@ let errI = 0, tagCool = 0;
 function attachTag(l) {
   if (tagCool > 0) return;
   const t = tagEls.find(t => !t.lead); if (!t) return;
-  t.lead = l; t.t = 0; l.tag = t; t.el.textContent = ERRS[errI++ % ERRS.length]; t.el.classList.add('on'); tagCool = 0.55;
+  t.lead = l; t.t = 0; l.tag = t; t.el.textContent = ERRS[errI++ % ERRS.length]; t.el.classList.add('on'); t.w = t.el.offsetWidth; tagCool = 0.55;
 }
 function dropTag(l) { if (l.tag) { l.tag.el.classList.remove('on'); l.tag.lead = null; l.tag = null; } }
 
@@ -586,9 +587,12 @@ $('#approve').addEventListener('click', () => {
   if (st.approve !== 1) return;
   st.approve = 2;
   const b = $('#approve'); b.textContent = 'Approved'; b.disabled = true;
-  st.held.forEach((l, i) => { setTimeout(() => { eject(l); }, i * 140); });
+  /* the three duplicates roll into one, which goes on to Salesforce */
+  const [keep, ...dups] = st.held;
+  dups.forEach(l => { l.s = MERGE; l.mergeTo = keep; l.t = 0; });
+  if (keep) setTimeout(() => { keep.fixed = true; eject(keep); }, 650);
   st.held = [];
-  pulse(0x4fd18b, nova.position, 3.2);
+  pulse();
   trackEvt('approve_click');
 });
 
@@ -612,23 +616,23 @@ document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click
     // a renamed field: the next wave all fails at the gap, Nova catches every one
     st.forceFail = 22; st.spawnEvery = 0.07 * (st.slow || 1);
     flash(HUB, 0xff5a4a);
-    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); toast(FIX.field); pulse(0x4fd18b, nova.position, 3.4); }, 1700);
+    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); toast(FIX.field); pulse(); }, 1700);
     done(3600);
   } else if (kind === 'release') {
     // the form goes quiet: nothing leaves HubSpot, then Nova replays the stuck submissions
     st.paused = 2.1; flash(HUB, 0xff5a4a, 2.1);
     setTimeout(() => {
-      beamTo(HUB.g.position);
-      for (let i = 0; i < 9; i++) setTimeout(() => { const l = spawn(-1.9 - Math.random() * .4, (Math.random() - .5) * 1.2); if (l) { l.col.copy(C.green); l.tgt.copy(C.green); l.sc = 1; } }, i * 90);
+      beamTo(HUB);
+      for (let i = 0; i < 9; i++) setTimeout(() => { const l = spawn(-1.9 - Math.random() * .4, (Math.random() - .5) * 1.2); if (l) { l.sc = 1; l.fixed = true; } }, i * 90);
       toast(FIX.release);
     }, 2100);
     done(4200);
   } else {
-    // a webinar list: rows rain onto HubSpot, duplicates merge, no-consent rows stay behind in amber
+    // a webinar list: rows rain onto HubSpot, duplicates merge, no-consent rows stay behind, greyed
     let n = 0;
     for (let i = 0; i < 34; i++) setTimeout(() => {
       const l = free(); if (!l) return;
-      l.s = DROP; l.p.set(-4.3 + Math.random() * 2.6, 4 + Math.random() * 1.5, (Math.random() - .5) * 2); l.v.set(0, -2, 0);
+      l.s = DROP; l.p.set(HUB_START + Math.random() * (BW - 1.2), 2.6 + Math.random() * 1.2, (Math.random() - .5) * (BD - 0.5)); l.v.set(0, -1.5, 0);
       l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 1; l.force = 0; l.t = 0;
       l.kind = n % 6 === 0 ? 'hold' : n % 5 === 0 ? 'merge' : 'go'; n++;
     }, i * 45);
@@ -637,28 +641,34 @@ document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click
   }
 }));
 
-/* island flash, and Nova's beam to an island */
+/* a block's inlay flashes when something breaks on it; Nova reaches it with a thread */
 const flashes = [];
-function flash(isl, color, dur = 1.2) { flashes.push({ isl, color: new THREE.Color(color), t: 0, dur }); }
-const beamLine = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1, 8), new THREE.MeshBasicMaterial({ color: 0xffc7a8, transparent: true, opacity: 0 }));
-world.add(beamLine); let beamT = 0;
-function beamTo(p) {
-  const a = nova.position.clone(), b = p.clone().setY(0.2), mid = a.clone().add(b).multiplyScalar(0.5), len = a.distanceTo(b);
-  beamLine.position.copy(mid); beamLine.scale.set(1, len, 1);
-  beamLine.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-  beamT = 1; pulse(0x4fd18b, b, 2.8);
+function flash(blk, color, dur = 1.2) { flashes.push({ blk, color: new THREE.Color(color), t: 0, dur }); }
+const reach = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+  new THREE.LineBasicMaterial({ color: 0xe8694f, transparent: true, opacity: 0 }));
+world.add(reach); let beamT = 0;
+function beamTo(blk) {
+  reach.geometry.setFromPoints([NOVA_AT.clone(), blk.g.position.clone().setY(TOP + 0.01)]);
+  beamT = 1; flash(blk, 0xe8694f, 0.8);
 }
 
 /* ================= motion of a lead ================= */
+const SF_END = GAP + BW - 0.3;
 function eject(l) {
-  l.s = EJECT; l.from.copy(l.p); l.t = 0; l.d = 0.7; l.tgt.copy(C.green);
+  l.s = EJECT; l.from.copy(l.p); l.t = 0; l.d = 0.6; l.tgt.copy(C.lead);
 }
-const NOVA_AT = new THREE.Vector3(0, 0.12, 0);
+function land(l) {
+  /* into the slot: a free spot on the pile, or, once the pile is full, just out of sight */
+  if (pileN < PILE_MAX) { pileSpot(pileN++, l.to); l.full = false; }
+  else { l.to.set(lerp(-GAP + R, GAP - R, Math.random()), FLOOR + R, (Math.random() - .5) * 1.8); l.full = true; }
+}
+/* while three wait for the reader's call, other beads keep clear of the middle of the bar */
+const aside = z => st.held.length && st.approve === 1 && Math.abs(z) < 0.5 ? Math.sign(z || 1) * 0.5 : z;
 function stepLead(l, dt) {
   switch (l.s) {
     case WALK: {
       l.p.x += l.v.x * dt; l.sc = Math.min(1, l.sc + dt * 4);
-      if (l.p.x > -1.05) {
+      if (l.p.x > EDGE - R) {
         const fail = st.forceFail > 0 || Math.random() < st.failRate;
         if (st.forceFail > 0) st.forceFail--;
         if (fail) {
@@ -667,51 +677,73 @@ function stepLead(l, dt) {
             l.s = CAUGHT; l.from.copy(l.p); l.t = 0; l.d = 0.45;
             if (st.approve === 1 && st.held.length < 3 && !st.heldDone) { l.hold = true; }
           } else {
-            l.s = FALL; l.col.copy(C.red); l.v.set(0.5 + Math.random() * 0.6, 0.6, (Math.random() - .5) * 0.6); st.lost++;
-            if (Math.random() < 0.6) attachTag(l);
+            /* off the edge: it drops, picks up speed, bounces once and settles in the slot */
+            l.s = FALL; l.col.copy(C.red); l.from.copy(l.p); l.t = 0; land(l); st.lost++;
+            if (st.novaIn < 0.02 && Math.random() < 0.6) attachTag(l);
           }
-        } else { l.s = CROSS; l.from.copy(l.p); l.t = 0; l.d = 0.9; }
+        } else { l.s = CROSS; l.from.copy(l.p); l.t = 0; l.d = 0.55; }
       }
       break;
     }
     case CROSS: case EJECT: {
+      /* over the slot: a small hop on the broken sync, a level roll once Nova's bar is there */
       l.t += dt / l.d; const t = clamp(l.t);
-      l.p.x = lerp(l.from.x, 1.25, t);
-      l.p.z = lerp(l.from.z, l.from.z * 0.35, Math.sin(t * Math.PI)) ;
-      l.p.y = lerp(l.from.y, 0.09, t) + Math.sin(t * Math.PI) * (l.s === EJECT ? 0.75 : 0.35);
-      if (l.t >= 1) { l.s = ARRIVE; l.v.set(1.0 + Math.random() * 0.4, 0, 0); }
+      l.p.x = lerp(l.from.x, GAP + 0.25, t);
+      l.p.z = l.from.z + (aside(l.from.z) - l.from.z) * Math.sin(t * Math.PI);
+      const hop = st.novaIn > 0.85 && l.s === CROSS ? 0 : (l.s === EJECT ? 0.22 : 0.3);
+      l.p.y = lerp(l.from.y, TOP + R, t) + Math.sin(t * Math.PI) * (hop || BAR_H * 0.6);
+      if (l.t >= 1) { l.s = ARRIVE; l.v.set(0.9 + Math.random() * 0.35, 0, 0); if (l.fixed) { l.tgt.copy(C.green); l.fixed = false; } }
       break;
     }
     case ARRIVE: {
       l.p.x += l.v.x * dt;
-      if (l.p.x > 3.6) { l.sc -= dt * 3; if (l.sc <= 0) { l.s = OFF; } }
+      if (l.p.x > SF_END) { l.sc -= dt * 3; if (l.sc <= 0) { l.s = OFF; } }
       break;
     }
     case FALL: {
-      l.v.y -= 7 * dt; l.p.addScaledVector(l.v, dt);
+      l.t += dt; const fallT = 0.42, bounceT = 0.22;
+      if (l.t < fallT) {
+        const u = l.t / fallT;
+        l.p.x = lerp(l.from.x, l.to.x, Math.min(1, u * 1.4)); l.p.z = lerp(l.from.z, l.to.z, u);
+        l.p.y = lerp(l.from.y, l.to.y, u * u);
+      } else if (l.t < fallT + bounceT) {
+        const u = (l.t - fallT) / bounceT;
+        l.p.copy(l.to); l.p.y += Math.sin(u * Math.PI) * (l.from.y - l.to.y) * 0.3;
+      } else {
+        l.p.copy(l.to);
+        if (l.full) { l.sc -= dt * 2.5; if (l.sc <= 0) { dropTag(l); l.s = OFF; } }
+        else { l.s = PILE; }
+      }
       if (l.tag) { l.tag.t += dt; if (l.tag.t > 1.3) dropTag(l); }
-      if (l.p.y < -9) { dropTag(l); l.s = OFF; }
+      break;
+    }
+    case PILE: {
+      if (l.tag) { l.tag.t += dt; if (l.tag.t > 1.3) dropTag(l); }
       break;
     }
     case CAUGHT: {
+      /* Nova catches it on the bar, holds it a beat while it is fixed */
       l.t += dt / l.d; const t = smooth(0, 1, l.t);
-      l.p.lerpVectors(l.from, NOVA_AT, t); l.p.y += Math.sin(t * Math.PI) * 0.4;
+      l.p.set(lerp(l.from.x, NOVA_AT.x, t), NOVA_AT.y, lerp(l.from.z, aside(l.from.z), t));
+      if (l.t > 0.6) l.tgt.copy(C.lead);
       if (l.t >= 1) {
-        if (l.hold && st.approve === 1 && st.held.length < 3) { l.s = HELD; l.t = Math.random() * 6; l.tgt.copy(C.amber); st.held.push(l); if (st.held.length === 3) st.heldDone = true; }
-        else { l.tgt.copy(C.green); pulse(); eject(l); }
+        if (l.hold && st.approve === 1 && st.held.length < 3) { l.s = HELD; l.t = 0; l.tgt.copy(C.lead); st.held.push(l); if (st.held.length === 3) st.heldDone = true; }
+        else { l.fixed = true; pulse(); eject(l); }
       }
       break;
     }
     case HELD: {
-      l.t += dt * 1.6; const a = l.t + st.held.indexOf(l) * 2.09;
-      l.p.set(Math.cos(a) * 0.42, 0.28 + Math.sin(l.t * 2) * 0.05, Math.sin(a) * 0.42);
+      /* three that look like duplicates wait on the bar, touching, until the reader decides */
+      const i = st.held.indexOf(l), a = i * 2.094 - Math.PI / 2;
+      l.to.set(NOVA_AT.x + Math.cos(a) * R * 1.17, NOVA_AT.y, Math.sin(a) * R * 1.17);
+      l.p.lerp(l.to, Math.min(1, dt * 6));
       break;
     }
     case RISE: {
+      /* out of the pile and up onto the bar */
       l.t += dt / l.d; const t = smooth(0, 1, l.t);
-      l.p.lerpVectors(l.from, NOVA_AT, t);
-      if (t > 0.5) l.tgt.copy(C.green);
-      if (l.t >= 1) { pulse(); eject(l); }
+      l.p.lerpVectors(l.from, l.to, t); l.p.y += Math.sin(t * Math.PI) * 0.25;
+      if (l.t >= 1) { l.fixed = true; pulse(); eject(l); }
       break;
     }
     case HOLDHUB: {
@@ -720,18 +752,19 @@ function stepLead(l, dt) {
     }
     case MERGE: {
       l.t += dt / 0.5; l.p.lerp(l.mergeTo.p, clamp(l.t)); l.sc = 1 - clamp(l.t);
-      if (l.t >= 1) l.s = OFF;
+      if (l.t >= 1) { l.s = OFF; l.mergeTo.pop = 1; }
       break;
     }
     case DROP: {
       l.v.y -= 9 * dt; l.p.addScaledVector(l.v, dt);
-      if (l.p.y <= 0.09) {
-        l.p.y = 0.09;
-        if (l.kind === 'hold') { l.s = HOLDHUB; l.t = 0; l.tgt.copy(C.amber); }
+      if (l.p.y <= TOP + R) {
+        l.p.y = TOP + R;
+        if (l.v.y < -1.2) { l.v.y *= -0.3; break; }      // one small bounce, then it rolls
+        if (l.kind === 'hold') { l.s = HOLDHUB; l.t = 0; l.tgt.copy(C.held); }
         else if (l.kind === 'merge') {
           const twin = L.find(o => o !== l && o.s === WALK && o.p.distanceTo(l.p) < 1.6);
-          if (twin) { l.s = MERGE; l.mergeTo = twin; l.t = 0; } else { l.s = WALK; l.v.set(1.2, 0, 0); }
-        } else { l.s = WALK; l.v.set(1.1 + Math.random() * 0.4, 0, 0); }
+          if (twin) { l.s = MERGE; l.mergeTo = twin; l.t = 0; } else { l.s = WALK; l.v.set(1.1, 0, 0); }
+        } else { l.s = WALK; l.v.set(1.0 + Math.random() * 0.4, 0, 0); }
       }
       break;
     }
@@ -745,8 +778,14 @@ const look = new THREE.Vector3();
 function resize() {
   W = stage.clientWidth; H = stage.clientHeight; portrait = W / H < 0.9;
   renderer.setSize(W, H, false); camera.aspect = W / H;
-  camera.fov = portrait ? 50 : 40;
-  world.rotation.y = portrait ? -1.05 : 0;
+  /* a 35mm-ish lens on desktop; a little wider on a phone */
+  camera.fov = portrait ? 38 : 28;
+  world.rotation.y = portrait ? -1.32 : 0;
+  /* block names: lower left of the top on desktop; on a phone, turned back with the world so they read left to right, at the near end */
+  [HUB, SF].forEach(b => {
+    if (portrait) { b.d.rotation.y = 1.32; b.d.position.set(BW / 2 - 0.42, TOP + 0.002, BD / 2 - 0.78); }
+    else { b.d.rotation.y = 0; b.d.position.set(-BW / 2 + 0.12 + BW * 0.2, TOP + 0.002, BD / 2 - 0.36); }
+  });
   camera.updateProjectionMatrix();
   measureHeads();
 }
@@ -791,13 +830,11 @@ function frame(now) {
   setBeat(b);
   cue.style.opacity = p < 0.04 ? 1 : 0;
 
-  /* Nova descends between .26 and .42 */
+  /* Nova arrives between .26 and .42: the bar slides out from under HubSpot, across the slot, and rises flush */
   const nIn = smooth(0.26, 0.42, p); st.novaIn = nIn;
-  nova.position.set(0, lerp(7, 0.12, nIn) , 0);
+  kick = Math.max(0, kick - dt * 5);
+  nova.position.set(lerp(-(BAR_W + 0.4), 0, smooth(0, 0.7, nIn)), lerp(-0.22, TOP, smooth(0.7, 1, nIn)) - kick * 0.012, 0);
   nova.visible = nIn > 0.001;
-  ring.rotation.z += dt * 1.4; ring2.rotation.z -= dt * 0.6;
-  face.quaternion.copy(camera.quaternion); faceRim.quaternion.copy(camera.quaternion);
-  novaLight.position.copy(nova.position).y += 0.5; novaLight.intensity = 10 * nIn;
 
   /* problem intensity grows with the first beat, eases once Nova is there */
   st.failRate = nIn > 0.85 ? 0.38 : lerp(0.36, 0.55, smooth(0, 0.25, p));
@@ -806,14 +843,16 @@ function frame(now) {
   if (nIn > 0.9 && st.lost > 0) {
     st.riseT = (st.riseT || 0) - dt;
     if (st.riseT <= 0) {
-      const l = free();
-      if (l) { l.s = RISE; l.from.set((Math.random() - .5) * 1.4, -8, (Math.random() - .5) * 1.4); l.p.copy(l.from); l.t = 0; l.d = 0.9 + Math.random() * 0.3; l.col.copy(C.red); l.tgt.copy(C.red); l.sc = 1; st.lost--; }
+      /* the newest bead on the pile comes up first; beads that never fitted on the pile come up from the slot floor */
+      let l = null;
+      for (let i = N - 1; i >= 0; i--) if (L[i].s === PILE) { l = L[i]; break; }
+      if (l) pileN = Math.max(0, pileN - 1);
+      else { l = free(); if (l) { pileSpot(0, l.p); l.col.copy(C.red); } }
+      if (l) { dropTag(l); l.s = RISE; l.from.copy(l.p); l.to.set(NOVA_AT.x, NOVA_AT.y, l.p.z * 0.6); l.t = 0; l.d = 0.6 + Math.random() * 0.25; l.tgt.copy(C.lead); l.sc = 1; st.lost--; }
       st.riseT = 0.05;
     }
   }
-  /* rewind if the reader scrolls back above Nova: the chasm keeps what fell */
-  abyss.intensity = lerp(abyss.intensity, Math.min(18, st.lost * 0.5) * (1 - nIn * 0.8), dt * 2);
-  abyssGlow.material.opacity = lerp(abyssGlow.material.opacity, Math.min(0.85, 0.15 + st.lost * 0.025) * (1 - nIn * 0.7), dt * 2);
+  /* rewind if the reader scrolls back above Nova: the slot keeps what fell */
 
   /* approval beat */
   if (p >= 0.54 && st.approve === 0) { st.approve = 1; }
@@ -844,8 +883,8 @@ function frame(now) {
     if (l.s !== OFF) stepLead(l, dt);
     if (l.s === OFF) { S.setScalar(0); M.compose(l.p, Q.identity(), S); }
     else {
-      l.spin += dt * 2; E.set(l.spin, l.spin * .7, 0); Q.setFromEuler(E);
-      S.setScalar(Math.max(0, l.sc) * (l.s === HELD ? 1.5 : 1)); M.compose(l.p, Q, S);
+      l.pop = Math.max(0, l.pop - dt * 3);
+      S.setScalar(Math.max(0, l.sc) * (1 + Math.sin(l.pop * Math.PI) * 0.35)); M.compose(l.p, Q.identity(), S);
     }
     leads.setMatrixAt(i, M); leads.setColorAt(i, l.col);
   }
@@ -855,62 +894,60 @@ function frame(now) {
   const v = new THREE.Vector3();
   for (const t of tagEls) if (t.lead) {
     v.copy(t.lead.p).applyMatrix4(world.matrixWorld).project(camera);
-    t.el.style.transform = `translate(${(v.x * .5 + .5) * W + 12}px, ${(-v.y * .5 + .5) * H - 10}px)`;
+    t.el.style.transform = `translate(${clamp((v.x * .5 + .5) * W + 12, 12, W - t.w - 12)}px, ${(-v.y * .5 + .5) * H - 10}px)`;
   }
 
-  /* satellites orbit; Nova reads them once it has arrived */
-  const pos = readGeo.attributes.position.array;
+  /* the tools lie on the table; Nova reads them once it is in place */
+  const pos = readGeo.attributes.position.array, threads = smooth(0.4, 0.5, p), r = world.rotation.y;
   SATS.forEach((s, i) => {
-    const a = s.a + Math.sin(time * 0.12 + i) * 0.04, rx = portrait ? 4.3 : 7.2, rz = portrait ? 2.4 : 3.2;
-    if (portrait) {
-      /* a row behind the islands as the phone camera sees it, mapped back through the world's rotation */
-      const X = -2.4 + i * 1.2 + Math.sin(time * 0.12 + i) * 0.08, Z = -3.6 - (i % 2) * 0.7, r = world.rotation.y;
-      s.g.position.set(X * Math.cos(r) - Z * Math.sin(r), 0.7 + (i % 2) * 0.45 + Math.sin(time * .8 + i) * 0.1, X * Math.sin(r) + Z * Math.cos(r));
-    } else s.g.position.set(Math.cos(a) * rx, s.y + Math.sin(time * .8 + i) * 0.1, Math.sin(a) * rz - 2.2);
-    s.m.rotation.y += dt * 0.7;
-    s.m.material.emissive.setHex(0xf6e7d0); s.m.material.emissiveIntensity = 0.35 * nIn;
-    pos.set([nova.position.x, nova.position.y + 0.95, nova.position.z, s.g.position.x, s.g.position.y, s.g.position.z], i * 6);
+    const [X, Z] = (portrait ? SAT_PHONE : SAT_DESK)[i];
+    /* the phone layout is given as the camera sees it, so map it back through the world's turn */
+    s.m.position.set(portrait ? X * Math.cos(r) - Z * Math.sin(r) : X, FLOOR + 0.041, portrait ? X * Math.sin(r) + Z * Math.cos(r) : Z);
+    pos.set([NOVA_AT.x, TOP + BAR_H / 2, 0, s.m.position.x, FLOOR + 0.06, s.m.position.z], i * 6);
   });
   readGeo.attributes.position.needsUpdate = true;
-  readLines.material.opacity = 0.6 * smooth(0.4, 0.5, p);
+  readLines.material.opacity = 0.5 * threads;
 
-  /* island flashes */
-  [HUB, SF].forEach(isl => { isl.glow.material.color.lerp(new THREE.Color(isl === HUB ? 0xff7a59 : 0x1798c1), dt * 3); });
+  /* inlay flashes: the vendor line turns red and pulses while something is broken */
+  [HUB, SF].forEach(b => { b.line.material.emissive.lerp(b.base, dt * 3); b.line.material.emissiveIntensity = lerp(b.line.material.emissiveIntensity, 0.35, dt * 3); });
   for (let i = flashes.length - 1; i >= 0; i--) {
     const f = flashes[i]; f.t += dt;
-    f.isl.glow.material.color.copy(f.color); f.isl.glow.material.opacity = 0.22 + 0.4 * Math.abs(Math.sin(f.t * 8));
-    if (f.t > f.dur) { f.isl.glow.material.opacity = 0.22; flashes.splice(i, 1); }
+    f.blk.line.material.emissive.copy(f.color); f.blk.line.material.emissiveIntensity = 0.6 + 0.9 * Math.abs(Math.sin(f.t * 7));
+    if (f.t > f.dur) flashes.splice(i, 1);
   }
-  beamT = Math.max(0, beamT - dt * 1.2); beamLine.material.opacity = beamT * 0.9;
-  for (let i = pulses.length - 1; i >= 0; i--) {
-    const q = pulses[i]; q.t += dt * 1.6;
-    q.m.scale.setScalar(1 + q.t * q.scale); q.m.material.opacity = 0.8 * (1 - q.t);
-    if (q.t >= 1) { world.remove(q.m); q.m.geometry.dispose(); q.m.material.dispose(); pulses.splice(i, 1); }
-  }
-  if (pulses.length > 40) { const q = pulses.shift(); world.remove(q.m); }
+  beamT = Math.max(0, beamT - dt * 1.2); reach.material.opacity = beamT * 0.8;
 
-  /* camera: a slow push toward the gap, lifted for Nova, parallax on top */
+  /* camera: low over the table like a product shot, a slow push toward the slot, parallax on top */
   tilt.x = lerp(tilt.x, reduced ? 0 : tilt.tx, dt * 2.5); tilt.y = lerp(tilt.y, reduced ? 0 : tilt.ty, dt * 2.5);
-  const drift = reduced ? 0 : Math.sin(time * 0.15) * 0.5;
+  const drift = reduced ? 0 : Math.sin(time * 0.15) * 0.35;
   if (portrait) {
-    /* looking down the flow: HubSpot at the back, the chasm in the middle, Salesforce up close */
-    const dist = lerp(13.5, 12, smooth(0, 0.3, p)), lift = lerp(6.2, 7, smooth(0.28, 0.5, p));
-    camera.position.set(tilt.x * 0.8 + drift * 0.5, lift - tilt.y * 0.5, dist);
-    look.set(0, -1.2, 0);
-    /* on taller phones the tool row climbs into the headline: slide the picture down just enough to clear it */
+    /* looking down the flow: HubSpot at the back, the slot in the middle, Salesforce up close */
+    const dist = lerp(13.2, 12.2, smooth(0, 0.3, p)), lift = lerp(8.6, 9.2, smooth(0.28, 0.5, p));
+    camera.position.set(tilt.x * 0.6 + drift * 0.4, lift - tilt.y * 0.4, dist);
+    look.set(0, -1.6, -0.3);
+    /* on taller phones the tools climb into the headline: slide the picture down just enough to clear it */
     camera.lookAt(look); camera.updateMatrixWorld();
     let top = H;
-    for (const s of SATS) { v.set(s.g.position.x, s.g.position.y + 0.6, s.g.position.z).applyMatrix4(world.matrixWorld).project(camera); top = Math.min(top, (-v.y * .5 + .5) * H - viewOff); }
+    for (const s of SATS) { v.set(s.m.position.x, FLOOR + 0.35, s.m.position.z).applyMatrix4(world.matrixWorld).project(camera); top = Math.min(top, (-v.y * .5 + .5) * H - viewOff); }
     const head = heads[beatNow] || 0;
     viewOff = lerp(viewOff, clamp(head + 14 - top, 0, H * 0.14), Math.min(1, dt * 4));
   } else {
     viewOff = 0;
-    const dist = lerp(12.5, 10.8, smooth(0, 0.3, p)), lift = lerp(2.4, 3.4, smooth(0.28, 0.5, p));
-    camera.position.set(tilt.x * 1.2 + drift, lift - tilt.y * 0.6, dist);
-    look.set(0, 0.9 + lerp(0, 0.3, smooth(0.28, 0.5, p)), 0);
+    const dist = lerp(13.4, 11.9, smooth(0, 0.3, p)), lift = lerp(4.2, 4.8, smooth(0.28, 0.5, p));
+    camera.position.set(tilt.x * 0.9 + drift, lift - tilt.y * 0.45, dist);
+    look.set(0, 0.25, -0.8);
   }
   camera.lookAt(look);
   if (viewOff > 0.5) camera.setViewOffset(W, H, 0, -viewOff, W, H); else camera.clearViewOffset();
+
+  /* words pinned to the scene: tool names on their pucks, the old sync over the slot, Nova over the bar */
+  camera.updateMatrixWorld();
+  const toScreen = (x, y, z) => { v.set(x, y, z).applyMatrix4(world.matrixWorld).project(camera); return [(v.x * .5 + .5) * W, (-v.y * .5 + .5) * H]; };
+  SATS.forEach(s => { const [x, y] = toScreen(s.m.position.x, FLOOR + 0.06, s.m.position.z); s.el.style.transform = `translate(${x}px, ${y - 22}px) translateX(-50%)`; });
+  if (portrait) { const [x, y] = toScreen(0, TOP, BD / 2); syncEl.style.transform = `translate(${x - 10}px, ${y}px) translate(-100%, -50%)`; }
+  else { const [x, y] = toScreen(0, FLOOR + 0.05, BD / 2 + 0.25); syncEl.style.transform = `translate(${x}px, ${y + 10}px) translateX(-50%)`; }
+  syncEl.style.opacity = 1 - nIn;
+  { const [x, y] = toScreen(nova.position.x + NOVA_TAG.x, NOVA_TAG.y, NOVA_TAG.z); novaTag.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%)`; novaTag.style.opacity = smooth(0.75, 1, nIn); }
 
   renderer.render(scene, camera);
 }
