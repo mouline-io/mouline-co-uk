@@ -98,6 +98,15 @@ a{color:inherit}
 .beat.on{opacity:1;transform:none}
 .beat em{font-style:italic;font-weight:400;color:var(--coral)}
 .nowrap{white-space:nowrap}
+/* the two vendors in the headline wear their own colours and marks */
+.vendor img{height:.7em;width:auto;vertical-align:-.04em;margin-right:.16em;border-radius:.14em}
+.vendor.hs{color:var(--hub)}
+.vendor.sf{color:var(--sf)}
+.vendor.sf img{border-radius:0}
+/* on a wide screen the pair stays on one line, scaled to fit with its marks; a phone breaks it after "and" */
+.duo{white-space:nowrap}
+@media(min-width:701px){.beat[data-beat="0"]{font-size:clamp(30px,7.1vw,84px)}}
+@media(max-width:700px){.duo{white-space:normal}}
 
 /* counter: one number, one word */
 .hud{position:absolute;z-index:6;right:clamp(16px,5vw,72px);bottom:clamp(110px,16vh,150px);text-align:right;pointer-events:none;transition:opacity .4s}
@@ -261,7 +270,7 @@ a{color:inherit}
     <div class="pings" id="pings" aria-hidden="true"></div>
 
     <div class="beats">
-      <h1 class="beat on" data-beat="0">Leads fall between <span class="nowrap">HubSpot and Salesforce.</span></h1>
+      <h1 class="beat on" data-beat="0">Leads fall between <span class="duo"><span class="nowrap"><span class="vendor hs"><img src="img/tools/hubspot.png" alt="">HubSpot</span> and</span> <span class="nowrap"><span class="vendor sf"><img src="img/tools/salesforce.svg" alt="">Salesforce</span>.</span></span></h1>
       <h2 class="beat" data-beat="1">Nova <em>catches</em> them.</h2>
       <h2 class="beat" data-beat="2">The big calls stay <em>yours.</em></h2>
       <h2 class="beat" data-beat="3">Go on, <em>break</em> something.</h2>
