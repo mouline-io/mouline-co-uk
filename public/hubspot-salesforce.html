@@ -145,11 +145,17 @@ a{color:inherit}
 
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .45s,transform .45s}
 .chips.on{opacity:1;transform:none;pointer-events:auto}
-.chip{font:600 15px/1 var(--sans);color:var(--paper);background:rgba(246,242,233,.08);border:1px solid rgba(246,242,233,.28);border-radius:999px;padding:12px 16px;cursor:pointer;
-  backdrop-filter:blur(6px);transition:background .2s,border-color .2s,transform .15s}
-.chip:hover{background:rgba(246,242,233,.16);border-color:rgba(246,242,233,.6)}
+/* outline pills at full contrast; while one runs it fills with coral like a progress bar, then keeps a tick */
+.chip{position:relative;isolation:isolate;overflow:hidden;font:600 15px/1 var(--sans);color:var(--paper);background:rgba(16,14,10,.35);border:1px solid rgba(246,242,233,.75);border-radius:999px;padding:12px 16px;cursor:pointer;
+  backdrop-filter:blur(6px);transition:background .2s,border-color .2s,transform .15s,opacity .2s,padding .2s}
+.chip::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--coral);transform:scaleX(0);transform-origin:left}
+.chip.run::before{transform:scaleX(1);transition:transform var(--dur,3s) linear}
+.chip.run{border-color:var(--coral)}
+.chip.done{padding-left:36px;background:rgba(16,14,10,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%23f6f2e9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 14px 50%/14px}
+.chip:hover:not(:disabled){background-color:var(--night);border-color:var(--paper)}
 .chip:active{transform:scale(.97)}
-.chip:disabled{opacity:.45;cursor:default}
+.chip:disabled{opacity:.6;cursor:default}
+.chip.run:disabled{opacity:1}
 .toast{position:absolute;left:0;right:0;bottom:calc(100% + 12px);display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-radius:14px;background:#fff;color:#1d1c1d;
   font:15px/1.35 'Lato',var(--sans);box-shadow:0 24px 60px -20px rgba(0,0,0,.8);opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;pointer-events:none}
 .toast.on{opacity:1;transform:none}
@@ -505,7 +511,7 @@ const SATS = TOOLS.map(([file, bleed]) => {
 /* desktop: an arc behind the blocks, inside their outer edges plus one puck.
    Phone: four down each side of the blocks, in the open table */
 const SAT_DESK = [[-4.3, -3.2], [-3.1, -3.9], [-1.85, -4.35], [-0.62, -4.55], [0.62, -4.55], [1.85, -4.35], [3.1, -3.9], [4.3, -3.2]];
-const SAT_PHONE = [[-1.9, -1.45], [-0.5, -1.45], [0.9, -1.45], [2.2, -1.45], [-3.2, 1.6], [-1.85, 1.6], [0.9, 1.6], [2.7, 1.6]];
+const SAT_PHONE = [[-2.5, -1.61], [-1.25, -1.61], [0, -1.61], [1.25, -1.61], [-3.2, 1.76], [-1.85, 1.76], [0.9, 1.76], [2.7, 1.76]];
 
 /* labels pinned to the scene: the old sync, and Nova's portrait over the bar */
 const syncEl = document.createElement('div'); syncEl.className = 'lbl'; syncEl.textContent = 'your sync'; $('#labels').appendChild(syncEl);
@@ -587,14 +593,14 @@ world.add(leads);
 const C = { lead: new THREE.Color(0xfbf6ea), red: new THREE.Color(0xbb3a2b), green: new THREE.Color(0x7fae8c), held: new THREE.Color(0x8a8378), hub: new THREE.Color(0xf6f2e9) };
 C.amber = C.lead;
 /* states */
-const OFF = 0, WALK = 1, CROSS = 2, ARRIVE = 3, FALL = 4, CAUGHT = 5, HELD = 6, RISE = 7, EJECT = 8, HOLDHUB = 9, DROP = 10, MERGE = 11, PILE = 12;
+const OFF = 0, WALK = 1, CROSS = 2, ARRIVE = 3, FALL = 4, CAUGHT = 5, HELD = 6, RISE = 7, EJECT = 8, HOLDHUB = 9, DROP = 10, MERGE = 11, PILE = 12, JAM = 13;
 const L = Array.from({ length: N }, () => ({ s: OFF, p: new THREE.Vector3(), v: new THREE.Vector3(), from: new THREE.Vector3(), to: new THREE.Vector3(), t: 0, d: 1, col: new THREE.Color(), tgt: new THREE.Color(), sc: 1, z: 0, tag: null, force: 0, roll: 0, pop: 0 }));
 const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), E = new THREE.Euler();
 function free() { for (const l of L) if (l.s === OFF) return l; return null; }
 const HUB_START = -(GAP + BW) + 0.25, EDGE = -GAP;      // where leads appear, and where HubSpot ends
 function spawn(x = HUB_START + Math.random() * 0.3, z = (Math.random() - .5) * (BD - 0.5)) {
   const l = free(); if (!l) return null;
-  l.s = WALK; l.p.set(x, TOP + R, z); l.v.set(1.0 + Math.random() * 0.45, 0, 0); l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z;
+  l.s = WALK; l.p.set(x, TOP + R, z); l.v.set(1.0 + Math.random() * 0.45, 0, 0); l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z; l.fixed = false; l.jamTested = false;
   return l;
 }
 /* the pile in the slot: a few dozen beads at most, the counter keeps the rest */
@@ -618,7 +624,8 @@ const st = {
   spawnEvery: 0.16, spawnT: 0, paused: 0,
   approve: 0,      // 0 not asked, 1 asking, 2 approved
   held: [],
-  forceFail: 0,
+  jam: false, jamRate: 1, jamN: 0,   // a break in progress: leads queue red at it
+  breakT: 0,       // seconds left of the break-it sequence, while the counter shows
 };
 const beats = [...document.querySelectorAll('.beat')];
 const hud = $('#hud'), countEl = $('#count'), card = $('#card'), chips = $('#chips'), cue = $('#cue');
@@ -669,42 +676,72 @@ const FIX = {
   webinar: '312 rows in. 27 held for consent, 41 merged, owners assigned.',
 };
 let toastTimer = null, busy = false;
+const toastEl = $('#toast');
 function toast(txt) {
   $('#toast-txt').textContent = txt; $('#toast').classList.add('on');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('on'), 4200);
 }
+/* each break runs the story in three seconds: the cost piles up in red, Nova fixes it in plain sight, then says so */
+const JAM_EDGE = 0, JAM_FAR = 1;
+function jamSpot(i, out, where) {
+  if (where === JAM_FAR) return out.set(HUB_START + Math.floor(i / 3) * R * 2.2, TOP + R, ((i % 3) - 1) * R * 2.3);
+  return out.set(EDGE - R - 0.03 - Math.floor(i / 8) * R * 2.1, TOP + R, ((i % 8) - 3.5) * R * 2.3);
+}
+function jam(l, where = JAM_EDGE) {
+  l.s = JAM; jamSpot(st.jamN++, l.to, where); l.from.copy(l.p); l.t = 0; l.tgt.copy(C.red); l.jamTested = true;
+}
+/* the fix: queued beads turn cream and go on, over Nova's bar or along HubSpot, one after another */
+function unjam(walk) {
+  st.jam = false;
+  const q = L.filter(l => l.s === JAM);
+  q.forEach((l, k) => setTimeout(() => {
+    if (l.s !== JAM) return;
+    st.jamN--; l.tgt.copy(C.lead); l.fixed = true;
+    if (walk) { l.s = WALK; l.v.set(2.2, 0, 0); }
+    else { l.s = RISE; l.from.copy(l.p); l.to.set(NOVA_AT.x, NOVA_AT.y, l.p.z * 0.6); l.t = 0; l.d = 0.45; }
+  }, k * 50));
+}
+function runChip(b, ms) {
+  const all = document.querySelectorAll('[data-break]');
+  all.forEach(x => x.disabled = true);
+  b.style.setProperty('--dur', ms + 'ms'); b.classList.remove('done'); b.classList.add('run');
+  st.breakT = ms / 1000; clearTimeout(toastTimer); toastEl.classList.remove('on');
+  setTimeout(() => { b.classList.remove('run'); b.classList.add('done'); busy = false; all.forEach(x => x.disabled = false); }, ms);
+}
 document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click', () => {
   if (busy) return; busy = true;
-  document.querySelectorAll('[data-break]').forEach(x => x.disabled = true);
   const kind = b.dataset.break; trackEvt('break_it', { kind });
-  const done = (ms) => setTimeout(() => { busy = false; document.querySelectorAll('[data-break]').forEach(x => x.disabled = false); }, ms);
   if (kind === 'field') {
-    // a renamed field: the next wave all fails at the gap, Nova catches every one
-    st.forceFail = 22; st.spawnEvery = 0.07 * (st.slow || 1);
-    flash(HUB, 0xff5a4a);
-    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); toast(FIX.field); pulse(); consult('both', true); }, 1700);
-    done(3600);
+    // a renamed field: every lead stops red at the HubSpot edge; Nova updates the mapping and they all go over
+    runChip(b, 3000);
+    st.jam = true; st.jamRate = 1; st.spawnEvery = 0.06 * (st.slow || 1);
+    flash(HUB, 0xff5a4a, 1.3);
+    setTimeout(() => { st.spawnEvery = 0.16 * (st.slow || 1); consult('both', true); unjam(); }, 1300);
+    setTimeout(() => toast(FIX.field), 2200);
   } else if (kind === 'release') {
-    // the form goes quiet: nothing leaves HubSpot, then Nova replays the stuck submissions
-    st.paused = 2.1; flash(HUB, 0xff5a4a, 2.1);
-    setTimeout(() => {
-      consult(T.outreach, true); setTimeout(() => consult('hub', true), 500);
-      for (let i = 0; i < 9; i++) setTimeout(() => { const l = spawn(-1.9 - Math.random() * .4, (Math.random() - .5) * 1.2); if (l) { l.sc = 1; l.fixed = true; } }, i * 90);
-      toast(FIX.release);
-    }, 2100);
-    done(4200);
+    // the form goes quiet: nothing arrives, the stuck submissions stack up red; Nova replays them
+    runChip(b, 3000);
+    st.paused = 1.4; flash(HUB, 0xff5a4a, 1.3);
+    for (let i = 0; i < 9; i++) setTimeout(() => {
+      const l = free(); if (!l) return;
+      jamSpot(st.jamN, l.p, JAM_FAR); l.col.copy(C.red); l.sc = 0; jam(l, JAM_FAR);
+    }, 350 + i * 70);
+    setTimeout(() => { consult(T.outreach, true); setTimeout(() => consult('hub', true), 400); unjam(true); }, 1300);
+    setTimeout(() => toast(FIX.release), 2200);
   } else {
-    // a webinar list: rows rain onto HubSpot, duplicates merge, no-consent rows stay behind, greyed
+    // a webinar list: rows rain onto HubSpot; the bad ones pile red at the edge, then Nova enriches, merges and holds for consent
+    runChip(b, 3400);
+    st.jam = true; st.jamRate = 0.45;
     let n = 0;
     for (let i = 0; i < 34; i++) setTimeout(() => {
       const l = free(); if (!l) return;
-      l.s = DROP; l.p.set(HUB_START + Math.random() * (BW - 1.2), 2.6 + Math.random() * 1.2, (Math.random() - .5) * (BD - 0.5)); l.v.set(0, -1.5, 0);
-      l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 1; l.force = 0; l.t = 0;
+      l.s = DROP; l.p.set(EDGE - 2.2 + Math.random() * 1.6, 0.7 + Math.random() * 0.4, (Math.random() - .5) * (BD - 0.5)); l.v.set(0, -1.5, 0);
+      l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 1; l.force = 0; l.t = 0; l.fixed = false; l.jamTested = false;
       l.kind = n % 6 === 0 ? 'hold' : n % 5 === 0 ? 'merge' : 'go'; n++;
-    }, i * 45);
-    setTimeout(() => toast(FIX.webinar), 1900);
-    [T.zoominfo, T.clay, T.sixsense].forEach((t, i) => setTimeout(() => consult(t, true), 1500 + i * 450));
-    done(4600);
+    }, i * 40);
+    [T.zoominfo, T.clay, T.sixsense].forEach((t, i) => setTimeout(() => consult(t, true), 1700 + i * 300));
+    setTimeout(() => unjam(), 1800);
+    setTimeout(() => toast(FIX.webinar), 2600);
   }
 }));
 
@@ -728,9 +765,10 @@ function stepLead(l, dt) {
   switch (l.s) {
     case WALK: {
       l.p.x += l.v.x * dt; l.sc = Math.min(1, l.sc + dt * 4);
+      /* while something is broken, leads stop red at the HubSpot edge instead of going on */
+      if (st.jam && !l.jamTested && !l.fixed && l.p.x > EDGE - 0.75) { l.jamTested = true; if (Math.random() < st.jamRate) { jam(l); break; } }
       if (l.p.x > EDGE - R) {
-        const fail = st.forceFail > 0 || Math.random() < st.failRate;
-        if (st.forceFail > 0) st.forceFail--;
+        const fail = !l.fixed && Math.random() < st.failRate;
         if (fail) {
           l.tgt.copy(C.red);
           if (st.novaIn > 0.85) {
@@ -775,6 +813,12 @@ function stepLead(l, dt) {
         else { l.s = PILE; }
       }
       if (l.tag) { l.tag.t += dt; if (l.tag.t > 1.3) dropTag(l); }
+      break;
+    }
+    case JAM: {
+      /* queued at the break, red, until Nova fixes it */
+      l.t += dt / 0.3; l.sc = Math.min(1, l.sc + dt * 4);
+      l.p.lerpVectors(l.from, l.to, smooth(0, 1, l.t));
       break;
     }
     case PILE: {
@@ -848,7 +892,7 @@ function resize() {
   });
   /* the tools and their cables move with the layout; logos turn back with the world so they stay upright */
   layCables();
-  SATS.forEach(s => { s.m.position.copy(s.base); s.m.rotation.y = portrait ? 1.32 : Math.atan2(-s.base.x, 13 - s.base.z); });
+  SATS.forEach(s => { s.m.position.copy(s.base); s.m.rotation.y = portrait ? 1.32 : Math.atan2(-s.base.x, 13 - s.base.z); s.m.scale.setScalar(portrait ? 0.82 : 1); });
   camera.updateProjectionMatrix();
   measureHeads();
 }
@@ -929,15 +973,18 @@ function frame(now) {
   else { st.spawnT -= dt; if (st.spawnT <= 0) { spawn(); st.spawnT = st.spawnEvery * (0.6 + Math.random() * 0.8); } }
 
   /* pings while the problem beat is on screen */
-  if (b === 0 && nIn < 0.02 && st.shownLost * 3 > 10) { pingT -= dt; if (pingT <= 0) { ping(); pingT = 2.3; } }
+  if (b === 0 && nIn < 0.02 && st.shownLost > 10) { pingT -= dt; if (pingT <= 0) { ping(); pingT = 2.3; } }
   if (nIn > 0.02) document.querySelectorAll('.ping:not(.gone)').forEach(d => d.classList.add('gone'));
 
   /* the counter: records failed and not yet fixed */
-  st.shownLost = lerp(st.shownLost, st.lost, Math.min(1, dt * 5));
-  const shown = Math.round(st.shownLost * 3);
+  st.shownLost = lerp(st.shownLost, st.lost * 3 + st.jamN, Math.min(1, dt * 5));
+  const shown = Math.round(st.shownLost);
   countEl.textContent = shown.toLocaleString('en-GB');
   hud.classList.toggle('zero', nIn > 0.9 && shown === 0);
-  hud.style.opacity = p < 0.53 ? 1 : 0;
+  st.breakT = Math.max(0, st.breakT - dt);
+  /* on a phone the toast sits over the counter, so the counter steps aside for it */
+  const toastOver = W < 700 && toastEl.classList.contains('on');
+  hud.style.opacity = p < 0.53 || (st.breakT > 0 && !toastOver) ? 1 : 0;
 
   /* leads */
   tagCool -= dt;
@@ -961,8 +1008,9 @@ function frame(now) {
   }
 
   /* the tools lie on the table; Nova works in them once it is in place */
-  /* the cables run out from the bar as it settles; the stack sits idle until then */
-  const wired = smooth(0.75, 1, nIn);
+  /* the cables run out within a second of the bar crossing the slot; the stack sits idle until then */
+  st.wireT = clamp((st.wireT || 0) + (nIn > 0.45 ? dt : -dt * 2), 0, 1);
+  const wired = smooth(0, 1, st.wireT);
   for (const s of SATS) s.cable.m.geometry.setDrawRange(0, Math.floor(s.cable.len * wired / 6) * 6);
   consultCool -= dt;
   for (const sl of slugs) if (sl.t >= 0) {
