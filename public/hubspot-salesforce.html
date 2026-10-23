@@ -152,7 +152,9 @@ a{color:inherit}
 .chip.run::before{transform:scaleX(1);transition:transform var(--dur,3s) linear}
 .chip.run{border-color:var(--coral)}
 .chip.done{padding-left:36px;background:rgba(16,14,10,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%23f6f2e9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 14px 50%/14px}
-.chip:hover:not(:disabled){background-color:var(--night);border-color:var(--paper)}
+@media(hover:hover){.chip:hover:not(:disabled){background-color:var(--night);border-color:var(--paper)}}
+.chip:focus{outline:none}
+.chip:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
 .chip:active{transform:scale(.97)}
 .chip:disabled{opacity:.6;cursor:default}
 .chip.run:disabled{opacity:1}
@@ -565,7 +567,8 @@ const slugs = Array.from({ length: 6 }, () => {
 /* Nova consults a tool: 'hub', 'sf' and 'both' pulse the CRM inlays, anything else is a tool index */
 let consultCool = 0;
 function consult(to, force) {
-  if (!force && (consultCool > 0 || st.novaIn < 0.9)) return;
+  /* routine consults wait while a break is on screen, so the only motion is the jam */
+  if (!force && (consultCool > 0 || st.novaIn < 0.9 || st.jam || st.jamN > 0)) return;
   if (!force) consultCool = 0.3;
   if (to === 'hub' || to === 'both') flash(HUB, 0xe8694f, 0.5);
   if (to === 'sf' || to === 'both') flash(SF, 0xe8694f, 0.5);
