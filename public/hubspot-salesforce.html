@@ -163,6 +163,17 @@ a{color:inherit}
 .toast.on{opacity:1;transform:none}
 .toast img{width:30px;height:30px;border-radius:7px;flex:none}
 .toast b{font-weight:900;font-size:13.5px;margin-right:6px}
+/* after the first break, Nova offers the real thing, in the same Slack card, where the toast was */
+.try{position:absolute;left:0;right:0;bottom:calc(100% + 12px);max-width:440px;margin:0 auto;display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:14px;background:#fff;color:#1d1c1d;
+  font:15px/1.35 'Lato',var(--sans);box-shadow:0 24px 60px -20px rgba(0,0,0,.8);opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;pointer-events:none}
+.try.on{opacity:1;transform:none;pointer-events:auto}
+.try img{width:36px;height:36px;border-radius:8px;flex:none}
+.try b{display:block;font-weight:900;font-size:14px}
+.try b span{font-size:10px;font-weight:700;background:#e8e8e8;color:#616061;border-radius:2px;padding:1px 4px;margin-left:5px;vertical-align:1px}
+.try .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.try .acts a{font:900 14px/1 'Lato',var(--sans);border-radius:8px;padding:10px 14px;text-decoration:none}
+.try .go{background:#007a5a;color:#fff}
+.try .alt{color:#1d1c1d;box-shadow:inset 0 0 0 1px #cfcfcf}
 .dock > *{position:absolute;left:0;right:0;bottom:0}
 
 /* ---------- the stack: HubSpot and Salesforce either side of Nova, the rest around them ---------- */
@@ -266,6 +277,8 @@ a{color:inherit}
       </div>
       <div class="chips" id="chips" role="group" aria-label="Break something">
         <div class="toast" id="toast" role="status" aria-live="polite"><img src="img/nova-avatar.jpg" alt=""><div><b>Nova</b><span id="toast-txt"></span></div></div>
+        <div class="try" id="try" role="group" aria-label="Try Nova"><img src="img/nova-avatar.jpg" alt=""><div><b>Nova<span>APP</span></b>Want to try this on your own sync?
+          <div class="acts"><a class="go" href="https://control.mouline.co.uk/install" data-loc="try">Add Nova to Slack</a><a class="alt" href="https://calendar.app.google/oUFUi6YCjYuzDyt58" target="_blank" rel="noopener" data-loc="try">Book a call</a></div></div></div>
         <button class="chip" type="button" data-break="field">Rename a field</button>
         <button class="chip" type="button" data-break="release">Ship the website</button>
         <button class="chip" type="button" data-break="webinar">Import a webinar</button>
@@ -679,10 +692,10 @@ const FIX = {
   webinar: '312 rows in. 27 held for consent, 41 merged, owners assigned.',
 };
 let toastTimer = null, busy = false;
-const toastEl = $('#toast');
+const toastEl = $('#toast'), tryEl = $('#try');
 function toast(txt) {
   $('#toast-txt').textContent = txt; $('#toast').classList.add('on');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('on'), 4200);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('on'), 3400);
 }
 /* each break runs the story in three seconds: the cost piles up in red, Nova fixes it in plain sight, then says so */
 const JAM_EDGE = 0, JAM_FAR = 1;
@@ -709,7 +722,7 @@ function runChip(b, ms) {
   all.forEach(x => x.disabled = true);
   b.style.setProperty('--dur', ms + 'ms'); b.classList.remove('done'); b.classList.add('run');
   st.breakT = ms / 1000; clearTimeout(toastTimer); toastEl.classList.remove('on');
-  setTimeout(() => { b.classList.remove('run'); b.classList.add('done'); busy = false; all.forEach(x => x.disabled = false); }, ms);
+  setTimeout(() => { b.classList.remove('run'); b.classList.add('done'); busy = false; st.tried = true; all.forEach(x => x.disabled = false); }, ms);
 }
 document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click', () => {
   if (busy) return; busy = true;
@@ -986,7 +999,9 @@ function frame(now) {
   hud.classList.toggle('zero', nIn > 0.9 && shown === 0);
   st.breakT = Math.max(0, st.breakT - dt);
   /* on a phone the toast sits over the counter, so the counter steps aside for it */
-  const toastOver = W < 700 && toastEl.classList.contains('on');
+  /* once they've broken something, Nova offers the real thing; it gives way to the toast while another break runs */
+  tryEl.classList.toggle('on', !!st.tried && !busy && !toastEl.classList.contains('on'));
+  const toastOver = W < 700 && (toastEl.classList.contains('on') || tryEl.classList.contains('on'));
   hud.style.opacity = p < 0.53 || (st.breakT > 0 && !toastOver) ? 1 : 0;
 
   /* leads */
