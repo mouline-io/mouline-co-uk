@@ -438,7 +438,8 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.55;
 
-const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 120);
+/* near plane at 1: nothing comes closer, and it buys depth precision for the thin layers (logos, inlays, decals) */
+const camera = new THREE.PerspectiveCamera(28, 1, 1, 120);
 /* everything lives in one group: on a portrait screen it turns so the leads flow toward the reader */
 const world = new THREE.Group(); scene.add(world);
 
@@ -519,8 +520,10 @@ const SATS = TOOLS.map(([file, bleed]) => {
     x.drawImage(img, o, o, s, s); t.needsUpdate = true;
   };
   img.src = `img/tools/${file}.png`;
-  const logo = new THREE.Mesh(logoGeo, new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.6, depthWrite: false, fog: false, envMapIntensity: 1.6 }));
-  logo.position.z = COIN_T / 2 + 0.0003; logo.receiveShadow = true; coin.add(logo);
+  const logo = new THREE.Mesh(logoGeo, new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.6, depthWrite: false, fog: false, envMapIntensity: 1.6,
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+  /* clear of the face so the two never fight for depth, and no self-shadow to shimmer on it */
+  logo.position.z = COIN_T / 2 + 0.004; coin.add(logo);
   return { m, coin, logo, base: new THREE.Vector3(), press: -1, glint: 0, cable: null };
 });
 /* desktop: an arc behind the blocks, inside their outer edges plus one puck.
