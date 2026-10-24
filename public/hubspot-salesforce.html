@@ -8,12 +8,15 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-26MXN99LBQ');
+  /* ?pain= marks which outreach angle brought the reader; it goes on the page view and every event */
+  var pain = new URLSearchParams(location.search).get('pain');
+  window.PAIN = /^(dupes|routing|numbers|sync)$/.test(pain || '') ? pain : undefined;
+  gtag('config', 'G-26MXN99LBQ', window.PAIN ? { pain: window.PAIN } : {});
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#100e0a">
-<title>Nova — leads fall between HubSpot and Salesforce. Nova catches them.</title>
-<meta name="description" content="Leads fall between HubSpot and Salesforce. Nova, an AI teammate in Slack or Teams, catches them, fixes the routine sync failures and asks you about the big calls.">
+<title>HubSpot–Salesforce sync errors, duplicates and misrouted leads, caught by Nova</title>
+<meta name="description" content="Leads fall between HubSpot and Salesforce: sync errors, duplicates, missing fields, misrouted leads. Nova, an AI teammate in Slack or Teams, catches them, fixes the routine ones and asks you about the big calls.">
 <link rel="canonical" href="https://mouline.co.uk/hubspot-salesforce.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mouline">
@@ -90,6 +93,15 @@ a{color:inherit}
 .novatag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;will-change:transform;transition:opacity .5s;opacity:0}
 .novatag img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 2px #e8694f,0 10px 24px -8px rgba(0,0,0,.8)}
 .novatag span{font:600 12.5px/1 var(--sans);color:#f0a08e}
+/* each system's record count, in front of its block: Salesforce is short by what fell in the gap */
+.tally{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;font:600 20px/1 var(--sans);letter-spacing:-.02em;color:var(--paper);
+  font-variant-numeric:tabular-nums;white-space:nowrap;will-change:transform;transition:opacity .4s}
+.tally img{height:15px;width:auto;border-radius:3px}
+.tally img[src$=".svg"]{border-radius:0}
+.tally span{transition:color .5s}
+.tally.short span{color:var(--red)}
+.tally.match span{color:#7fae8c}
+@media(max-width:700px){.tally{font-size:16px;gap:5px}.tally img{height:12px}}
 
 .beats{position:absolute;z-index:5;left:clamp(16px,5vw,72px);right:clamp(16px,5vw,72px);top:clamp(78px,13vh,130px);pointer-events:none}
 .beat{position:absolute;left:0;top:0;max-width:15ch;margin:0;font-family:var(--serif);font-weight:600;
@@ -98,10 +110,8 @@ a{color:inherit}
 .beat.on{opacity:1;transform:none}
 .beat em{font-style:italic;font-weight:400;color:var(--coral)}
 .nowrap{white-space:nowrap}
-/* the two vendors in the headline wear their own colours and marks */
-.vendor img{height:.7em;width:auto;vertical-align:-.04em;margin-right:.16em;border-radius:.14em}
-.vendor.hs{color:var(--hub)}
-.vendor.sf{color:var(--sf)}
+/* the two vendors in the headline carry their marks; the words stay cream, so coral stays Nova's and red stays loss */
+.vendor img{height:.62em;width:auto;vertical-align:middle;margin-right:.16em;border-radius:.14em}
 .vendor.sf img{border-radius:0}
 /* on a wide screen the pair stays on one line, scaled to fit with its marks; a phone breaks it after "and" */
 .duo{white-space:nowrap}
@@ -122,14 +132,15 @@ a{color:inherit}
 .cue::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:var(--paper);animation:cue 1.6s ease-in-out infinite}
 @keyframes cue{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(10px)}}
 
-/* Slack pings float up out of the chasm during the problem beat */
-.pings{position:absolute;inset:0;z-index:4;pointer-events:none}
-.ping{position:absolute;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 7px;border-radius:12px;background:rgba(255,255,255,.94);color:#1d1c1d;
-  font:600 14px/1.2 'Lato',var(--sans);box-shadow:0 10px 30px -10px rgba(0,0,0,.6);white-space:nowrap;animation:ping 3.4s ease forwards}
+/* Slack pings from the team pile up, unanswered, during the problem beat; once Nova is catching, it answers them one by one */
+.pings{position:absolute;z-index:4;left:clamp(16px,5vw,72px);bottom:clamp(110px,16vh,150px);display:flex;flex-direction:column;align-items:flex-start;gap:8px;pointer-events:none}
+@media(max-width:700px){.pings{left:16px;bottom:150px}}
+.ping{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 7px;border-radius:12px;background:rgba(255,255,255,.94);color:#1d1c1d;
+  font:600 14px/1.2 'Lato',var(--sans);box-shadow:0 10px 30px -10px rgba(0,0,0,.6);white-space:nowrap;animation:ping .4s ease both;transition:opacity .6s ease}
 .ping i{width:24px;height:24px;border-radius:6px;background:#2f6f9e;color:#fff;font:900 12px/24px 'Lato',sans-serif;text-align:center;font-style:normal;flex:none}
-/* once Nova is catching, the team stops asking */
-.ping.gone{animation:none;opacity:0;transition:opacity .8s ease}
-@keyframes ping{0%{opacity:0;transform:translateY(16px) scale(.94)}12%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-26px)}}
+.ping.done::after{content:"";width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%232e8b57' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/14px}
+.ping.out{opacity:0}
+@keyframes ping{0%{opacity:0;transform:translateY(16px) scale(.94)}100%{opacity:1;transform:none}}
 
 /* error tags ride the falling leads (positioned from 3D every frame) */
 .tags{position:absolute;inset:0;z-index:3;pointer-events:none}
@@ -201,8 +212,8 @@ a{color:inherit}
 .chat .pick .tool{position:relative;width:112px}
 .chat .pick::before{content:"";position:absolute;top:0;left:56px;right:56px;height:2px;background:rgba(224,86,63,.45)}
 .chat .pick .tool::before{content:"";position:absolute;top:-16px;left:calc(50% - 1px);width:2px;height:16px;background:rgba(224,86,63,.45)}
-.tools{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,84px));gap:26px 8px;justify-content:center}
-@media(min-width:760px){.tools{grid-template-columns:repeat(8,minmax(0,96px));gap:26px 18px}}
+.tools{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,96px));gap:26px 8px;justify-content:center}
+@media(min-width:760px){.tools{grid-template-columns:repeat(9,minmax(0,96px));gap:26px 18px}}
 .tool{display:flex;flex-direction:column;align-items:center;gap:10px;font:500 11.5px/1.2 var(--mono);color:var(--paper-dim);letter-spacing:.02em}
 .tool i{width:64px;height:64px;border-radius:17px;background:#fff;display:grid;place-items:center;padding:11px;
   box-shadow:0 14px 30px -14px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);transition:transform .25s ease}
@@ -220,7 +231,7 @@ a{color:inherit}
 .ask{position:relative;min-height:90vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:80px clamp(16px,5vw,72px) 40px;
   background:radial-gradient(70% 60% at 80% 40%,rgba(224,86,63,.16),transparent 70%),var(--night)}
 .ask h2{font-family:var(--serif);font-weight:600;font-size:clamp(44px,8vw,110px);line-height:.98;letter-spacing:-.035em;margin:0 0 40px;max-width:12ch}
-.ask h2 em{font-style:italic;font-weight:400;color:var(--coral)}
+.ask h2 em{font-style:italic;font-weight:400;color:var(--coral);white-space:nowrap}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px}
 @media(max-width:560px){.cta-row{flex-direction:column;align-items:stretch;width:100%;max-width:340px}}
 .btn.ghost{background:transparent;color:var(--paper);box-shadow:inset 0 0 0 1.5px rgba(246,242,233,.4)}
@@ -246,10 +257,9 @@ a{color:inherit}
 .nogl .beat{position:static;opacity:1;transform:none;margin:0 0 18px}
 .nogl #story{height:auto}.nogl .stage{position:relative;height:auto;padding:120px 0 80px}
 .nogl .beats{position:relative;top:0}
-.nogl .hud,.nogl .cue,.nogl .dock,.nogl .illus{display:none}
+.nogl .hud,.nogl .cue,.nogl .dock,.nogl .illus,.nogl .pings{display:none}
 .nogl .ask{min-height:0;padding-top:24px}
-@keyframes pingstill{0%{opacity:0}12%{opacity:1}75%{opacity:1}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){.cue::after,.approve:not(:disabled){animation:none}.ping{animation:pingstill 4.5s ease forwards}}
+@media(prefers-reduced-motion:reduce){.cue::after,.approve:not(:disabled),.ping{animation:none}}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
 </head>
@@ -318,8 +328,9 @@ a{color:inherit}
   <ul class="tools">
     <li class="tool"><i class="bleed"><img src="img/tools/zoominfo.png" alt="" width="64" height="64" loading="lazy"></i>ZoomInfo</li>
     <li class="tool"><i><img src="img/tools/clay.png" alt="" width="42" height="42" loading="lazy"></i>Clay</li>
+    <li class="tool"><i><img src="img/tools/zapier.png" alt="" width="42" height="42" loading="lazy"></i>Zapier</li>
     <li class="tool"><i class="bleed"><img src="img/tools/gong.png" alt="" width="64" height="64" loading="lazy"></i>Gong</li>
-    <li class="tool"><i class="bleed"><img src="img/tools/salesloft.png" alt="" width="64" height="64" loading="lazy"></i>Salesloft</li>
+    <li class="tool"><i><img src="img/tools/marketo.png" alt="" width="42" height="42" loading="lazy"></i>Marketo</li>
     <li class="tool"><i><img src="img/tools/outreach.png" alt="" width="42" height="42" loading="lazy"></i>Outreach</li>
     <li class="tool"><i><img src="img/tools/6sense.png" alt="" width="42" height="42" loading="lazy"></i>6sense</li>
     <li class="tool"><i><img src="img/tools/tableau.png" alt="" width="42" height="42" loading="lazy"></i>Tableau</li>
@@ -383,7 +394,7 @@ a{color:inherit}
 /* GA4: kept outside the module so it runs even if WebGL or the CDN fails */
 (function(){
   window.trackEvt = function(name, params){
-    if (typeof gtag === 'function') gtag('event', name, Object.assign({ page: 'hubspot_salesforce' }, params || {}));
+    if (typeof gtag === 'function') gtag('event', name, Object.assign({ page: 'hubspot_salesforce' }, window.PAIN ? { pain: window.PAIN } : {}, params || {}));
   };
   document.querySelectorAll('a[href*="calendar.app.google"]').forEach(function(a){
     a.addEventListener('click', function(){ trackEvt('book_call_click', { location: a.getAttribute('data-loc') || 'other' }); });
@@ -401,7 +412,7 @@ a{color:inherit}
     document.documentElement.classList.add('js');
     stack.querySelectorAll('.tool,.nova,.wire').forEach(function(el, i){ el.style.transitionDelay = (i * 0.06) + 's'; });
     var io = new IntersectionObserver(function(es){
-      if (es[0].isIntersecting) { stack.classList.add('in'); io.disconnect(); }
+      if (es[0].isIntersecting) { stack.classList.add('in'); io.disconnect(); trackEvt('stack_view'); }
     }, { threshold: 0.25 });
     io.observe(stack);
   }
@@ -507,9 +518,9 @@ const HUB = block(-1, 0xff7a59, 'HubSpot');
 const SF  = block( 1, 0x00a1e0, 'Salesforce');
 
 /* ================= the tools around them: enamel tokens standing in little stands, each printed with its logo ================= */
-/* the same eight as the stack section; [file, whether the logo is a full-square icon] */
-const TOOLS = [['zoominfo', 1], ['gong', 1], ['salesloft', 1], ['6sense', 0], ['clay', 0], ['outreach', 0], ['snowflake', 0], ['tableau', 0]];
-const T = { zoominfo: 0, gong: 1, salesloft: 2, sixsense: 3, clay: 4, outreach: 5, snowflake: 6, tableau: 7 };
+/* eight of the nine in the stack section (Marketo stays in the stack section: beside HubSpot it would ask which one is the MAP); [file, whether the logo is a full-square icon] */
+const TOOLS = [['zoominfo', 1], ['gong', 1], ['zapier', 0], ['6sense', 0], ['clay', 0], ['outreach', 0], ['snowflake', 0], ['tableau', 0]];
+const T = { zoominfo: 0, gong: 1, zapier: 2, sixsense: 3, clay: 4, outreach: 5, snowflake: 6, tableau: 7 };
 /* a token stands on edge so its face turns to the camera: lying flat, the logos foreshorten to slivers */
 const PUCK_R = BW * 0.085, COIN_T = 0.06, STAND_H = 0.06, COIN_Y = STAND_H + PUCK_R - 0.03;
 const coinGeo = new THREE.CylinderGeometry(PUCK_R, PUCK_R, COIN_T, 48); coinGeo.rotateX(Math.PI / 2);
@@ -542,6 +553,12 @@ const SAT_PHONE = [[-2.5, -1.61], [-1.25, -1.61], [0, -1.61], [1.25, -1.61], [-3
 
 /* labels pinned to the scene: the old sync, and Nova's portrait over the bar */
 const syncEl = document.createElement('div'); syncEl.className = 'lbl'; syncEl.textContent = 'your sync'; $('#labels').appendChild(syncEl);
+/* each system's total, printed in front of its block */
+function tally(img) {
+  const el = document.createElement('div'); el.className = 'tally'; el.innerHTML = `<img src="img/tools/${img}" alt=""><span></span>`;
+  $('#labels').appendChild(el); return { el, n: el.querySelector('span') };
+}
+const tallies = [tally('hubspot.png'), tally('salesforce.svg')];
 const novaTag = $('#novatag');
 
 /* ================= Nova: a coral bar that slides out across the slot ================= */
@@ -605,9 +622,15 @@ function consult(to, force) {
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const ROUTE = {
   'picklist mismatch': ['sf'], 'missing Lead Source': [T.zoominfo, T.clay], 'duplicate record': [T.snowflake],
-  'owner inactive': [T.salesloft, T.outreach], 'API timeout': ['both'], 'no consent': [T.sixsense],
+  'owner inactive': [T.outreach], 'API timeout': [T.zapier], 'no consent': [T.sixsense], 'lifecycle mismatch': ['both'],
 };
-const fixFor = () => pick(ROUTE[pick(ERRS)]);
+/* a lead whose owner left always shows its fix: a pulse to Outreach, then it rolls off to a new owner */
+let routeCool = 0;
+function fix(l) {
+  const err = l.err || pick(ERRS); l.err = null;
+  if (err === 'owner inactive' && routeCool <= 0 && !st.jam && !st.jamN) { routeCool = 0.8; consult(T.outreach, true); l.reroute = true; return; }
+  consult(pick(ROUTE[err]));
+}
 
 /* ================= leads: glossy beads ================= */
 const N = 260, R = 0.085;
@@ -624,10 +647,11 @@ C.amber = C.lead;
 const OFF = 0, WALK = 1, CROSS = 2, ARRIVE = 3, FALL = 4, CAUGHT = 5, HELD = 6, RISE = 7, EJECT = 8, HOLDHUB = 9, DROP = 10, MERGE = 11, PILE = 12, JAM = 13;
 const L = Array.from({ length: N }, () => ({ s: OFF, p: new THREE.Vector3(), v: new THREE.Vector3(), from: new THREE.Vector3(), to: new THREE.Vector3(), t: 0, d: 1, col: new THREE.Color(), tgt: new THREE.Color(), sc: 1, z: 0, tag: null, force: 0, roll: 0, pop: 0 }));
 const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), E = new THREE.Euler();
-function free() { for (const l of L) if (l.s === OFF) return l; return null; }
+function free() { for (const l of L) if (l.s === OFF) { l.err = null; l.reroute = false; return l; } return null; }
 const HUB_START = -(GAP + BW) + 0.25, EDGE = -GAP;      // where leads appear, and where HubSpot ends
 function spawn(x = HUB_START + Math.random() * 0.3, z = (Math.random() - .5) * (BD - 0.5)) {
   const l = free(); if (!l) return null;
+  st.inHub++;
   l.s = WALK; l.p.set(x, TOP + R, z); l.v.set(1.0 + Math.random() * 0.45, 0, 0); l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z; l.fixed = false; l.jamTested = false;
   return l;
 }
@@ -654,32 +678,39 @@ const st = {
   held: [],
   jam: false, jamRate: 1, jamN: 0,   // a break in progress: leads queue red at it
   breakT: 0,       // seconds left of the break-it sequence, while the counter shows
+  inHub: 0,        // leads that have entered HubSpot, for the tallies
 };
 const beats = [...document.querySelectorAll('.beat')];
 const hud = $('#hud'), countEl = $('#count'), card = $('#card'), chips = $('#chips'), cue = $('#cue');
 
 /* ---------- error tags that ride falling leads ---------- */
-const ERRS = ['picklist mismatch', 'missing Lead Source', 'duplicate record', 'owner inactive', 'API timeout', 'no consent'];
+const ERRS = ['picklist mismatch', 'missing Lead Source', 'duplicate record', 'owner inactive', 'API timeout', 'no consent', 'lifecycle mismatch'];
+/* the outreach angle (?pain=) picks the first error tag, the first ping and the first break chip; the story still opens on the headline */
+const PAIN = { dupes: ['duplicate record', 1, 'webinar'], routing: ['owner inactive', 0, 'webinar'], numbers: [null, 1, 'field'], sync: ['API timeout', 2, 'field'] }[window.PAIN];
 const tagEls = Array.from({ length: 5 }, () => { const d = document.createElement('div'); d.className = 'tag'; $('#tags').appendChild(d); return { el: d, lead: null, t: 0 }; });
-let errI = 0, tagCool = 0;
+let errI = PAIN?.[0] ? ERRS.indexOf(PAIN[0]) : 0, tagCool = 0;
 function attachTag(l) {
   if (tagCool > 0) return;
   const t = tagEls.find(t => !t.lead); if (!t) return;
-  t.lead = l; t.t = 0; l.tag = t; t.el.textContent = ERRS[errI++ % ERRS.length]; t.el.classList.add('on'); t.w = t.el.offsetWidth; tagCool = 0.55;
+  t.lead = l; t.t = 0; l.tag = t; t.el.textContent = l.err = ERRS[errI++ % ERRS.length]; t.el.classList.add('on'); t.w = t.el.offsetWidth; tagCool = 0.55;
 }
 function dropTag(l) { if (l.tag) { l.tag.el.classList.remove('on'); l.tag.lead = null; l.tag = null; } }
 
 /* ---------- Slack pings from the team ---------- */
 const PINGS = [['J', "where's my lead?"], ['D', 'why did MQLs drop?'], ['S', 'did the form break again?']];
-let pingI = 0, pingT = 0;
+let pingI = PAIN ? PAIN[1] : 0, pingT = 0, answerT = 0;
 function ping() {
+  /* three at most, waiting: more than one person can answer */
+  if ($('#pings').querySelectorAll('.ping:not(.done)').length >= 3) return;
   const [who, txt] = PINGS[pingI++ % PINGS.length];
   const d = document.createElement('div'); d.className = 'ping';
   d.innerHTML = `<i>${who}</i>${txt}`;
-  const w = stage.clientWidth, h = stage.clientHeight, narrow = w < 700;
-  d.style.left = (narrow ? 16 + Math.random() * Math.max(0, w - 250) : w * (0.3 + Math.random() * 0.4)) + 'px';
-  d.style.top = (narrow ? h * (0.62 + Math.random() * 0.12) : h * (0.55 + Math.random() * 0.15)) + 'px';
-  $('#pings').appendChild(d); setTimeout(() => d.remove(), 3600);
+  $('#pings').appendChild(d);
+}
+/* Nova answers the oldest open request: a tick, then it clears */
+function answer() {
+  const d = $('#pings .ping:not(.done)'); if (!d) return;
+  d.classList.add('done'); setTimeout(() => d.classList.add('out'), 700); setTimeout(() => d.remove(), 1300);
 }
 
 /* ---------- the approval ---------- */
@@ -698,6 +729,7 @@ $('#approve').addEventListener('click', () => {
 });
 
 /* ---------- break something ---------- */
+if (PAIN) chips.insertBefore(chips.querySelector(`[data-break="${PAIN[2]}"]`), chips.querySelector('.chip'));
 const FIX = {
   field: 'Caught it. Mapping updated, 41 records re-synced.',
   release: 'Demo form went quiet at 11:38. Fixed, 9 submissions replayed.',
@@ -764,7 +796,7 @@ document.querySelectorAll('[data-break]').forEach(b => b.addEventListener('click
     for (let i = 0; i < 34; i++) setTimeout(() => {
       const l = free(); if (!l) return;
       l.s = DROP; l.p.set(EDGE - 2.2 + Math.random() * 1.6, 0.7 + Math.random() * 0.4, (Math.random() - .5) * (BD - 0.5)); l.v.set(0, -1.5, 0);
-      l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 1; l.force = 0; l.t = 0; l.fixed = false; l.jamTested = false;
+      l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 1; l.force = 0; l.t = 0; l.fixed = false; l.jamTested = false; l.err = null; l.reroute = false;
       l.kind = n % 6 === 0 ? 'hold' : n % 5 === 0 ? 'merge' : 'go'; n++;
     }, i * 40);
     [T.zoominfo, T.clay, T.sixsense].forEach((t, i) => setTimeout(() => consult(t, true), 1700 + i * 300));
@@ -823,6 +855,7 @@ function stepLead(l, dt) {
     }
     case ARRIVE: {
       l.p.x += l.v.x * dt;
+      if (l.reroute) l.p.z = lerp(l.p.z, -(BD / 2 - 0.25), Math.min(1, dt * 2.5));
       if (l.p.x > SF_END) { l.sc -= dt * 3; if (l.sc <= 0) { l.s = OFF; } }
       break;
     }
@@ -860,7 +893,7 @@ function stepLead(l, dt) {
       if (l.t > 0.6) l.tgt.copy(C.lead);
       if (l.t >= 1) {
         if (l.hold && st.approve === 1 && st.held.length < 3) { l.s = HELD; l.t = 0; l.tgt.copy(C.lead); st.held.push(l); if (st.held.length === 3) st.heldDone = true; }
-        else { l.fixed = true; pulse(); consult(fixFor()); eject(l); }
+        else { l.fixed = true; pulse(); fix(l); eject(l); }
       }
       break;
     }
@@ -875,7 +908,7 @@ function stepLead(l, dt) {
       /* out of the pile and up onto the bar */
       l.t += dt / l.d; const t = smooth(0, 1, l.t);
       l.p.lerpVectors(l.from, l.to, t); l.p.y += Math.sin(t * Math.PI) * 0.25;
-      if (l.t >= 1) { l.fixed = true; pulse(); consult(fixFor()); eject(l); }
+      if (l.t >= 1) { l.fixed = true; pulse(); fix(l); eject(l); }
       break;
     }
     case HOLDHUB: {
@@ -940,8 +973,10 @@ function progress() {
   return clamp(-r.top / span);
 }
 let beatNow = 0;
+const beatSeen = [true];
 function setBeat(b) {
   if (b === beatNow) return; beatNow = b;
+  if (!beatSeen[b]) { beatSeen[b] = true; trackEvt('story_beat', { beat: ['problem', 'catch', 'approve', 'break'][b] }); }
   beats.forEach((el, i) => el.classList.toggle('on', i === b));
 }
 
@@ -1000,21 +1035,33 @@ function frame(now) {
   if (st.paused > 0) st.paused -= dt;
   else { st.spawnT -= dt; if (st.spawnT <= 0) { spawn(); st.spawnT = st.spawnEvery * (0.6 + Math.random() * 0.8); } }
 
-  /* pings while the problem beat is on screen */
-  if (b === 0 && nIn < 0.02 && st.shownLost > 10) { pingT -= dt; if (pingT <= 0) { ping(); pingT = 2.3; } }
-  if (nIn > 0.02) document.querySelectorAll('.ping:not(.gone)').forEach(d => d.classList.add('gone'));
+  /* the team's requests pile up while leads fall; once Nova is catching, it answers them */
+  if (b === 0 && nIn < 0.02 && st.shownLost > 10) { pingT -= dt; if (pingT <= 0) { ping(); pingT = 1.6; } }
+  if (nIn > 0.9) { answerT -= dt; if (answerT <= 0) { answer(); answerT = 0.6; } }
 
   /* the counter: records failed and not yet fixed */
   st.shownLost = lerp(st.shownLost, st.lost * 3 + st.jamN, Math.min(1, dt * 5));
   const shown = Math.round(st.shownLost);
   countEl.textContent = shown.toLocaleString('en-GB');
   hud.classList.toggle('zero', nIn > 0.9 && shown === 0);
+  /* the two totals: Salesforce is short by exactly the counter, and meets HubSpot once Nova has caught up; the BI tools confirm it */
+  const hubN = 1240 + Math.floor(st.inHub / 3);
+  tallies[0].n.textContent = hubN.toLocaleString('en-GB'); tallies[1].n.textContent = (hubN - shown).toLocaleString('en-GB');
+  tallies[1].el.classList.toggle('short', shown > 0);
+  if (shown > 0) st.matched = false;
+  else if (nIn > 0.9 && !st.matched) {
+    st.matched = true; tallies.forEach(t => t.el.classList.add('match'));
+    consult(T.tableau, true); setTimeout(() => consult(T.snowflake, true), 250);
+    setTimeout(() => tallies.forEach(t => t.el.classList.remove('match')), 1200);
+  }
   st.breakT = Math.max(0, st.breakT - dt);
   /* on a phone the toast sits over the counter, so the counter steps aside for it */
   /* once they've broken something, Nova offers the real thing; it gives way to the toast while another break runs */
   tryEl.classList.toggle('on', !!st.tried && !busy && !toastEl.classList.contains('on'));
+  if (tryEl.classList.contains('on') && !st.trySeen) { st.trySeen = true; trackEvt('try_view'); }
   const toastOver = W < 700 && (toastEl.classList.contains('on') || tryEl.classList.contains('on'));
-  hud.style.opacity = p < 0.53 || (st.breakT > 0 && !toastOver) ? 1 : 0;
+  const hudOn = p < 0.53 || (st.breakT > 0 && !toastOver) ? 1 : 0;
+  hud.style.opacity = hudOn; tallies.forEach(t => t.el.style.opacity = hudOn);
 
   /* leads */
   tagCool -= dt;
@@ -1042,7 +1089,7 @@ function frame(now) {
   st.wireT = clamp((st.wireT || 0) + (nIn > 0.45 ? dt : -dt * 2), 0, 1);
   const wired = smooth(0, 1, st.wireT);
   for (const s of SATS) s.cable.m.geometry.setDrawRange(0, Math.floor(s.cable.len * wired / 6) * 6);
-  consultCool -= dt;
+  consultCool -= dt; routeCool -= dt;
   for (const sl of slugs) if (sl.t >= 0) {
     /* out along the cable, press the tool, back to the bar */
     const s = SATS[sl.i], was = sl.t; sl.t += dt / 0.5;
@@ -1101,6 +1148,12 @@ function frame(now) {
   if (portrait) { const [x, y] = toScreen(0, TOP, BD / 2); syncEl.style.transform = `translate(${x - 10}px, ${y}px) translate(-100%, -50%)`; }
   else { const [x, y] = toScreen(0, FLOOR + 0.05, BD / 2 + 0.25); syncEl.style.transform = `translate(${x}px, ${y + 10}px) translateX(-50%)`; }
   syncEl.style.opacity = 1 - nIn;
+  tallies.forEach((t, i) => {
+    const bx = (i ? 1 : -1) * (GAP + BW / 2);
+    /* on a phone the tools crowd both long sides, so the totals sit on the blocks, along the near edge, clear of Nova's portrait */
+    if (portrait) { const [x, y] = toScreen(bx, TOP, BD / 2 - 0.4); t.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`; }
+    else { const [x, y] = toScreen(bx, FLOOR + 0.05, BD / 2 + 0.25); t.el.style.transform = `translate(${x}px, ${y + 10}px) translateX(-50%)`; }
+  });
   { const [x, y] = toScreen(nova.position.x + NOVA_TAG.x, NOVA_TAG.y, NOVA_TAG.z); novaTag.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%)`; novaTag.style.opacity = smooth(0.75, 1, nIn); }
 
   renderer.render(scene, camera);
