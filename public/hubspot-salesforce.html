@@ -10,7 +10,7 @@
   gtag('js', new Date());
   /* ?pain= marks which outreach angle brought the reader; it goes on the page view and every event */
   var pain = new URLSearchParams(location.search).get('pain');
-  window.PAIN = /^(dupes|routing|numbers|sync)$/.test(pain || '') ? pain : undefined;
+  window.PAIN = /^(dupes|routing|numbers|sync|quality)$/.test(pain || '') ? pain : undefined;
   gtag('config', 'G-26MXN99LBQ', window.PAIN ? { pain: window.PAIN } : {});
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -686,7 +686,7 @@ const hud = $('#hud'), countEl = $('#count'), card = $('#card'), chips = $('#chi
 /* ---------- error tags that ride falling leads ---------- */
 const ERRS = ['picklist mismatch', 'missing Lead Source', 'duplicate record', 'owner inactive', 'API timeout', 'no consent', 'lifecycle mismatch'];
 /* the outreach angle (?pain=) picks the first error tag, the first ping and the first break chip; the story still opens on the headline */
-const PAIN = { dupes: ['duplicate record', 1, 'webinar'], routing: ['owner inactive', 0, 'webinar'], numbers: [null, 1, 'field'], sync: ['API timeout', 2, 'field'] }[window.PAIN];
+const PAIN = { dupes: ['duplicate record', 1, 'webinar'], routing: ['owner inactive', 0, 'webinar'], numbers: [null, 1, 'field'], sync: ['API timeout', 2, 'field'], quality: ['missing Lead Source', 1, 'webinar'] }[window.PAIN];
 const tagEls = Array.from({ length: 5 }, () => { const d = document.createElement('div'); d.className = 'tag'; $('#tags').appendChild(d); return { el: d, lead: null, t: 0 }; });
 let errI = PAIN?.[0] ? ERRS.indexOf(PAIN[0]) : 0, tagCool = 0;
 function attachTag(l) {
