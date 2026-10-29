@@ -427,6 +427,7 @@ a{color:inherit}
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const root = document.documentElement;
 if (root.classList.contains('nogl')) throw new Error('no webgl');
@@ -436,7 +437,7 @@ const $ = (s) => document.querySelector(s);
 const canvas = $('#gl'), story = $('#story'), stage = $('.stage');
 
 /* ================= renderer, scene, camera ================= */
-/* the look: a photograph of a tabletop model. One warm key light, real shadows, matte blocks, glossy beads, coral as the only accent */
+/* the look: a photograph of a tabletop model. One warm key light, real shadows, matte blocks, glossy figures, coral as the only accent */
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 const coarse = matchMedia('(pointer: coarse)').matches;
 renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.5 : 2));
@@ -453,7 +454,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(INK);
 /* the table fades into the page, so the camera never finds its edge */
 scene.fog = new THREE.FogExp2(INK, 0.055);
-/* soft reflections for the beads and the bar, built once, no download */
+/* soft reflections for the figures and the bar, built once, no download */
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.55;
@@ -632,9 +633,15 @@ function fix(l) {
   consult(pick(ROUTE[err]));
 }
 
-/* ================= leads: glossy beads ================= */
+/* ================= leads: little people ================= */
 const N = 260, R = 0.085;
-const leadGeo = new THREE.SphereGeometry(R, 16, 12);
+/* a figure standing where a bead of radius R sat: feet at -R, a turned body and a round head on top */
+const leadGeo = (() => {
+  const body = new THREE.LatheGeometry([[0, -1], [0.5, -1], [0.56, -0.92], [0.55, 0.2], [0.48, 0.55], [0.3, 0.74], [0.12, 0.8], [0, 0.81]]
+    .map(([x, y]) => new THREE.Vector2(x * R, y * R)), 20);
+  const head = new THREE.SphereGeometry(R * 0.42, 16, 12); head.translate(0, R * 1.3, 0);
+  return mergeGeometries([body.toNonIndexed(), head.toNonIndexed()]);
+})();
 const leadMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.3 });
 const leads = new THREE.InstancedMesh(leadGeo, leadMat, N);
 leads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -655,11 +662,11 @@ function spawn(x = HUB_START + Math.random() * 0.3, z = (Math.random() - .5) * (
   l.s = WALK; l.p.set(x, TOP + R, z); l.v.set(1.0 + Math.random() * 0.45, 0, 0); l.col.copy(C.lead); l.tgt.copy(C.lead); l.sc = 0; l.t = 0; l.force = 0; l.z = z; l.fixed = false; l.jamTested = false;
   return l;
 }
-/* the pile in the slot: a few dozen beads at most, the counter keeps the rest */
+/* the pile in the slot: a few dozen figures at most, the counter keeps the rest */
 const PILE_MAX = 42;
 let pileN = 0;
 function pileSpot(i, out) {
-  /* against the slot's HubSpot wall, where a bead dropping off the edge lands, spread along the slot in two layers */
+  /* against the slot's HubSpot wall, where a figure dropping off the edge lands, spread along the slot in two layers */
   const along = 14, row = i % along, k = Math.floor(i / along);   // k: 0 and 1 on the floor, 2 on top
   const j = Math.sin(i * 12.9898) * 0.5;
   const x = -GAP + R + 0.01 + (k === 1 ? R * 2 : k === 2 ? R : 0) + j * 0.02;
@@ -750,7 +757,7 @@ function jamSpot(i, out, where) {
 function jam(l, where = JAM_EDGE) {
   l.s = JAM; jamSpot(st.jamN++, l.to, where); l.from.copy(l.p); l.t = 0; l.tgt.copy(C.red); l.jamTested = true;
 }
-/* the fix: queued beads turn cream and go on, over Nova's bar or along HubSpot, one after another */
+/* the fix: queued figures turn cream and go on, over Nova's bar or along HubSpot, one after another */
 function unjam(walk) {
   st.jam = false;
   const q = L.filter(l => l.s === JAM);
@@ -819,7 +826,7 @@ function land(l) {
   if (pileN < PILE_MAX) { pileSpot(pileN++, l.to); l.full = false; }
   else { l.to.set(lerp(-GAP + R, GAP - R, Math.random()), FLOOR + R, (Math.random() - .5) * 1.8); l.full = true; }
 }
-/* while three wait for the reader's call, other beads keep clear of the middle of the bar */
+/* while three wait for the reader's call, other figures keep clear of the middle of the bar */
 const aside = z => st.held.length && st.approve === 1 && Math.abs(z) < 0.5 ? Math.sign(z || 1) * 0.5 : z;
 function stepLead(l, dt) {
   switch (l.s) {
@@ -1013,7 +1020,7 @@ function frame(now) {
   if (nIn > 0.9 && st.lost > 0) {
     st.riseT = (st.riseT || 0) - dt;
     if (st.riseT <= 0) {
-      /* the newest bead on the pile comes up first; beads that never fitted on the pile come up from the slot floor */
+      /* the newest figure on the pile comes up first; figures that never fitted on the pile come up from the slot floor */
       let l = null;
       for (let i = N - 1; i >= 0; i--) if (L[i].s === PILE) { l = L[i]; break; }
       if (l) pileN = Math.max(0, pileN - 1);
